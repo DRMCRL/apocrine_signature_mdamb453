@@ -1,5 +1,6 @@
 ---
 title: "MDA-MB-453: Comparison of AR, FOXA1, GATA3 and TFAP2B"
+author: Stephen Pederson
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -16,3 +17,12 @@ Given the mostly cytoplasmic location of AR in Vehicle, the primary comparison w
 For all targets, the cistrome is largely conserved across conditions.
 Analysis using the GRAVI workflow is available [here](https://github.com/DRMCRL/GRAVI_MDA-MB-453_AR_GATA3_FOXA1_TFAP2B) (for those given access)
 
+For each ChIP target, the GRAVI workflow generates two peak-sets: 
+
+1. Treatment-*specific* 'Oracle peaks', derived from merged samples and also found in $>n$ individual samples to ensure only high-quality peaks are retained
+2. Treatment-*agnostic* 'Consensus Peaks', obtained by simply merging oracle peaks across all treatment groups. The union of the peaks obtained in each condition is used as the binding region for inclusivity.
+
+This terminology may be used through the analysis
+
+The particular analysis using the GRAVI workflow used reads aligned to GRCh37/hg19 and the set of genes defined in Gencode release 33.
+Gene definitions were imported directly from this workflow.

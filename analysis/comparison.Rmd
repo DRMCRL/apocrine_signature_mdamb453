@@ -1,0 +1,272 @@
+---
+title: "Comparison of all ChIP Targets"
+author: "Stephen Pederson"
+date: "`r format(Sys.Date(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(message = FALSE, wraning = FALSE)
+```
+
+
+## Introduction
+
+```{r pkg}
+library(tidyverse)
+library(magrittr)
+library(extraChIPs)
+library(plyranges)
+library(pander)
+library(scales)
+library(reactable)
+library(htmltools)
+library(UpSetR)
+library(rtracklayer)
+library(GenomicInteractions)
+theme_set(theme_bw())
+```
+
+
+```{r dht-peaks}
+dht_peaks <- here::here("data", "peaks") %>% 
+  list.files(recursive = TRUE, pattern = "oracle", full.names = TRUE) %>% 
+  sapply(read_rds, simplify = FALSE) %>% 
+  lapply(function(x) x[["DHT"]]) %>% 
+  lapply(setNames, nm = c()) %>% 
+  setNames(str_extract_all(names(.), "AR|FOXA1|GATA3|TFAP2B"))
+dht_consensus <- dht_peaks %>%
+  lapply(granges) %>% 
+  GRangesList() %>% 
+  unlist() %>% 
+  reduce() %>% 
+  mutate(
+    AR = overlapsAny(., dht_peaks$AR),
+    FOXA1 = overlapsAny(., dht_peaks$FOXA1),
+    GATA3 = overlapsAny(., dht_peaks$GATA3),
+    TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
+  )
+targets <- names(dht_peaks)
+sq <- seqinfo(dht_consensus)
+```
+
+## Relationship Between Binding Regions
+
+Oracle peaks from the DHT-treated samples in each ChIP target were obtained previously using the GRAVI workflow.
+AR and GATA3 peaks were derived from the same samples/passages, whilst FOXA1 and TFAP2B ChIP-Seq experiments were performed separately.
+
+```{r tbl-overlap}
+cp <- htmltools::tags$em(
+  "Summary of all oracle peaks from DHT-treated samples. FOXA1 clearly showed the most binding activity."
+)
+tbl <- dht_peaks %>% 
+  lapply(
+    function(x) {
+      tibble(
+        n = length(x),
+        w = median(width(x)),
+        kb = sum(width(x)) / 1e3
+      )
+    }
+  ) %>% 
+  lapply(list) %>% 
+  as_tibble() %>% 
+  pivot_longer(cols = everything(), names_to = "target") %>% 
+  unnest(everything()) %>% 
+  reactable(
+    filterable = FALSE, searchable = FALSE,
+    columns = list(
+      target = colDef(name = "ChIP Target"),
+      n = colDef(name = "Total Peaks"),
+      w = colDef(name = "Median Width"),
+      kb = colDef(name = "Total Width (kb)", format = colFormat(digits = 1))
+    ),
+    defaultColDef = colDef(
+      format = colFormat(separators = TRUE, digits = 0)
+    )
+  )
+div(class = "table",
+  div(class = "table-header",
+      div(class = "caption", cp),
+      tbl
+  )
+)
+```
+
+A set of target-agnostic set of binding regions was then defined as the union of all DHT-treat peaks across all targets.
+
+```{r upset-dht-consensus, fig.cap = "Using the union of all binding regions, those which overlapped an oracle peak from each ChIP target are shown"}
+dht_consensus %>% 
+  as_tibble() %>% 
+  pivot_longer(cols = all_of(targets), names_to = "target", values_to = "bound") %>% 
+  dplyr::filter(bound) %>% 
+  split(.$target) %>% 
+  lapply(pull, "range") %>% 
+  fromList() %>% 
+  upset(
+    sets = rev(targets), keep.order = TRUE, 
+    order.by = "freq", 
+    set_size.show = TRUE, set_size.scale_max = nrow(.)
+  )
+```
+
+## Mapping To Genes
+
+In order to more fully characterise the function of each binding region, the set of all regions was mapped to genes.
+To perform this step, externally-sourced data defining promoters & enhancers (H3K27ac ChIP-Seq), and H3K27ac-HiChIP obtained from [SRA](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157381) and [analysed previously](https://github.com/DRMCRL/MDA-MB-453-H3K27Ac-HiChIP), were included.
+The H3K27ac-derived features were obtained from the same passages/experiments as GATA3 and AR.
+Conversely, the HiChIP data was obtained from a public dataset, not produced with the DRMCRL.
+HiChIP interactions were obtained using only the Vehicle controls from an Abemaciclib Vs. Vehicle experiment.
+
+
+```{r features}
+features <- here::here("data", "h3k27ac") %>% 
+  list.files(full.names = TRUE, pattern = "bed$") %>% 
+  sapply(import.bed, seqinfo = sq) %>% 
+  lapply(granges) %>% 
+  setNames(basename(names(.))) %>% 
+  setNames(str_remove_all(names(.), "s.bed")) %>% 
+  GRangesList() %>% 
+  unlist() %>% 
+  names_to_column("feature") %>% 
+  sort()
+```
+
+```{r hic}
+fl <- here::here("data", "hichip") %>% 
+  list.files(full.names = TRUE, pattern = "gi.+rds") 
+hic <- GInteractions()
+for (f in fl) {
+  hic <- c(hic, read_rds(f))
+}
+hic <- sort(hic)
+```
+
+Before proceeding, the comparability of the H3K27ac-HiChIP and H3K27ac-derived features was checked.
+`r percent(length(subsetByOverlaps(hic, features)) / length(hic))` of HiChIP long-range interactions overlapped a promoter or enhancer derived from H3K27ac ChIP-seq.
+Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features))` or ChIP-Seq features mapped to a long-range interaction.
+
+```{r all-gr}
+all_gr <- here::here("data", "annotations", "all_gr.rds") %>% 
+  read_rds() 
+rnaseq <- here::here("data", "rnaseq", "dge.rds") %>% 
+  read_rds()
+counts <- here::here("data", "rnaseq", "counts.out.gz") %>% 
+  read_tsv(skip = 1) %>% 
+  dplyr::select(Geneid, ends_with("bam")) 
+detected <- counts %>%
+  pivot_longer(
+    cols = ends_with("bam"), names_to = "sample", values_to = "counts"
+  ) %>% 
+  mutate(detected = counts > 0) %>% 
+  group_by(Geneid) %>% 
+  summarise(detected = mean(detected) > 0.25, .groups = "drop") %>%
+  dplyr::filter(detected) %>% 
+  pull("Geneid")
+```
+
+In order to more accurately assign genes to actively transcribed genes, the RNA-Seq dataset generated in 2013 studying DHT Vs. Vehicle in MDA-MB-453 cells was used.
+All `r comma(length(detected))` genes with >1 read in at least 1/4 of the samples was considered to be detected, and peaks were only mapped to detected genes.
+
+```{r map-to-genes}
+dht_consensus <- mapByFeature(
+  dht_consensus, 
+  genes = subset(all_gr$gene, gene_id %in% detected),
+  prom = subset(features, feature == "promoter"),
+  enh = subset(features, feature == "enhancer"),
+  gi = hic
+)
+all_targets <- dht_consensus %>% 
+  as_tibble() %>% 
+  dplyr::filter(if_all(targets)) %>% 
+  unnest(everything()) %>% 
+  distinct(gene_id) %>% 
+  pull("gene_id")
+```
+
+`r dht_consensus %>% as_tibble() %>% unnest(everything()) %>% distinct(gene_id) %>% nrow() %>%  divide_by(length(detected)) %>% percent()` of detected genes had one or more peaks mapped to them.
+
+Looking specifically at the peaks for which all four targets directly overlapped, `r comma(length(all_targets))` of the `r comma(length(detected))` detected genes were mapped to at least one directly overlapping binding region.
+
+## Apocrine Enrichment
+
+```{r}
+hgnc <- read_csv(
+  here::here("data", "external", "hgnc-symbol-check.csv"), skip = 1
+) %>% 
+  dplyr::select(Gene = Input, gene_name = `Approved symbol`)
+apo_ranks <- here::here("data", "external", "ApoGenes.txt") %>% 
+  read_tsv() %>% 
+  left_join(hgnc) %>% 
+  left_join(
+    as_tibble(all_gr$gene) %>% 
+      dplyr::select(gene_id, gene_name),
+    by = "gene_name"
+  ) %>% 
+  dplyr::select(starts_with("gene_"), ends_with("rank")) %>% 
+  dplyr::filter(!is.na(gene_id))
+```
+
+The Apocrine genes and ranks from [Farmer *et al*](https://www.nature.com/articles/1208561#Sec10) were loaded, updating gene names using the latest release from [HGNC](https://www.genenames.org/tools/multi-symbol-checker/).
+`r comma(nrow(apo_ranks))` of the original genes were able to be mapped to gene identifiers matching Gencode release 33.
+
+### Apocrine Ranks
+
+- Need to cut by H3K27Ac
+- Check UpSet plot by promoter/enhancer/detected genes
+
+For the purposes of simple exploration, the provided list was sorted by `apo_rank` and the proportion of genes mapped to at least one set of overlapping peaks was compared to these ranks.
+
+```{r}
+apo_ranks %>%
+  arrange(apo_rank) %>% 
+  mutate(
+    all = gene_id %in% all_targets,
+    n = cumsum(all), 
+    p = n / apo_rank
+  ) %>% 
+  ggplot(aes(apo_rank, p)) + 
+  geom_line() + 
+  coord_cartesian(xlim= c(0, 1000), ylim = c(0.6, 1))
+```
+
+### AB Ranks
+
+The same approach was applied to AB ranks
+
+
+```{r}
+apo_ranks %>%
+  dplyr::filter(!is.na(ABrank)) %>% 
+  arrange(ABrank) %>% 
+  mutate(
+    ABrank = seq_along(ABrank),
+    all = gene_id %in% all_targets,
+    n = cumsum(all), 
+    p = n / ABrank
+  ) %>% 
+  ggplot(aes(ABrank, p)) + 
+  geom_line() 
+```
+
+
+### AL Ranks
+
+The same approach was applied to AL ranks
+
+
+```{r}
+apo_ranks %>%
+  dplyr::filter(!is.na(ALrank)) %>% 
+  arrange(ALrank) %>% 
+  mutate(
+    ALrank = seq_along(ALrank),
+    all = gene_id %in% all_targets,
+    n = cumsum(all), 
+    p = n / ALrank
+  ) %>% 
+  ggplot(aes(ALrank, p)) + 
+  geom_line() 
+```

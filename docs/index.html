@@ -9,6 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Stephen Pederson" />
 
 
 <title>MDA-MB-453: Comparison of AR, FOXA1, GATA3 and TFAP2B</title>
@@ -16,7 +17,7 @@
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -30,6 +31,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -229,6 +231,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -258,6 +263,9 @@ $(document).ready(function () {
         <li>
   <a href="index.html">Home</a>
 </li>
+<li>
+  <a href="comparison.html">Comparison</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -268,10 +276,19 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">MDA-MB-453: Comparison of AR, FOXA1, GATA3
 and TFAP2B</h1>
+<h4 class="author">Stephen Pederson</h4>
 
 </div>
 
@@ -351,13 +368,13 @@ HTML.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong8797971">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongb7c5dfd">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 8797971
+aria-hidden="true"></span> <strong>Repository version:</strong> b7c5dfd
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong8797971"
+<div id="strongRepositoryversionstrongb7c5dfd"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -366,7 +383,7 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 8797971.
+The results in this page were generated with repository version b7c5dfd.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -386,15 +403,15 @@ Ignored files:
     Ignored:    data/bigwig/
 
 Untracked files:
-    Untracked:  data/peaks/
+    Untracked:  analysis/comparison.Rmd
+    Untracked:  data/annotations
+    Untracked:  data/h3k27ac/
+    Untracked:  data/hichip/
+    Untracked:  data/rnaseq/
 
 Unstaged changes:
-    Modified:   .gitignore
     Modified:   analysis/_site.yml
-    Deleted:    analysis/about.Rmd
     Modified:   analysis/index.Rmd
-    Deleted:    analysis/license.Rmd
-    Deleted:    data/README.md
 
 </code></pre>
 <p>
@@ -444,6 +461,40 @@ Message
 Rmd
 </td>
 <td>
+b7c5dfd
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-10
+</td>
+<td>
+Started analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+b7c5dfd
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-10
+</td>
+<td>
+Started analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 8797971
 </td>
 <td>
@@ -475,6 +526,20 @@ conserved across conditions. Analysis using the GRAVI workflow is
 available <a
 href="https://github.com/DRMCRL/GRAVI_MDA-MB-453_AR_GATA3_FOXA1_TFAP2B">here</a>
 (for those given access)</p>
+<p>For each ChIP target, the GRAVI workflow generates two peak-sets:</p>
+<ol style="list-style-type: decimal">
+<li>Treatment-<em>specific</em> ‘Oracle peaks’, derived from merged
+samples and also found in <span class="math inline">\(&gt;n\)</span>
+individual samples to ensure only high-quality peaks are retained</li>
+<li>Treatment-<em>agnostic</em> ‘Consensus Peaks’, obtained by simply
+merging oracle peaks across all treatment groups. The union of the peaks
+obtained in each condition is used as the binding region for
+inclusivity.</li>
+</ol>
+<p>This terminology may be used through the analysis</p>
+<p>The particular analysis using the GRAVI workflow used reads aligned
+to GRCh37/hg19 and the set of genes defined in Gencode release 33. Gene
+definitions were imported directly from this workflow.</p>
 </div>
 
 
@@ -524,6 +589,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

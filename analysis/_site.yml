@@ -5,9 +5,12 @@ navbar:
   left:
   - text: Home
     href: index.html
+  - text: Comparison
+    href: comparison.html
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
-    theme: cosmo
     highlight: textmate
+    code_folding: hide
+    theme: sandstone
