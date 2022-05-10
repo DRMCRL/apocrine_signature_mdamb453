@@ -1,14 +1,10 @@
 name: "apocrine_signature_mdamb453"
 output_dir: ../docs
 navbar:
-  title: "apocrine_signature_mdamb453"
+  title: "MDA-MB-453: Apocrine Signature"
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
 output:
   workflowr::wflow_html:
     toc: yes

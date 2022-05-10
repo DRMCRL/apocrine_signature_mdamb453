@@ -9,3 +9,11 @@ analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
+*bw
+*bigwig
+*bam
+*bai
+*fastq
+*fastq.gz
+*fq
+*fq.gz

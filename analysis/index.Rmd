@@ -1,5 +1,5 @@
 ---
-title: "Home"
+title: "MDA-MB-453: Comparison of AR, FOXA1, GATA3 and TFAP2B"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -8,4 +8,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+## Introduction
+
+This analysis compares the binding sites of AR, FOXA1, GATA3 and TFAP2B in MDA-MB-453 cells.
+All ChIP targets were obtained from separate experiments using Vehicle as the reference condition and DHT-treatment as the key response under investigation.
+Given the mostly cytoplasmic location of AR in Vehicle, the primary comparison will be performed using DHT-treated samples.
+For all targets, the cistrome is largely conserved across conditions.
+Analysis using the GRAVI workflow is available [here](https://github.com/DRMCRL/GRAVI_MDA-MB-453_AR_GATA3_FOXA1_TFAP2B) (for those given access)
+
