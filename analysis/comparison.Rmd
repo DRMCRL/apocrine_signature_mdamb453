@@ -112,14 +112,10 @@ dht_consensus %>%
   )
 ```
 
-## Mapping To Genes
+## H3K27ac Signal
 
-In order to more fully characterise the function of each binding region, the set of all regions was mapped to genes.
-To perform this step, externally-sourced data defining promoters & enhancers (H3K27ac ChIP-Seq), and H3K27ac-HiChIP obtained from [SRA](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157381) and [analysed previously](https://github.com/DRMCRL/MDA-MB-453-H3K27Ac-HiChIP), were included.
-The H3K27ac-derived features were obtained from the same passages/experiments as GATA3 and AR.
-Conversely, the HiChIP data was obtained from a public dataset, not produced with the DRMCRL.
-HiChIP interactions were obtained using only the Vehicle controls from an Abemaciclib Vs. Vehicle experiment.
-
+Given the hypothesis that the co-ocurrence of all 4 ChIP targets should be associated with increased transcriptional or regulatory activity, the set of all DHT peaks were then compared to promoters and enahncers derived H2K27ac binding, as detected in the existing GATA3/AR dataset produced by Leil Hosseinzadeh.
+Any H3K27ac peak detected in this dataset was classified either as a promoter or enhancer, and thus these features can be considered as the complete set of regions with detectable H3K27ac signal from this experiment.
 
 ```{r features}
 features <- here::here("data", "h3k27ac") %>% 
@@ -134,6 +130,41 @@ features <- here::here("data", "h3k27ac") %>%
   sort()
 ```
 
+```{r}
+glm_h3k27ac <- dht_consensus %>% 
+  mutate(h3k27ac = overlapsAny(., features)) %>% 
+  as_tibble() %>% 
+  with(
+    glm(h3k27ac ~ (TFAP2B + FOXA1 + GATA3 + AR)^3, family = "binomial")
+  ) %>% 
+  step()
+glm_h3k27ac %>% 
+  broom::tidy() %>% 
+  mutate(
+    adjp = p.adjust(p.value, "bonf"),
+    ` ` = case_when(
+      is.na(adjp) ~ "",
+      adjp > 0.1 ~ "",
+      adjp > 0.05 ~ ".",
+      adjp > 0.01 ~ "*",
+      adjp > 0.001 ~ "**",
+      TRUE ~ "***"
+    )
+  )
+## Do we need to construct 95% CIs using multcomp?
+```
+
+
+
+### Comparison With H3K27ac HiChIP Data
+
+To perform this step, externally-sourced data defining promoters & enhancers (H3K27ac ChIP-Seq), and H3K27ac-HiChIP obtained from [SRA](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157381) and [analysed previously](https://github.com/DRMCRL/MDA-MB-453-H3K27Ac-HiChIP), were included.
+The H3K27ac-derived features were obtained from the same passages/experiments as GATA3 and AR.
+Conversely, the HiChIP data was obtained from a public dataset, not produced with the DRMCRL.
+HiChIP interactions were obtained using only the Vehicle controls from an Abemaciclib Vs. Vehicle experiment.
+
+
+
 ```{r hic}
 fl <- here::here("data", "hichip") %>% 
   list.files(full.names = TRUE, pattern = "gi.+rds") 
@@ -147,6 +178,9 @@ hic <- sort(hic)
 Before proceeding, the comparability of the H3K27ac-HiChIP and H3K27ac-derived features was checked.
 `r percent(length(subsetByOverlaps(hic, features)) / length(hic))` of HiChIP long-range interactions overlapped a promoter or enhancer derived from H3K27ac ChIP-seq.
 Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features))` or ChIP-Seq features mapped to a long-range interaction.
+
+## Mapping To Genes
+
 
 ```{r all-gr}
 all_gr <- here::here("data", "annotations", "all_gr.rds") %>% 
