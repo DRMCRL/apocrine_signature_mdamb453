@@ -26,6 +26,7 @@ library(htmltools)
 library(UpSetR)
 library(rtracklayer)
 library(GenomicInteractions)
+library(multcomp)
 theme_set(theme_bw())
 ```
 
@@ -130,28 +131,41 @@ features <- here::here("data", "h3k27ac") %>%
   sort()
 ```
 
-```{r}
-glm_h3k27ac <- dht_consensus %>% 
+```{r glm-h3k27ac}
+grp_h3k27ac <- dht_consensus %>% 
   mutate(h3k27ac = overlapsAny(., features)) %>% 
   as_tibble() %>% 
-  with(
-    glm(h3k27ac ~ (TFAP2B + FOXA1 + GATA3 + AR)^3, family = "binomial")
-  ) %>% 
-  step()
+  dplyr::select(range, all_of(targets), h3k27ac) %>% 
+  pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
+  dplyr::filter(value) %>% 
+  group_by(range, h3k27ac) %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
+glm_h3k27ac <- glm(h3k27ac ~ 0 + targets, family = "binomial", data = grp_h3k27ac)
+```
+
+```{r confint-glm-h3k27ac, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets."}
+inv.logit <- binomial()$linkinv
 glm_h3k27ac %>% 
-  broom::tidy() %>% 
+  glht() %>% 
+  confint() %>% 
+  .[["confint"]] %>% 
+  as_tibble(rownames = "targets") %>% 
   mutate(
-    adjp = p.adjust(p.value, "bonf"),
-    ` ` = case_when(
-      is.na(adjp) ~ "",
-      adjp > 0.1 ~ "",
-      adjp > 0.05 ~ ".",
-      adjp > 0.01 ~ "*",
-      adjp > 0.001 ~ "**",
-      TRUE ~ "***"
-    )
-  )
-## Do we need to construct 95% CIs using multcomp?
+    n_targets = str_count(targets, "\\+") + 1
+  ) %>% 
+  arrange(desc(n_targets), desc(targets)) %>% 
+  mutate(
+    targets = fct_inorder(targets) %>% 
+      fct_relabel(str_remove_all, pattern = "targets"),
+    p = inv.logit(Estimate),
+    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
+    across(all_of(c("upr", "lwr")), inv.logit)
+  ) %>% 
+  ggplot(aes(p, targets)) + 
+  geom_point() +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
+  facet_grid(TFAP2B ~ ., scales = "free_y") +
+  labs(x = "Probability of Feature Overlap", y = "Detected Targets")
 ```
 
 
