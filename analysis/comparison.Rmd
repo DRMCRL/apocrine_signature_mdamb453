@@ -27,6 +27,7 @@ library(UpSetR)
 library(rtracklayer)
 library(GenomicInteractions)
 library(multcomp)
+library(glue)
 theme_set(theme_bw())
 ```
 
@@ -119,6 +120,9 @@ Given the hypothesis that the co-ocurrence of all 4 ChIP targets should be assoc
 Any H3K27ac peak detected in this dataset was classified either as a promoter or enhancer, and thus these features can be considered as the complete set of regions with detectable H3K27ac signal from this experiment.
 
 ```{r features}
+all_gr <- here::here("data", "annotations", "all_gr.rds") %>% 
+  read_rds() 
+tss <- resize(all_gr$transcript, width = 1)
 features <- here::here("data", "h3k27ac") %>% 
   list.files(full.names = TRUE, pattern = "bed$") %>% 
   sapply(import.bed, seqinfo = sq) %>% 
@@ -129,19 +133,110 @@ features <- here::here("data", "h3k27ac") %>%
   unlist() %>% 
   names_to_column("feature") %>% 
   sort()
+dht_consensus$H3K27ac <- overlapsAny(dht_consensus, features)
+dht_consensus$dist_to_tss <- dht_consensus %>% 
+  distanceToNearest(tss, ignore.strand = TRUE) %>% 
+  mcols() %>% 
+  .[["distance"]]
 ```
+
+
+```{r}
+cp <- htmltools::tags$em(
+  glue(
+    "Summary of all sites, taking the union of all sites with any target bound. ",
+    "{comma(length(dht_consensus))} sites were found across all targets. ",
+    "Individual ChIP targets can be searched within this table using 't' or 'f' ",
+    "to denote True or False. Summaries regarding association with H3K27ac ", 
+    "peaks and distance to the nearest TSS are also provided."
+  )
+)
+tbl <- dht_consensus %>% 
+  as_tibble() %>% 
+  group_by(!!!syms(targets)) %>% 
+  summarise(
+    n = dplyr::n(),
+    H3K27ac = mean(H3K27ac),
+    d = median(dist_to_tss),
+    .groups = "drop"
+  ) %>% 
+  arrange(desc(n)) %>% 
+  reactable(
+    filterable = TRUE,
+    columns = list(
+      AR = colDef(
+        cell = function(value) {
+          ifelse(value, "\u2714", "\u2716")
+        }, 
+        style = function(value) {
+          cl <- ifelse(value, "forestgreen", "red")
+          list(color = cl)
+        }
+      ),
+      FOXA1 = colDef(
+        cell = function(value) {
+          ifelse(value, "\u2714", "\u2716")
+        }, 
+        style = function(value) {
+          cl <- ifelse(value, "forestgreen", "red")
+          list(color = cl)
+        }
+      ),
+      GATA3 = colDef(
+        cell = function(value) {
+          ifelse(value, "\u2714", "\u2716")
+        }, 
+        style = function(value) {
+          cl <- ifelse(value, "forestgreen", "red")
+          list(color = cl)
+        }
+      ),
+      TFAP2B = colDef(
+        cell = function(value) {
+          ifelse(value, "\u2714", "\u2716")
+        }, 
+        style = function(value) {
+          cl <- ifelse(value, "forestgreen", "red")
+          list(color = cl)
+        }
+      ),
+      n = colDef(
+        name = "Nbr. Sites",
+        format = colFormat(separators = TRUE)
+      ),
+      H3K27ac = colDef(
+        name = "% Overlapping H3K27ac Peak",
+        format = colFormat(percent = TRUE, digits = 2)
+      ),
+      d = colDef(
+        name = "Median Distance to Nearest TSS (bp)",
+        format = colFormat(digits = 0, separators = TRUE)
+      )
+    )
+  )
+div(class = "table",
+  div(class = "table-header",
+      div(class = "caption", cp),
+      tbl
+  )
+)
+```
+
 
 ```{r glm-h3k27ac}
 grp_h3k27ac <- dht_consensus %>% 
-  mutate(h3k27ac = overlapsAny(., features)) %>% 
   as_tibble() %>% 
-  dplyr::select(range, all_of(targets), h3k27ac) %>% 
+  dplyr::select(range, all_of(targets), H3K27ac) %>% 
   pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
   dplyr::filter(value) %>% 
-  group_by(range, h3k27ac) %>% 
+  group_by(range, H3K27ac) %>% 
   summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
-glm_h3k27ac <- glm(h3k27ac ~ 0 + targets, family = "binomial", data = grp_h3k27ac)
+glm_h3k27ac <- glm(H3K27ac ~ 0 + targets, family = "binomial", data = grp_h3k27ac)
 ```
+
+A simple logistic regression model was then run to estimate the probability of overlapping a peak associated with the histone mark H3K27ac for each combination of ChIP targets.
+Binding of TFAP2$\beta$ in isolation clearly had the strongest association with H3K27ac peaks, whilst the absence of TFAP2$\beta$ clearly reduced the likelihood of all other ChIP targets being associated with H3K27ac signal.
+
 
 ```{r confint-glm-h3k27ac, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets."}
 inv.logit <- binomial()$linkinv
@@ -165,7 +260,36 @@ glm_h3k27ac %>%
   geom_point() +
   geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
   facet_grid(TFAP2B ~ ., scales = "free_y") +
-  labs(x = "Probability of Feature Overlap", y = "Detected Targets")
+  labs(x = "Probability of H3K27ac Peak Overlap", y = "Detected Targets")
+```
+
+### Distance to Nearest TSS
+
+The distance to the nearest TSS was also checked for each of the union peaks, with the vast majority of TFAP2$\beta$-only peaks being with 1kb of a TSS, indicating a fundamental role for TFAP2$\beta$ in transcriptional regulation.
+These were much further away when bound in combination with other ChIP targets, to the point that most sites where all four were found bound were >3kb from any TSS, suggesting that an alternative role for TFAP2$\beta$ is enhancer-based gene regulation, when acting in concert with the remaining targets.
+
+```{r dist-to-tss, fig.cap = "Distance to the nearest TSS for all peaks detected with one or more of the required ChIP targets."}
+dht_consensus %>% 
+  as_tibble() %>% 
+  dplyr::select(range, all_of(targets), dist_to_tss, H3K27ac) %>% 
+  pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
+  dplyr::filter(value) %>% 
+  group_by(range, dist_to_tss, H3K27ac) %>% 
+  arrange(range, targets) %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop") %>% 
+  mutate(
+    n_targets = str_count(targets, "\\+") + 1,
+    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B")
+  ) %>% 
+  arrange(desc(n_targets), desc(targets)) %>% 
+  mutate(targets = fct_inorder(targets)) %>% 
+  ggplot(aes(dist_to_tss + 1, targets, fill = H3K27ac)) +
+  geom_boxplot() +
+  facet_grid(TFAP2B ~ ., scales = "free_y") +
+  # coord_cartesian(xlim = c(0, 5e4)) +
+  scale_x_log10(labels = comma, breaks = 10^seq(0, 5)) +
+  scale_fill_manual(values = c("grey70", rgb(0.9, 0.1, 0.2))) +
+  labs(x = "Distance to Nearest TSS (bp+1)", y = "ChIP Targets")
 ```
 
 
@@ -197,8 +321,6 @@ Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features
 
 
 ```{r all-gr}
-all_gr <- here::here("data", "annotations", "all_gr.rds") %>% 
-  read_rds() 
 rnaseq <- here::here("data", "rnaseq", "dge.rds") %>% 
   read_rds()
 counts <- here::here("data", "rnaseq", "counts.out.gz") %>% 

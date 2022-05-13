@@ -531,15 +531,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree9288752656ff464f7c730b06b43f0cc66f91bb0ftargetblank9288752a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree7cef2649113f0fe583503a94eb9f6bcf1e0a331atargetblank7cef264a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/9288752656ff464f7c730b06b43f0cc66f91bb0f" target="_blank">9288752</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/7cef2649113f0fe583503a94eb9f6bcf1e0a331a" target="_blank">7cef264</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree9288752656ff464f7c730b06b43f0cc66f91bb0ftargetblank9288752a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree7cef2649113f0fe583503a94eb9f6bcf1e0a331atargetblank7cef264a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -549,7 +549,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/9288752656ff464f7c730b06b43f0cc66f91bb0f" target="_blank">9288752</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/7cef2649113f0fe583503a94eb9f6bcf1e0a331a" target="_blank">7cef264</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,7 +566,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/bigwig/
 
 </code></pre>
@@ -618,7 +617,41 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/9288752656ff464f7c730b06b43f0cc66f91bb0f/analysis/comparison.Rmd" target="_blank">9288752</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/7cef2649113f0fe583503a94eb9f6bcf1e0a331a/analysis/comparison.Rmd" target="_blank">7cef264</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-13
+</td>
+<td>
+Added dist to TSS
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/e9956d4839ca1ee6c0f1660d36729ce1ce734e3b/analysis/comparison.Rmd" target="_blank">e9956d4</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-13
+</td>
+<td>
+Added 95% CIs for targets
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/e9956d4839ca1ee6c0f1660d36729ce1ce734e3b/docs/comparison.html" target="_blank">e9956d4</a>
 </td>
 <td>
 Steve Pederson
@@ -702,6 +735,7 @@ library(UpSetR)
 library(rtracklayer)
 library(GenomicInteractions)
 library(multcomp)
+library(glue)
 theme_set(theme_bw())</code></pre>
 <pre class="r"><code>dht_peaks &lt;- here::here(&quot;data&quot;, &quot;peaks&quot;) %&gt;% 
   list.files(recursive = TRUE, pattern = &quot;oracle&quot;, full.names = TRUE) %&gt;% 
@@ -842,7 +876,10 @@ dataset produced by Leil Hosseinzadeh. Any H3K27ac peak detected in this
 dataset was classified either as a promoter or enhancer, and thus these
 features can be considered as the complete set of regions with
 detectable H3K27ac signal from this experiment.</p>
-<pre class="r"><code>features &lt;- here::here(&quot;data&quot;, &quot;h3k27ac&quot;) %&gt;% 
+<pre class="r"><code>all_gr &lt;- here::here(&quot;data&quot;, &quot;annotations&quot;, &quot;all_gr.rds&quot;) %&gt;% 
+  read_rds() 
+tss &lt;- resize(all_gr$transcript, width = 1)
+features &lt;- here::here(&quot;data&quot;, &quot;h3k27ac&quot;) %&gt;% 
   list.files(full.names = TRUE, pattern = &quot;bed$&quot;) %&gt;% 
   sapply(import.bed, seqinfo = sq) %&gt;% 
   lapply(granges) %&gt;% 
@@ -851,16 +888,115 @@ detectable H3K27ac signal from this experiment.</p>
   GRangesList() %&gt;% 
   unlist() %&gt;% 
   names_to_column(&quot;feature&quot;) %&gt;% 
-  sort()</code></pre>
-<pre class="r"><code>grp_h3k27ac &lt;- dht_consensus %&gt;% 
-  mutate(h3k27ac = overlapsAny(., features)) %&gt;% 
+  sort()
+dht_consensus$H3K27ac &lt;- overlapsAny(dht_consensus, features)
+dht_consensus$dist_to_tss &lt;- dht_consensus %&gt;% 
+  distanceToNearest(tss, ignore.strand = TRUE) %&gt;% 
+  mcols() %&gt;% 
+  .[[&quot;distance&quot;]]</code></pre>
+<pre class="r"><code>cp &lt;- htmltools::tags$em(
+  glue(
+    &quot;Summary of all sites, taking the union of all sites with any target bound. &quot;,
+    &quot;{comma(length(dht_consensus))} sites were found across all targets. &quot;,
+    &quot;Individual ChIP targets can be searched within this table using &#39;t&#39; or &#39;f&#39; &quot;,
+    &quot;to denote True or False. Summaries regarding association with H3K27ac &quot;, 
+    &quot;peaks and distance to the nearest TSS are also provided.&quot;
+  )
+)
+tbl &lt;- dht_consensus %&gt;% 
   as_tibble() %&gt;% 
-  dplyr::select(range, all_of(targets), h3k27ac) %&gt;% 
+  group_by(!!!syms(targets)) %&gt;% 
+  summarise(
+    n = dplyr::n(),
+    H3K27ac = mean(H3K27ac),
+    d = median(dist_to_tss),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  arrange(desc(n)) %&gt;% 
+  reactable(
+    filterable = TRUE,
+    columns = list(
+      AR = colDef(
+        cell = function(value) {
+          ifelse(value, &quot;\u2714&quot;, &quot;\u2716&quot;)
+        }, 
+        style = function(value) {
+          cl &lt;- ifelse(value, &quot;forestgreen&quot;, &quot;red&quot;)
+          list(color = cl)
+        }
+      ),
+      FOXA1 = colDef(
+        cell = function(value) {
+          ifelse(value, &quot;\u2714&quot;, &quot;\u2716&quot;)
+        }, 
+        style = function(value) {
+          cl &lt;- ifelse(value, &quot;forestgreen&quot;, &quot;red&quot;)
+          list(color = cl)
+        }
+      ),
+      GATA3 = colDef(
+        cell = function(value) {
+          ifelse(value, &quot;\u2714&quot;, &quot;\u2716&quot;)
+        }, 
+        style = function(value) {
+          cl &lt;- ifelse(value, &quot;forestgreen&quot;, &quot;red&quot;)
+          list(color = cl)
+        }
+      ),
+      TFAP2B = colDef(
+        cell = function(value) {
+          ifelse(value, &quot;\u2714&quot;, &quot;\u2716&quot;)
+        }, 
+        style = function(value) {
+          cl &lt;- ifelse(value, &quot;forestgreen&quot;, &quot;red&quot;)
+          list(color = cl)
+        }
+      ),
+      n = colDef(
+        name = &quot;Nbr. Sites&quot;,
+        format = colFormat(separators = TRUE)
+      ),
+      H3K27ac = colDef(
+        name = &quot;% Overlapping H3K27ac Peak&quot;,
+        format = colFormat(percent = TRUE, digits = 2)
+      ),
+      d = colDef(
+        name = &quot;Median Distance to Nearest TSS (bp)&quot;,
+        format = colFormat(digits = 0, separators = TRUE)
+      )
+    )
+  )
+div(class = &quot;table&quot;,
+  div(class = &quot;table-header&quot;,
+      div(class = &quot;caption&quot;, cp),
+      tbl
+  )
+)</code></pre>
+<div class="table">
+<div class="table-header">
+<div class="caption">
+<em>Summary of all sites, taking the union of all sites with any target bound. 104,721 sites were found across all targets. Individual ChIP targets can be searched within this table using 't' or 'f' to denote True or False. Summaries regarding association with H3K27ac peaks and distance to the nearest TSS are also provided.</em>
+</div>
+<div id="htmlwidget-24fc5aecc494988bd31d" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-24fc5aecc494988bd31d">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"AR":[false,false,false,true,true,false,false,true,true,false,false,true,true,true,true],"FOXA1":[true,true,false,true,true,false,true,true,true,true,false,false,false,false,false],"GATA3":[false,true,false,true,true,true,false,false,false,true,true,false,true,false,true],"TFAP2B":[false,false,true,false,true,false,true,false,true,true,true,false,false,true,true],"n":[59404,9760,6655,6518,6336,4284,3849,3543,1786,1441,396,395,158,135,61],"H3K27ac":[0.128678203487981,0.182274590163934,0.801502629601803,0.252838293955201,0.583017676767677,0.196545284780579,0.646921278254092,0.178662150719729,0.62989921612542,0.52116585704372,0.606060606060606,0.139240506329114,0.164556962025316,0.555555555555556,0.557377049180328],"d":[12020,13608,39,15379.5,11774.5,9293.5,3018,12193,7787,8186,1945,11573,13275.5,2591,4929]},"columns":[{"accessor":"AR","name":"AR","type":"logical","cell":["✖","✖","✖","✔","✔","✖","✖","✔","✔","✖","✖","✔","✔","✔","✔"],"style":[{"color":"red"},{"color":"red"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"forestgreen"}]},{"accessor":"FOXA1","name":"FOXA1","type":"logical","cell":["✔","✔","✖","✔","✔","✖","✔","✔","✔","✔","✖","✖","✖","✖","✖"],"style":[{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"red"},{"color":"red"},{"color":"red"},{"color":"red"}]},{"accessor":"GATA3","name":"GATA3","type":"logical","cell":["✖","✔","✖","✔","✔","✔","✖","✖","✖","✔","✔","✖","✔","✖","✔"],"style":[{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"red"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"}]},{"accessor":"TFAP2B","name":"TFAP2B","type":"logical","cell":["✖","✖","✔","✖","✔","✖","✔","✖","✔","✔","✔","✖","✖","✔","✔"],"style":[{"color":"red"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"}]},{"accessor":"n","name":"Nbr. Sites","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}}},{"accessor":"H3K27ac","name":"% Overlapping H3K27ac Peak","type":"numeric","format":{"cell":{"digits":2,"percent":true},"aggregated":{"digits":2,"percent":true}}},{"accessor":"d","name":"Median Distance to Nearest TSS (bp)","type":"numeric","format":{"cell":{"digits":0,"separators":true},"aggregated":{"digits":0,"separators":true}}}],"filterable":true,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"d7e979874b215fa6ade01c7a36fb6bca","key":"d7e979874b215fa6ade01c7a36fb6bca"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<pre class="r"><code>grp_h3k27ac &lt;- dht_consensus %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(range, all_of(targets), H3K27ac) %&gt;% 
   pivot_longer(cols = all_of(targets), names_to = &quot;targets&quot;) %&gt;% 
   dplyr::filter(value) %&gt;% 
-  group_by(range, h3k27ac) %&gt;% 
+  group_by(range, H3K27ac) %&gt;% 
   summarise(targets = paste(targets, collapse = &quot;+&quot;), .groups = &quot;drop&quot;)
-glm_h3k27ac &lt;- glm(h3k27ac ~ 0 + targets, family = &quot;binomial&quot;, data = grp_h3k27ac)</code></pre>
+glm_h3k27ac &lt;- glm(H3K27ac ~ 0 + targets, family = &quot;binomial&quot;, data = grp_h3k27ac)</code></pre>
+<p>A simple logistic regression model was then run to estimate the
+probability of overlapping a peak associated with the histone mark
+H3K27ac for each combination of ChIP targets. Binding of TFAP2<span
+class="math inline">\(\beta\)</span> in isolation clearly had the
+strongest association with H3K27ac peaks, whilst the absence of
+TFAP2<span class="math inline">\(\beta\)</span> clearly reduced the
+likelihood of all other ChIP targets being associated with H3K27ac
+signal.</p>
 <pre class="r"><code>inv.logit &lt;- binomial()$linkinv
 glm_h3k27ac %&gt;% 
   glht() %&gt;% 
@@ -868,7 +1004,10 @@ glm_h3k27ac %&gt;%
   .[[&quot;confint&quot;]] %&gt;% 
   as_tibble(rownames = &quot;targets&quot;) %&gt;% 
   mutate(
-    n_targets = str_count(targets, &quot;_&quot;) + 1,
+    n_targets = str_count(targets, &quot;\\+&quot;) + 1
+  ) %&gt;% 
+  arrange(desc(n_targets), desc(targets)) %&gt;% 
+  mutate(
     targets = fct_inorder(targets) %&gt;% 
       fct_relabel(str_remove_all, pattern = &quot;targets&quot;),
     p = inv.logit(Estimate),
@@ -879,7 +1018,7 @@ glm_h3k27ac %&gt;%
   geom_point() +
   geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = &quot;grey20&quot;) +
   facet_grid(TFAP2B ~ ., scales = &quot;free_y&quot;) +
-  labs(x = &quot;Probability of Feature Overlap&quot;, y = &quot;Detected Targets&quot;)</code></pre>
+  labs(x = &quot;Probability of H3K27ac Peak Overlap&quot;, y = &quot;Detected Targets&quot;)</code></pre>
 <div class="figure" style="text-align: center">
 <img src="figure/comparison.Rmd/confint-glm-h3k27ac-1.png" alt="Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets." width="672" />
 <p class="caption">
@@ -887,6 +1026,84 @@ Family-wise 95% Confidence Intervals for the probability of overlapping
 an H3K27ac-derived feature, based on the combinations of detected ChIP
 targets.
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-confint-glm-h3k27ac-1">
+Past versions of confint-glm-h3k27ac-1.png
+</button>
+</p>
+<div id="fig-confint-glm-h3k27ac-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/e9956d4839ca1ee6c0f1660d36729ce1ce734e3b/docs/figure/comparison.Rmd/confint-glm-h3k27ac-1.png" target="_blank">e9956d4</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="distance-to-nearest-tss" class="section level3">
+<h3>Distance to Nearest TSS</h3>
+<p>The distance to the nearest TSS was also checked for each of the
+union peaks, with the vast majority of TFAP2<span
+class="math inline">\(\beta\)</span>-only peaks being with 1kb of a TSS,
+indicating a fundamental role for TFAP2<span
+class="math inline">\(\beta\)</span> in transcriptional regulation.
+These were much further away when bound in combination with other ChIP
+targets, to the point that most sites where all four were found bound
+were &gt;3kb from any TSS, suggesting that an alternative role for
+TFAP2<span class="math inline">\(\beta\)</span> is enhancer-based gene
+regulation, when acting in concert with the remaining targets.</p>
+<pre class="r"><code>dht_consensus %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(range, all_of(targets), dist_to_tss, H3K27ac) %&gt;% 
+  pivot_longer(cols = all_of(targets), names_to = &quot;targets&quot;) %&gt;% 
+  dplyr::filter(value) %&gt;% 
+  group_by(range, dist_to_tss, H3K27ac) %&gt;% 
+  arrange(range, targets) %&gt;% 
+  summarise(targets = paste(targets, collapse = &quot;+&quot;), .groups = &quot;drop&quot;) %&gt;% 
+  mutate(
+    n_targets = str_count(targets, &quot;\\+&quot;) + 1,
+    TFAP2B = ifelse(str_detect(targets, &quot;TFAP2B&quot;), &quot;TFAP2B&quot;, &quot;No TFAP2B&quot;)
+  ) %&gt;% 
+  arrange(desc(n_targets), desc(targets)) %&gt;% 
+  mutate(targets = fct_inorder(targets)) %&gt;% 
+  ggplot(aes(dist_to_tss + 1, targets, fill = H3K27ac)) +
+  geom_boxplot() +
+  facet_grid(TFAP2B ~ ., scales = &quot;free_y&quot;) +
+  # coord_cartesian(xlim = c(0, 5e4)) +
+  scale_x_log10(labels = comma, breaks = 10^seq(0, 5)) +
+  scale_fill_manual(values = c(&quot;grey70&quot;, rgb(0.9, 0.1, 0.2))) +
+  labs(x = &quot;Distance to Nearest TSS (bp+1)&quot;, y = &quot;ChIP Targets&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/dist-to-tss-1.png" alt="Distance to the nearest TSS for all peaks detected with one or more of the required ChIP targets." width="672" />
+<p class="caption">
+Distance to the nearest TSS for all peaks detected with one or more of
+the required ChIP targets.
+</p>
+</div>
 </div>
 <div id="comparison-with-h3k27ac-hichip-data" class="section level3">
 <h3>Comparison With H3K27ac HiChIP Data</h3>
@@ -916,9 +1133,7 @@ interaction.</p>
 </div>
 <div id="mapping-to-genes" class="section level2">
 <h2>Mapping To Genes</h2>
-<pre class="r"><code>all_gr &lt;- here::here(&quot;data&quot;, &quot;annotations&quot;, &quot;all_gr.rds&quot;) %&gt;% 
-  read_rds() 
-rnaseq &lt;- here::here(&quot;data&quot;, &quot;rnaseq&quot;, &quot;dge.rds&quot;) %&gt;% 
+<pre class="r"><code>rnaseq &lt;- here::here(&quot;data&quot;, &quot;rnaseq&quot;, &quot;dge.rds&quot;) %&gt;% 
   read_rds()
 counts &lt;- here::here(&quot;data&quot;, &quot;rnaseq&quot;, &quot;counts.out.gz&quot;) %&gt;% 
   read_tsv(skip = 1) %&gt;% 
@@ -997,59 +1212,6 @@ one set of overlapping peaks was compared to these ranks.</p>
   ggplot(aes(apo_rank, p)) + 
   geom_line() + 
   coord_cartesian(xlim= c(0, 1000), ylim = c(0.6, 1))</code></pre>
-<p><img src="figure/comparison.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
-Past versions of unnamed-chunk-2-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8217e8a21e6dfffb0e5597e720e3baea1a6f2398/docs/figure/comparison.Rmd/unnamed-chunk-2-1.png" target="_blank">8217e8a</a>
-</td>
-<td>
-Steve Pederson
-</td>
-<td>
-2022-05-10
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="ab-ranks" class="section level3">
-<h3>AB Ranks</h3>
-<p>The same approach was applied to AB ranks</p>
-<pre class="r"><code>apo_ranks %&gt;%
-  dplyr::filter(!is.na(ABrank)) %&gt;% 
-  arrange(ABrank) %&gt;% 
-  mutate(
-    ABrank = seq_along(ABrank),
-    all = gene_id %in% all_targets,
-    n = cumsum(all), 
-    p = n / ABrank
-  ) %&gt;% 
-  ggplot(aes(ABrank, p)) + 
-  geom_line() </code></pre>
 <p><img src="figure/comparison.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
@@ -1089,19 +1251,19 @@ Steve Pederson
 </div>
 </div>
 </div>
-<div id="al-ranks" class="section level3">
-<h3>AL Ranks</h3>
-<p>The same approach was applied to AL ranks</p>
+<div id="ab-ranks" class="section level3">
+<h3>AB Ranks</h3>
+<p>The same approach was applied to AB ranks</p>
 <pre class="r"><code>apo_ranks %&gt;%
-  dplyr::filter(!is.na(ALrank)) %&gt;% 
-  arrange(ALrank) %&gt;% 
+  dplyr::filter(!is.na(ABrank)) %&gt;% 
+  arrange(ABrank) %&gt;% 
   mutate(
-    ALrank = seq_along(ALrank),
+    ABrank = seq_along(ABrank),
     all = gene_id %in% all_targets,
     n = cumsum(all), 
-    p = n / ALrank
+    p = n / ABrank
   ) %&gt;% 
-  ggplot(aes(ALrank, p)) + 
+  ggplot(aes(ABrank, p)) + 
   geom_line() </code></pre>
 <p><img src="figure/comparison.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1141,6 +1303,22 @@ Steve Pederson
 </table>
 </div>
 </div>
+</div>
+<div id="al-ranks" class="section level3">
+<h3>AL Ranks</h3>
+<p>The same approach was applied to AL ranks</p>
+<pre class="r"><code>apo_ranks %&gt;%
+  dplyr::filter(!is.na(ALrank)) %&gt;% 
+  arrange(ALrank) %&gt;% 
+  mutate(
+    ALrank = seq_along(ALrank),
+    all = gene_id %in% all_targets,
+    n = cumsum(all), 
+    p = n / ALrank
+  ) %&gt;% 
+  ggplot(aes(ALrank, p)) + 
+  geom_line() </code></pre>
+<p><img src="figure/comparison.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1171,24 +1349,25 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] multcomp_1.4-19             TH.data_1.1-1              
- [3] MASS_7.3-56                 survival_3.2-13            
- [5] mvtnorm_1.1-3               GenomicInteractions_1.30.0 
- [7] InteractionSet_1.24.0       rtracklayer_1.56.0         
- [9] UpSetR_1.4.0                htmltools_0.5.2            
-[11] reactable_0.2.3             scales_1.2.0               
-[13] pander_0.6.5                plyranges_1.16.0           
-[15] extraChIPs_1.0.0            SummarizedExperiment_1.26.1
-[17] Biobase_2.56.0              MatrixGenerics_1.8.0       
-[19] matrixStats_0.62.0          GenomicRanges_1.48.0       
-[21] GenomeInfoDb_1.32.1         IRanges_2.30.0             
-[23] S4Vectors_0.34.0            BiocGenerics_0.42.0        
-[25] BiocParallel_1.30.0         magrittr_2.0.3             
-[27] forcats_0.5.1               stringr_1.4.0              
-[29] dplyr_1.0.9                 purrr_0.3.4                
-[31] readr_2.1.2                 tidyr_1.2.0                
-[33] tibble_3.1.7                ggplot2_3.3.6              
-[35] tidyverse_1.3.1             workflowr_1.7.0            
+ [1] glue_1.6.2                  multcomp_1.4-19            
+ [3] TH.data_1.1-1               MASS_7.3-56                
+ [5] survival_3.2-13             mvtnorm_1.1-3              
+ [7] GenomicInteractions_1.30.0  InteractionSet_1.24.0      
+ [9] rtracklayer_1.56.0          UpSetR_1.4.0               
+[11] htmltools_0.5.2             reactable_0.2.3            
+[13] scales_1.2.0                pander_0.6.5               
+[15] plyranges_1.16.0            extraChIPs_1.0.0           
+[17] SummarizedExperiment_1.26.1 Biobase_2.56.0             
+[19] MatrixGenerics_1.8.0        matrixStats_0.62.0         
+[21] GenomicRanges_1.48.0        GenomeInfoDb_1.32.1        
+[23] IRanges_2.30.0              S4Vectors_0.34.0           
+[25] BiocGenerics_0.42.0         BiocParallel_1.30.0        
+[27] magrittr_2.0.3              forcats_0.5.1              
+[29] stringr_1.4.0               dplyr_1.0.9                
+[31] purrr_0.3.4                 readr_2.1.2                
+[33] tidyr_1.2.0                 tibble_3.1.7               
+[35] ggplot2_3.3.6               tidyverse_1.3.1            
+[37] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
   [1] utf8_1.2.2               tidyselect_1.1.2         RSQLite_2.2.14          
@@ -1239,10 +1418,9 @@ loaded via a namespace (and not attached):
 [136] jsonlite_1.8.0           limma_3.52.0             BSgenome_1.64.0         
 [139] fansi_1.0.3              pillar_1.7.0             lattice_0.20-45         
 [142] KEGGREST_1.36.0          fastmap_1.1.0            httr_1.4.3              
-[145] glue_1.6.2               png_0.1-7                iterators_1.0.14        
-[148] bit_4.0.4                ggforce_0.3.3            stringi_1.7.6           
-[151] sass_0.4.1               blob_1.2.3               latticeExtra_0.6-29     
-[154] memoise_2.0.1           </code></pre>
+[145] png_0.1-7                iterators_1.0.14         bit_4.0.4               
+[148] ggforce_0.3.3            stringi_1.7.6            sass_0.4.1              
+[151] blob_1.2.3               latticeExtra_0.6-29      memoise_2.0.1           </code></pre>
 </div>
 </div>
 </div>
