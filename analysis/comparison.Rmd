@@ -8,7 +8,10 @@ editor_options:
 ---
 
 ```{r setup, echo=FALSE}
-knitr::opts_chunk$set(message = FALSE, wraning = FALSE)
+knitr::opts_chunk$set(
+  message = FALSE, warning = FALSE,
+  fig.width = 10, fig.height = 8
+)
 ```
 
 
@@ -28,8 +31,37 @@ library(rtracklayer)
 library(GenomicInteractions)
 library(multcomp)
 library(glue)
+# library(sparkline)
+library(nnet)
+library(effects)
 theme_set(theme_bw())
 ```
+
+```{r reactable-widgets}
+bar_chart <- function(label, width = "100%", height = "16px", fill = "#00bfc4", background = NULL) {
+  bar <- div(style = list(background = fill, width = width, height = height))
+  chart <- div(style = list(flexGrow = 1, marginLeft = "8px", background = background), bar)
+  div(style = list(display = "flex", alignItems = "center"), label, chart)
+}
+bar_style <- function(width = 1, fill = "#e6e6e6", height = "75%", align = c("left", "right"), color = NULL) {
+  align <- match.arg(align)
+  if (align == "left") {
+    position <- paste0(width * 100, "%")
+    image <- sprintf("linear-gradient(90deg, %1$s %2$s, transparent %2$s)", fill, position)
+  } else {
+    position <- paste0(100 - width * 100, "%")
+    image <- sprintf("linear-gradient(90deg, transparent %1$s, %2$s %1$s)", position, fill)
+  }
+  list(
+    backgroundImage = image,
+    backgroundSize = paste("100%", height),
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center",
+    color = color
+  )
+}
+```
+
 
 
 ```{r dht-peaks}
@@ -114,9 +146,9 @@ dht_consensus %>%
   )
 ```
 
-## H3K27ac Signal
+## H3K27ac Signal {.tabset}
 
-Given the hypothesis that the co-ocurrence of all 4 ChIP targets should be associated with increased transcriptional or regulatory activity, the set of all DHT peaks were then compared to promoters and enahncers derived H2K27ac binding, as detected in the existing GATA3/AR dataset produced by Leil Hosseinzadeh.
+Given the hypothesis that the co-ocurrence of all 4 ChIP targets should be associated with increased transcriptional or regulatory activity, the set of all DHT peaks were then compared to promoters and enhancers derived H2K27ac binding, as detected in the existing GATA3/AR dataset produced by Leila Hosseinzadeh.
 Any H3K27ac peak detected in this dataset was classified either as a promoter or enhancer, and thus these features can be considered as the complete set of regions with detectable H3K27ac signal from this experiment.
 
 ```{r features}
@@ -133,30 +165,39 @@ features <- here::here("data", "h3k27ac") %>%
   unlist() %>% 
   names_to_column("feature") %>% 
   sort()
-dht_consensus$H3K27ac <- overlapsAny(dht_consensus, features)
-dht_consensus$dist_to_tss <- dht_consensus %>% 
-  distanceToNearest(tss, ignore.strand = TRUE) %>% 
-  mcols() %>% 
-  .[["distance"]]
+dht_consensus %<>% 
+  mutate(
+    promoter = bestOverlap(., features, var = "feature", missing = "None") == "promoter",
+    enhancer = bestOverlap(., features, var = "feature", missing = "None") == "enhancer",
+    H3K27ac = promoter | enhancer,
+    dist_to_tss = mcols(distanceToNearest(., tss, ignore.strand = TRUE))$distance
+  )
 ```
 
 
-```{r}
+```{r tbl-h3k27ac-summary}
+fs <- 12
 cp <- htmltools::tags$em(
   glue(
     "Summary of all sites, taking the union of all sites with any target bound. ",
     "{comma(length(dht_consensus))} sites were found across all targets. ",
     "Individual ChIP targets can be searched within this table using 't' or 'f' ",
     "to denote True or False. Summaries regarding association with H3K27ac ", 
-    "peaks and distance to the nearest TSS are also provided."
+    "peaks and distance to the nearest TSS are also provided. ",
+    "The total numbers of sites overlapping H3K27ac-defined Promoters and ", 
+    "Enhancers are shown with the % of sites being relative to to those ", 
+    "overlapping H3K27ac-defined features"
   )
 )
-tbl <- dht_consensus %>% 
+tbl <- dht_consensus %>%
   as_tibble() %>% 
   group_by(!!!syms(targets)) %>% 
   summarise(
     n = dplyr::n(),
+    nH3K27ac = sum(H3K27ac),
     H3K27ac = mean(H3K27ac),
+    promoter = sum(promoter),
+    enhancer = sum(enhancer),
     d = median(dist_to_tss),
     .groups = "drop"
   ) %>% 
@@ -171,7 +212,8 @@ tbl <- dht_consensus %>%
         style = function(value) {
           cl <- ifelse(value, "forestgreen", "red")
           list(color = cl)
-        }
+        },
+        maxWidth = 60
       ),
       FOXA1 = colDef(
         cell = function(value) {
@@ -180,7 +222,8 @@ tbl <- dht_consensus %>%
         style = function(value) {
           cl <- ifelse(value, "forestgreen", "red")
           list(color = cl)
-        }
+        },
+        maxWidth = 60
       ),
       GATA3 = colDef(
         cell = function(value) {
@@ -189,7 +232,8 @@ tbl <- dht_consensus %>%
         style = function(value) {
           cl <- ifelse(value, "forestgreen", "red")
           list(color = cl)
-        }
+        },
+        maxWidth = 60
       ),
       TFAP2B = colDef(
         cell = function(value) {
@@ -198,21 +242,63 @@ tbl <- dht_consensus %>%
         style = function(value) {
           cl <- ifelse(value, "forestgreen", "red")
           list(color = cl)
-        }
+        },
+        maxWidth = 70
       ),
       n = colDef(
         name = "Nbr. Sites",
-        format = colFormat(separators = TRUE)
+        format = colFormat(separators = TRUE),
+        maxWidth = 75
+      ),
+      nH3K27ac = colDef(
+        name = "Overlapping H3K27ac",
+        format = colFormat(separators = TRUE),
+        maxWidth = 85
       ),
       H3K27ac = colDef(
-        name = "% Overlapping H3K27ac Peak",
-        format = colFormat(percent = TRUE, digits = 2)
+        name = "% H3K27ac Overlap",
+        format = colFormat(digits = 1, percent = TRUE),
+        style = function(value) {
+            bar_style(width = value, align = "right")
+        },
+        maxWidth = 80
+      ),
+      promoter = colDef(
+        name = "Promoters",
+        style = function(value, index) {
+            bar_style(
+              width = 0.5*(value / .$nH3K27ac[[index]]), align = "right", 
+              fill = rgb(1, 0.416, 0.416)
+            )
+        },
+        cell = function(value, index) {
+          lb <- glue("{value} ({percent(value / .$nH3K27ac[[index]], 1)})")
+          as.character(lb)
+        },
+        align = "left",
+        minWidth = 120
+      ),
+      enhancer = colDef(
+        name = "Enhancers",
+        style = function(value, index) {
+            bar_style(
+              width = 0.5*(value / .$nH3K27ac[[index]]), align = "left", 
+              fill = rgb(1, 0.65, 0.2)
+            )
+        },
+        cell = function(value, index) {
+          lb <- glue("{value} ({percent(value / .$nH3K27ac[[index]], 1)})")
+          as.character(lb)
+        },
+        align = "right",
+        minWidth = 120
       ),
       d = colDef(
-        name = "Median Distance to Nearest TSS (bp)",
+        name = "Median Distance to TSS (bp)",
         format = colFormat(digits = 0, separators = TRUE)
       )
-    )
+    ),
+    style = list(fontSize = fs)
   )
 div(class = "table",
   div(class = "table-header",
@@ -222,6 +308,7 @@ div(class = "table",
 )
 ```
 
+### All H3K27ac Peaks
 
 ```{r glm-h3k27ac}
 grp_h3k27ac <- dht_consensus %>% 
@@ -238,7 +325,7 @@ A simple logistic regression model was then run to estimate the probability of o
 Binding of TFAP2$\beta$ in isolation clearly had the strongest association with H3K27ac peaks, whilst the absence of TFAP2$\beta$ clearly reduced the likelihood of all other ChIP targets being associated with H3K27ac signal.
 
 
-```{r confint-glm-h3k27ac, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets."}
+```{r confint-glm-h3k27ac, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets."}
 inv.logit <- binomial()$linkinv
 glm_h3k27ac %>% 
   glht() %>% 
@@ -263,7 +350,149 @@ glm_h3k27ac %>%
   labs(x = "Probability of H3K27ac Peak Overlap", y = "Detected Targets")
 ```
 
-### Distance to Nearest TSS
+### Promoters Only
+
+```{r glm-prom, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived promoter, based on the combinations of detected ChIP targets."}
+grp_prom <- dht_consensus %>% 
+  as_tibble() %>% 
+  dplyr::select(range, all_of(targets), promoter) %>% 
+  pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
+  dplyr::filter(value) %>% 
+  group_by(range, promoter) %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
+glm_prom <- glm(promoter ~ 0 + targets, family = "binomial", data = grp_prom)
+glm_prom %>% 
+  glht() %>% 
+  confint() %>% 
+  .[["confint"]] %>% 
+  as_tibble(rownames = "targets") %>% 
+  mutate(
+    n_targets = str_count(targets, "\\+") + 1
+  ) %>% 
+  arrange(desc(n_targets), desc(targets)) %>% 
+  mutate(
+    targets = fct_inorder(targets) %>% 
+      fct_relabel(str_remove_all, pattern = "targets"),
+    p = inv.logit(Estimate),
+    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
+    across(all_of(c("upr", "lwr")), inv.logit)
+  ) %>% 
+  ggplot(aes(p, targets)) + 
+  geom_point() +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
+  facet_grid(TFAP2B ~ ., scales = "free_y") +
+  labs(x = "Probability of Promoter Overlap", y = "Detected Targets")
+```
+
+
+### Enhancers Only
+
+```{r glm-enh, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived enhancer, based on the combinations of detected ChIP targets."}
+grp_enh <- dht_consensus %>% 
+  as_tibble() %>% 
+  dplyr::select(range, all_of(targets), enhancer) %>% 
+  pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
+  dplyr::filter(value) %>% 
+  group_by(range, enhancer) %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
+glm_enh <- glm(enhancer ~ 0 + targets, family = "binomial", data = grp_enh)
+glm_enh %>% 
+  glht() %>% 
+  confint() %>% 
+  .[["confint"]] %>% 
+  as_tibble(rownames = "targets") %>% 
+  mutate(
+    n_targets = str_count(targets, "\\+") + 1
+  ) %>% 
+  arrange(desc(n_targets), desc(targets)) %>% 
+  mutate(
+    targets = fct_inorder(targets) %>% 
+      fct_relabel(str_remove_all, pattern = "targets"),
+    p = inv.logit(Estimate),
+    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
+    across(all_of(c("upr", "lwr")), inv.logit)
+  ) %>% 
+  ggplot(aes(p, targets)) + 
+  geom_point() +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
+  facet_grid(TFAP2B ~ ., scales = "free_y") +
+  labs(x = "Probability of Enhancer Overlap", y = "Detected Targets")
+```
+
+### All Features
+
+```{r fit-multinomial, results='hide', fig.show='asis', fig.height=6, fig.cap = "Probabilities of group membership for overlapping a promoter, enhancer, or having no H3K27ac overlap. Combinations of ChIP targets are shown based on coincident binding of TFAP2B. Intervals represent 1 - &alpha; Confidence Intervals, as described in the text. Co-binding of TFAP2&beta; was strongly associated with an increased probability of a site being associated with H3K27ac peaks as defined previously."}
+df <- dht_consensus %>% 
+  as_tibble() %>% 
+  mutate(
+    ol = case_when(
+      promoter ~ "Promoter",
+      enhancer ~ "Enhancer",
+      TRUE ~ "No H3K27ac"
+    ) %>% 
+      fct_infreq()
+  ) %>% 
+  pivot_longer(all_of(targets), names_to = "target") %>% 
+  dplyr::filter(value) %>% 
+  group_by(range, ol) %>% 
+  summarise(
+    targets = paste(target, collapse = "+"),
+    .groups = "drop"
+  ) %>% 
+  mutate(n_targets = 1 + str_count(targets, "\\+")) %>% 
+  arrange(n_targets, targets) %>% 
+  mutate(targets = fct_inorder(targets))
+glm_all <- multinom(ol~ 0 + targets, data = df) 
+ci_all <- Effect("targets", glm_all, confint = TRUE, confidence.level = 1 - 0.05/15)
+list(
+  tibble(targets = ci_all$variables$targets$levels) %>% 
+    bind_cols(ci_all$prob) %>% 
+    pivot_longer(starts_with("prob"), names_to = "ol") %>% 
+    mutate(ol = str_remove_all(ol, "prob."), type = "p"),
+  tibble(targets = ci_all$variables$targets$levels) %>% 
+    bind_cols(ci_all$lower.prob) %>% 
+    pivot_longer(starts_with("L.prob"), names_to = "ol") %>% 
+    mutate(ol = str_remove_all(ol, "L.prob."), type = "lwr"),
+  tibble(targets = ci_all$variables$targets$levels) %>% 
+    bind_cols(ci_all$upper.prob) %>% 
+    pivot_longer(starts_with("U.prob"), names_to = "ol") %>% 
+    mutate(ol = str_remove_all(ol, "U.prob."), type = "upr")
+) %>% 
+  bind_rows() %>% 
+  pivot_wider(names_from = "type", values_from = value) %>% 
+  mutate(
+    ol = str_replace_all(ol, "\\.", " ") %>% factor(levels = levels(df$ol)),
+    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
+    targets = factor(targets, levels = levels(df$targets)) %>% 
+      fct_relabel(str_remove_all, pattern = "\\+TFAP2B"),
+    y = case_when(
+      TFAP2B == "TFAP2B" ~ as.integer(targets) + 0.2,
+      TFAP2B != "TFAP2B" ~ as.integer(targets) - 0.2
+    )
+  ) %>% 
+  # dplyr::filter(ol %in% c("Promoter", "Enhancer")) %>% 
+  ggplot(aes(p, y, colour = TFAP2B)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.25) +
+  facet_grid(.~ol, scales = "free_y", space = "free") +
+  scale_y_continuous(
+    breaks = str_remove_all(levels(df$targets), "\\+TFAP2B") %>% 
+      unique() %>% 
+      seq_along(),
+    labels = str_remove_all(levels(df$targets), "\\+TFAP2B") %>% 
+      unique()
+  ) +
+  scale_colour_manual(values = c("grey70", rgb(0.9, 0.1, 0.2))) +
+  labs(
+    x = expression(pi[i]),
+    y = "Targets"
+  )
+```
+
+A simple multinomial model was then fit using the possible outcomes (or classes) for each site: 1) Promoter Overlap; 2) Enhancer Overlap, or 3) No H3K27ac overlap.
+$1 - \alpha$ confidence intervals for the probability of class membership were then estimated using $\alpha = 0.05/15$, given there were 15 combinations of transcription factors detected.
+
+## Distance to Nearest TSS
 
 The distance to the nearest TSS was also checked for each of the union peaks, with the vast majority of TFAP2$\beta$-only peaks being with 1kb of a TSS, indicating a fundamental role for TFAP2$\beta$ in transcriptional regulation.
 These were much further away when bound in combination with other ChIP targets, to the point that most sites where all four were found bound were >3kb from any TSS, suggesting that an alternative role for TFAP2$\beta$ is enhancer-based gene regulation, when acting in concert with the remaining targets.
@@ -292,15 +521,35 @@ dht_consensus %>%
   labs(x = "Distance to Nearest TSS (bp+1)", y = "ChIP Targets")
 ```
 
+```{r dist-to-tss-densities, eval = FALSE}
+dht_consensus %>% 
+  as_tibble() %>% 
+  # sample_n(10000) %>% 
+  dplyr::select(range, all_of(targets), dist_to_tss, H3K27ac) %>% 
+  pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
+  dplyr::filter(value) %>% 
+  group_by(range, dist_to_tss, H3K27ac) %>% 
+  arrange(range, targets) %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop") %>% 
+  mutate(
+    n_targets = str_count(targets, "\\+") + 1,
+    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B")
+  ) %>% 
+  arrange(desc(n_targets), desc(targets)) %>% 
+  mutate(
+    targets = str_remove_all(targets, "\\+TFAP2B"),
+    targets = fct_inorder(targets)
+  ) %>% 
+  ggplot(aes(dist_to_tss + 1, stat(density), colour = TFAP2B, linetype = H3K27ac)) +
+  geom_density() +
+  facet_wrap(.~targets) +
+  scale_colour_manual(values = c("grey70", rgb(0.9, 0.1, 0.2))) +
+  scale_linetype_manual(values = c(2, 1)) +
+  scale_x_log10(labels = comma, breaks = 10^c(0:5))
+```
 
 
 ### Comparison With H3K27ac HiChIP Data
-
-To perform this step, externally-sourced data defining promoters & enhancers (H3K27ac ChIP-Seq), and H3K27ac-HiChIP obtained from [SRA](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157381) and [analysed previously](https://github.com/DRMCRL/MDA-MB-453-H3K27Ac-HiChIP), were included.
-The H3K27ac-derived features were obtained from the same passages/experiments as GATA3 and AR.
-Conversely, the HiChIP data was obtained from a public dataset, not produced with the DRMCRL.
-HiChIP interactions were obtained using only the Vehicle controls from an Abemaciclib Vs. Vehicle experiment.
-
 
 
 ```{r hic}
@@ -313,6 +562,9 @@ for (f in fl) {
 hic <- sort(hic)
 ```
 
+H3K27ac-HiChIP obtained from [SRA](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157381) and [analysed previously](https://github.com/DRMCRL/MDA-MB-453-H3K27Ac-HiChIP), was additionally included to improve mapping of peaks to genes.
+Whilst the previous H3K27ac-derived features were obtained from the same passages/experiments as GATA3 and AR, HiChIP data was obtained from a public dataset, not produced with the DRMCRL, and were defined using only the Vehicle controls from an Abemaciclib Vs. Vehicle experiment.
+Long range interactions were included for bin sizes of `r pander(sort(as.numeric(unique(hic$bin_size)))/1e3)`kb.
 Before proceeding, the comparability of the H3K27ac-HiChIP and H3K27ac-derived features was checked.
 `r percent(length(subsetByOverlaps(hic, features)) / length(hic))` of HiChIP long-range interactions overlapped a promoter or enhancer derived from H3K27ac ChIP-seq.
 Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features))` or ChIP-Seq features mapped to a long-range interaction.
@@ -347,10 +599,11 @@ dht_consensus <- mapByFeature(
   prom = subset(features, feature == "promoter"),
   enh = subset(features, feature == "enhancer"),
   gi = hic
-)
+) %>% 
+  mutate(mapped = vapply(gene_id, function(x) length(x) > 0, logical(1)))
 all_targets <- dht_consensus %>% 
   as_tibble() %>% 
-  dplyr::filter(if_all(targets)) %>% 
+  dplyr::filter(if_all(all_of(targets))) %>% 
   unnest(everything()) %>% 
   distinct(gene_id) %>% 
   pull("gene_id")
