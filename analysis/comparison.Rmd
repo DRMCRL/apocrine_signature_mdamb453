@@ -347,6 +347,7 @@ glm_h3k27ac %>%
   geom_point() +
   geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
   facet_grid(TFAP2B ~ ., scales = "free_y") +
+  scale_x_continuous(limits = c(0, 1)) +
   labs(x = "Probability of H3K27ac Peak Overlap", y = "Detected Targets")
 ```
 
@@ -381,6 +382,7 @@ glm_prom %>%
   geom_point() +
   geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
   facet_grid(TFAP2B ~ ., scales = "free_y") +
+  scale_x_continuous(limits = c(0, 1)) +
   labs(x = "Probability of Promoter Overlap", y = "Detected Targets")
 ```
 
@@ -416,6 +418,7 @@ glm_enh %>%
   geom_point() +
   geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
   facet_grid(TFAP2B ~ ., scales = "free_y") +
+  scale_x_continuous(limits = c(0, 1)) +
   labs(x = "Probability of Enhancer Overlap", y = "Detected Targets")
 ```
 
@@ -569,7 +572,112 @@ Before proceeding, the comparability of the H3K27ac-HiChIP and H3K27ac-derived f
 `r percent(length(subsetByOverlaps(hic, features)) / length(hic))` of HiChIP long-range interactions overlapped a promoter or enhancer derived from H3K27ac ChIP-seq.
 Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features))` or ChIP-Seq features mapped to a long-range interaction.
 
-## Mapping To Genes
+## Comparison To Key Genes
+
+```{r plot-setup}
+data("grch37.cytobands")
+tm <- read_rds(
+  here::here("data", "annotations", "trans_models.rds")
+)
+bwfl <- list(
+  AR = here::here("data", "bigwig", "AR") %>% 
+    list.files(pattern = "merged", full.names = TRUE) %>% 
+    BigWigFileList() %>% 
+    setNames(
+      path(.) %>% 
+        basename() %>% 
+        str_remove_all("_merged_treat.+")
+    ),
+  FOXA1 = here::here("data", "bigwig", "FOXA1") %>% 
+    list.files(pattern = "merged", full.names = TRUE) %>% 
+    BigWigFileList() %>% 
+    setNames(
+      path(.) %>% 
+        basename() %>% 
+        str_remove_all("_merged_treat.+")
+    ),
+  GATA3 = here::here("data", "bigwig", "GATA3") %>% 
+    list.files(pattern = "merged", full.names = TRUE) %>% 
+    BigWigFileList() %>% 
+    setNames(
+      path(.) %>% 
+        basename() %>% 
+        str_remove_all("_merged_treat.+")
+    ),
+  TFAP2B = here::here("data", "bigwig", "TFAP2B") %>% 
+    list.files(pattern = "merged", full.names = TRUE) %>% 
+    BigWigFileList() %>% 
+    setNames(
+      path(.) %>% 
+        basename() %>% 
+        str_remove_all("_merged_treat.+")
+    ),
+  H3K27ac = here::here("data", "bigwig", "H3K27ac") %>% 
+    list.files(pattern = "merged", full.names = TRUE) %>% 
+    BigWigFileList() %>% 
+    setNames(
+      path(.) %>% 
+        basename() %>% 
+        str_extract("DHT|Veh")
+    )
+)
+y_lim <- here::here("data", "bigwig", targets) %>% 
+  sapply(
+    list.files, pattern = "merged.*summary", full.names= TRUE, simplify = FALSE
+  ) %>% 
+  lapply(
+    function(x) lapply(x, read_tsv)
+  ) %>% 
+  lapply(bind_rows) %>% 
+  lapply(function(x) c(0, max(x$score))) %>% 
+  setNames(basename(names(.)))
+y_lim$H3K27ac <- bwfl$H3K27ac %>% 
+  lapply(import.bw) %>% 
+  lapply(function(x) max(x$score)) %>% 
+  unlist() %>% 
+  max() %>% 
+  c(0) %>% 
+  range()
+```
+
+
+As the gene *MYC* has been identified as a key target, the binding patterns within the gene were explored.
+
+```{r}
+gr <- dht_consensus %>% 
+  filter(AR, FOXA1, GATA3, TFAP2B) %>% 
+  filter(
+    vapply(gene_name, function(x) "MYC" %in% x[1], logical(1))
+  ) %>%
+  .[1]
+# gr <- subset(all_gr$gene, gene_name == "MYC")
+plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subset(
+      overlapsAny(., gr) &
+        overlapsAny(., subset(all_gr$gene, gene_name == "MYC")) &
+        as.integer(bin_size) < 4e4
+    ),
+  hicsize = 3,
+  genes = tm %>% 
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>% 
+    split(.$detected),
+  genecol = c(Detected = "forestgreen", "Not-Detected" = "grey"),
+  coverage = bwfl, ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  collapseTranscripts = "meta", 
+  zoom = 1.2,
+  # shift = 4e4,
+  highlight = TRUE,
+  # rotation.title = 90,
+  title.width = 1.5
+)
+```
+
+
+
+## Mapping To Detected Genes
 
 
 ```{r all-gr}
@@ -587,6 +695,8 @@ detected <- counts %>%
   summarise(detected = mean(detected) > 0.25, .groups = "drop") %>%
   dplyr::filter(detected) %>% 
   pull("Geneid")
+top_table <- here::here("data", "rnaseq", "MDA-MB-453_RNASeq.tsv") %>% 
+  read_tsv() # Not a DHT-treatment analysis though...
 ```
 
 In order to more accurately assign genes to actively transcribed genes, the RNA-Seq dataset generated in 2013 studying DHT Vs. Vehicle in MDA-MB-453 cells was used.
