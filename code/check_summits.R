@@ -93,7 +93,15 @@ summits_sd <- dht_consensus %>%
   group_by(range) %>%
   summarise(sd = sd(summit), .groups = "drop") %>%
   arrange(sd) %>%
-  mutate(rank = seq_along(sd))
+  mutate(rank = seq_along(sd)) %>%
+  colToRanges("range") %>%
+  mapByFeature(
+    genes = subset(all_gr$gene, gene_id %in% detected),
+    prom = subset(features, feature == "promoter"),
+    enh = subset(features, feature == "enhancer"),
+    gi = hic
+  ) %>%
+  as_tibble()
 
 summits_sd %>%
   ggplot(aes(sd, rank)) +
@@ -109,5 +117,29 @@ summits_sd %>%
   geom_line()
 ## No
 
-## See if it predicts being mapped to a DE gene or an Apocrine Gene
+## See if it predicts being mapped to an Apocrine Gene
+summits_sd %>%
+  as_tibble() %>%
+  unnest(everything()) %>%
+  left_join(apo_ranks) %>%
+  dplyr::filter(!is.na(apo_rank)) %>%
+  group_by(range, sd, rank) %>%
+  summarise(apo_rank = min(apo_rank), .groups = "drop") %>%
+  mutate(H3K27ac = overlapsAny(GRanges(range), features)) %>%
+  arrange(apo_rank)
+%>%
+  ggplot(aes(sd, apo_rank)) +
+  geom_point() #+
+  # facet_wrap(~H3K27ac)
 
+summits_sd %>%
+  as_tibble() %>%
+  unnest(everything()) %>%
+  left_join(apo_ranks) %>%
+  dplyr::filter(!is.na(apo_rank)) %>%
+  arrange(apo_rank) %>%
+  group_by(gene_name, apo_rank) %>%
+  summarise(n = dplyr::n(), .groups = "drop") %>%
+  arrange(apo_rank) %>%
+  ggplot(aes(apo_rank, n)) +
+  geom_point()
