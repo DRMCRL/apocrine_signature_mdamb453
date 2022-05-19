@@ -31,10 +31,12 @@ library(rtracklayer)
 library(GenomicInteractions)
 library(multcomp)
 library(glue)
-# library(sparkline)
 library(nnet)
 library(effects)
 library(Gviz)
+library(readxl)
+library(corrplot)
+library(goseq)
 theme_set(theme_bw())
 ```
 
@@ -205,6 +207,7 @@ tbl <- dht_consensus %>%
   arrange(desc(n)) %>% 
   reactable(
     filterable = TRUE,
+    pagination = FALSE,
     columns = list(
       AR = colDef(
         cell = function(value) {
@@ -664,16 +667,14 @@ top_table <- here::here("data", "rnaseq", "MDA-MB-453_RNASeq.tsv") %>%
   read_tsv() # Not a DHT-treatment analysis though...
 ```
 
-In order to more accurately assign genes to actively transcribed genes, the RNA-Seq dataset generated in 2013 studying DHT Vs. Vehicle in MDA-MB-453 cells was used.
-All `r comma(length(detected))` genes with >1 read in at least 1/4 of the samples was considered to be detected, and peaks were only mapped to detected genes.
-
 ```{r map-to-genes}
 dht_consensus <- mapByFeature(
   dht_consensus, 
   genes = subset(all_gr$gene, gene_id %in% detected),
   prom = subset(features, feature == "promoter"),
   ## Given we have accuracte H3K27ac HiChIP, better mappings can be gained that way.
-  # enh = subset(features, feature == "enhancer"),
+  ## Exclude any enhancers which overlap the HiChIP
+  enh = subset(features, feature == "enhancer") %>% filter_by_non_overlaps(hic),
   gi = hic
 ) %>% 
   mutate(mapped = vapply(gene_id, function(x) length(x) > 0, logical(1)))
@@ -685,6 +686,20 @@ all_targets <- dht_consensus %>%
   pull("gene_id")
 ```
 
+In order to more accurately assign genes to actively transcribed genes, the RNA-Seq dataset generated in 2013 studying DHT Vs. Vehicle in MDA-MB-453 cells was used to define the set of genes able to be considered as detected.
+As this was a polyA dataset, some ncRNA which are not adenylated may be expressed, but will remain as undetected despite this technological limitation.
+All `r comma(length(detected))` genes with >1 read in at least 1/4 of the samples was considered to be detected, and peaks were only mapped to detected genes.
+
+Mapping was performed using `mapByFeature()` from the package `extraChIP` using:
+
+1. Promoters defined externally using H3K27ac
+2. Only the externally defined enhancers which contained no H3K27ac-HiChIP overlap
+3. H3K27ac HiChIP interactions for long range mapping
+
+No separate enhancers were using in the mapping steps as the H3K27ac-HiChIP interaction were considered to provide clear associations between peaks and target genes.
+By contrast, the default mapping of `mapByFeature()` would map all genes within 100kb to any peak considered as an enhancer
+
+
 `r dht_consensus %>% as_tibble() %>% unnest(everything()) %>% distinct(gene_id) %>% nrow() %>%  divide_by(length(detected)) %>% percent()` of detected genes had one or more peaks mapped to them.
 
 Looking specifically at the peaks for which all four targets directly overlapped, `r comma(length(all_targets))` of the `r comma(length(detected))` detected genes were mapped to at least one directly overlapping binding region.
@@ -692,24 +707,28 @@ Looking specifically at the peaks for which all four targets directly overlapped
 ### MYC
 
 As the gene *MYC* has been identified as a key target, the binding patterns within the gene were explored.
+The two binding sites with all four ChIP targets detected, within 100kb of *MYC*, and which were connected using HiChIP interactions were visualised and exported.
 
-```{r}
+```{r plot-myc, fig.height=10, fig.width=10, fig.cap = "Two joint binding sites either side of *MYC* connected by HiChIP interactions to the promoter. HiChIP connections were detected at all bin sizes, however, only fine-resolutions 5kb interaction bins are shown.", results='hide'}
 gr <- dht_consensus %>% 
-  filter(!!!syms(targets), mapped) %>% 
+  filter(!!!syms(targets), mapped, enhancer) %>% 
   filter(
-    vapply(gene_name, function(x) "MYC" %in% x[1], logical(1))
+    vapply(gene_name, function(x) "MYC" %in% x, logical(1))
   ) %>% 
-  resize(width = 1.5*width(.), fix = 'center')
-# gr <- subset(all_gr$gene, gene_name == "MYC")
+  mutate(d = distance(., subset(all_gr$gene, gene_name == "MYC"))) %>% 
+  arrange(d) %>% 
+  filter(d < 1e5)
+fs <- 14
 myc_plot <- plotHFGC(
   gr = gr,
   hic = hic %>%
+    subsetByOverlaps(gr) %>%
     subsetByOverlaps(
       subset(all_gr$gene, gene_name == "MYC")
     ) %>% 
-    subset(as.integer(bin_size) < 4e4),
+    subset(as.integer(bin_size) <= 5e3),
   hicsize = 3,
-  # max = 1.5e6,
+  max = 5e7,
   genes = tm %>%
     mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
     split(.$detected),
@@ -719,53 +738,75 @@ myc_plot <- plotHFGC(
   coverage = bwfl, 
   linecol = c(targets, "H3K27ac") %>% 
     sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = "grey40")
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
     }, 
     simplify = FALSE
     ),
   #ylim = lapply(y_lim, divide_by, e2 = 2),
   cytobands = grch37.cytobands,
-  # collapseTranscripts = "meta", 
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = "meta"),
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  rotation.title = 90, fontsize = 14, drawAxis = FALSE
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
 )
+myc_plot$chr8@dp@pars$fontcolor <- "black"
+myc_plot$Axis@dp@pars$fontcolor <- "black"
+myc_plot$Axis@dp@pars$col <- "grey30"
+myc_plot$HiC@dp@pars$fontface.title <- 1
+myc_plot$HiC@dp@pars$rotation.title <- 0
+myc_plot$Detected@dp@pars$fontface.title <- 1
 myc_plot$Detected@dp@pars$rotation.title <- 0
-myc_plot$Detected@dp@pars$fontsize.group <- 14
+myc_plot$Detected@dp@pars$fontsize.group <- fs
 myc_plot$Detected@dp@pars$cex.group <- 0.8
+myc_plot$Detected@dp@pars$fontface.group <- 1
+myc_plot$Detected@dp@pars$fontcolor.group <- "black"
+myc_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+myc_plot$`Not-Detected`@dp@pars$fontface.title <- 1
 myc_plot$`Not-Detected`@dp@pars$rotation.title <- 0
-myc_plot$`Not-Detected`@dp@pars$fontsize.group <- 14
+myc_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
 myc_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
 myc_plot$`Not-Detected`@dp@pars$just.group <- "right"
-myc_plot$HiC@dp@pars$rotation.title <- 0
-myc_plot$AR@dp@pars$drawAxis <- FALSE
-myc_plot$FOXA1@dp@pars$drawAxis <- FALSE
-myc_plot$GATA3@dp@pars$drawAxis <- FALSE
-myc_plot$TFAP2B@dp@pars$drawAxis <- FALSE
+myc_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+myc_plot$AR@dp@pars$rotation.title <- 0
+myc_plot$FOXA1@dp@pars$rotation.title <- 0
+myc_plot$GATA3@dp@pars$rotation.title <- 0
+myc_plot$TFAP2B@dp@pars$rotation.title <- 0
+myc_plot$H3K27ac@dp@pars$rotation.title <- 0
+myc_plot$H3K27ac@dp@pars$legend <- TRUE
+myc_plot$H3K27ac@dp@pars$size <- 5
 ax <- myc_plot[1:2]
-hl <- HighlightTrack(myc_plot[3:10], range = gr)
+hl <- HighlightTrack(
+  myc_plot[3:10], 
+  range = resize(gr, width = 2*width(gr), fix = 'center')
+)
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
 hl@dp@pars$col <- "blue"
-pdf(here::here("output", "MYC.pdf"), width = 7, height = 7)
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", "MYC.pdf"), width = 10, height = 10)
 Gviz::plotTracks(
   c(ax, hl),
   myc_plot[1:10], 
   from = min(start(gr)) - 0.1*width(range(gr)), 
   to = max(end(gr)) + 0.1*width(range(gr)), 
   title.width = 1,
-  margin = 20,
+  margin = 40,
   fontface.main = 1
   )
 dev.off()
 ```
 
 
+## Apocrine Signature Enrichment
 
-## Apocrine Enrichment
+### Subtype Gene Signatures
 
-```{r}
+```{r load-apo}
 hgnc <- read_csv(
   here::here("data", "external", "hgnc-symbol-check.csv"), skip = 1
 ) %>% 
@@ -780,66 +821,177 @@ apo_ranks <- here::here("data", "external", "ApoGenes.txt") %>%
   ) %>% 
   dplyr::select(starts_with("gene_"), ends_with("rank")) %>% 
   dplyr::filter(!is.na(gene_id))
-```
-
-The Apocrine genes and ranks from [Farmer *et al*](https://www.nature.com/articles/1208561#Sec10) were loaded, updating gene names using the latest release from [HGNC](https://www.genenames.org/tools/multi-symbol-checker/).
-`r comma(nrow(apo_ranks))` of the original genes were able to be mapped to gene identifiers matching Gencode release 33.
-
-### Apocrine Ranks
-
-- Need to cut by H3K27Ac
-- Check UpSet plot by promoter/enhancer/detected genes
-
-For the purposes of simple exploration, the provided list was sorted by `apo_rank` and the proportion of genes mapped to at least one set of overlapping peaks was compared to these ranks.
-
-```{r}
-apo_ranks %>%
-  arrange(apo_rank) %>% 
-  mutate(
-    all = gene_id %in% all_targets,
-    n = cumsum(all), 
-    p = n / apo_rank
+apo_full <- read_excel(
+  here::here("data", "external", "Apocrine gene lists.xls"),
+  col_names = c(
+    "Gene", 
+    paste0("ESR1", c("_logFC", "_p")),
+    paste0("CLCA2", c("_logFC", "_p")),
+    paste0("DCN", c("_logFC", "_p")),
+    paste0("GZMA", c("_logFC", "_p")),
+    paste0("MX1", c("_logFC", "_p")),
+    paste0("TPX2", c("_logFC", "_p")),
+    paste0("FABP4", c("_logFC", "_p")),
+    paste0("ADM", c("_logFC", "_p")),
+    paste0("CD83", c("_logFC", "_p"))
+    ),
+  col_types = c("text", rep("numeric", 18)),
+  skip = 1
+) %>% 
+  left_join(hgnc) %>% 
+  left_join(
+    as_tibble(all_gr$gene) %>% 
+      dplyr::select(gene_id, gene_name),
+    by = "gene_name"
   ) %>% 
-  ggplot(aes(apo_rank, p)) + 
-  geom_line() + 
-  coord_cartesian(xlim= c(0, 1000), ylim = c(0.6, 1))
-```
-
-### AB Ranks
-
-The same approach was applied to AB ranks
-
-
-```{r}
-apo_ranks %>%
-  dplyr::filter(!is.na(ABrank)) %>% 
-  arrange(ABrank) %>% 
-  mutate(
-    ABrank = seq_along(ABrank),
-    all = gene_id %in% all_targets,
-    n = cumsum(all), 
-    p = n / ABrank
+  dplyr::select(starts_with("gene", FALSE), matches("_(logFC|p)"))
+apo_genesets <- colnames(apo_full) %>% 
+  str_subset("_p$") %>% 
+  sapply(
+    function(x) {
+      dplyr::filter(apo_full, !!sym(x) < 0.05, !is.na(gene_name))$gene_name
+    },
+    simplify = FALSE
   ) %>% 
-  ggplot(aes(ABrank, p)) + 
-  geom_line() 
+  setNames(
+    str_remove(names(.), pattern = "_p")
+  )
+genes_by_subtype <- apo_genesets %>% 
+  lapply(list) %>% 
+  as_tibble() %>% 
+  pivot_longer(everything(), names_to = "subtype", values_to = "gene_name") %>% 
+  unnest(everything()) %>% 
+  split(.$gene_name) %>% 
+  lapply(pull, "subtype")
 ```
 
 
-### AL Ranks
+The models for different subtypes, as [previously published](https://www.nature.com/articles/1208561) were loaded, with a signature from each subtype being derived from genes with an adjusted p-value < 0.05, as initially published.
+This gave `r length(apo_genesets)` different gene-sets with key marker genes denoting the subtypes: `r pander(names(apo_genesets))`
 
-The same approach was applied to AL ranks
+```{r upset-signatures, fig.height=7, fig.cap = "UpSet plot showing the association between genes contained in each signature. A relatively high degree of similarity was noted between some signature pairs, such as GZMA/CD83 and MX1/GZMA"}
+apo_genesets %>% 
+  fromList() %>% 
+  upset(
+    sets = rev(names(.)), 
+    # keep.order = TRUE,
+    order.by = "freq",
+    set_size.show = TRUE,
+    set_size.scale_max = nrow(.) * 0.4
+  )
+```
 
 
-```{r}
-apo_ranks %>%
-  dplyr::filter(!is.na(ALrank)) %>% 
-  arrange(ALrank) %>% 
+```{r corrplot-signatures, fig.height=6, fig.width=6, fig.cap = "Correlation plot between signatures based on shared genes between groups"}
+apo_genesets %>% 
+  fromList() %>%
+  cor() %>% 
+  corrplot(
+    diag = FALSE, 
+    addCoef.col = "grey50",
+    addCoefasPercent = TRUE
+  )
+```
+
+
+### Enrichment Testing: All Sites
+
+The set of genes mapped to sites contain all four ChIP targets were then tested for enrichment of any of the defined signatures.
+Enrichment testing as implemented in `goseq` was used, incorporating the number of consensus peaks mapped to a gene as the offset term for biased sampling.
+
+```{r pwf-all4, fig.width=8, fig.height=6, fig.cap = "PWF for biased sampling using the number of peaks mapped to a gene as the bias offset"}
+mapped <- all_gr$gene %>% 
+  filter(gene_id %in% detected) %>% 
+  mutate(gene_width = width) %>% 
+  as_tibble() %>% 
+  dplyr::select(starts_with("gene")) %>% 
   mutate(
-    ALrank = seq_along(ALrank),
-    all = gene_id %in% all_targets,
-    n = cumsum(all), 
-    p = n / ALrank
+    mapped_to_all = gene_name %in% unlist(filter(dht_consensus, !!!syms(targets))$gene_name),
+    n_peaks = table(unlist(dht_consensus$gene_name))[gene_name] %>% 
+      as.integer(),
+    n_peaks = ifelse(is.na(n_peaks), 0, n_peaks)
   ) %>% 
-  ggplot(aes(ALrank, p)) + 
-  geom_line() 
+  distinct(gene_name, .keep_all = TRUE)
+goseq_all4 <- structure(
+  mapped$mapped_to_all, names = mapped$gene_name
+) %>% 
+  nullp(bias.data = mapped$n_peaks) %>%  
+  goseq(gene2cat = genes_by_subtype) %>% 
+  as_tibble() %>% 
+  dplyr::select(
+    subtype = category,
+    p = over_represented_pvalue,
+    n_mapped = numDEInCat,
+    signature_size = numInCat
+  ) %>% 
+  mutate(fdr = p.adjust(p, "fdr"))
 ```
+
+```{r res-goseq-all4}
+goseq_all4 %>% 
+  mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %>% 
+  dplyr::select(
+    Subtype = subtype, `Signature Size` = signature_size, `# Mapped` = n_mapped,
+    `% Mapped` = `%`, p, FDR = fdr
+  ) %>% 
+  pander(
+    justify = "lrrrrr",
+    caption = paste(
+      "Results for Subtype enrichment testing using all genes mapped to any ",
+      "consensus peak, where all four ChIP targets were considered to be present."
+    ),
+    emphasize.strong.rows = which(.$FDR < 0.05)
+  )
+```
+
+### Enrichment Testing: H3K27Ac-Associated
+
+The same process was then performed restricting the mappings to those sites associated with H3K27ac binding.
+
+```{r pwf-h3k, fig.width=8, fig.height=6, fig.cap = "PWF for biased sampling using the number of peaks mapped to a gene as the bias offset"}
+mapped_h3k <- all_gr$gene %>% 
+  filter(gene_id %in% detected) %>% 
+  mutate(gene_width = width) %>% 
+  as_tibble() %>% 
+  dplyr::select(starts_with("gene")) %>% 
+  mutate(
+    mapped_to_all = gene_name %in% unlist(filter(dht_consensus, !!!syms(targets), H3K27ac)$gene_name),
+    n_peaks = table(unlist(dht_consensus$gene_name))[gene_name] %>% 
+      as.integer(),
+    n_peaks = ifelse(is.na(n_peaks), 0, n_peaks)
+  ) %>% 
+  distinct(gene_name, .keep_all = TRUE)
+goseq_h3k <- structure(
+  mapped_h3k$mapped_to_all, names = mapped_h3k$gene_name
+) %>% 
+  nullp(bias.data = mapped_h3k$n_peaks) %>%  
+  goseq(gene2cat = genes_by_subtype) %>% 
+  as_tibble() %>% 
+  dplyr::select(
+    subtype = category,
+    p = over_represented_pvalue,
+    n_mapped = numDEInCat,
+    signature_size = numInCat
+  ) %>% 
+  mutate(fdr = p.adjust(p, "fdr"))
+```
+
+```{r res-goseq-h3k}
+goseq_h3k %>% 
+  mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %>% 
+  dplyr::select(
+    Subtype = subtype, `Signature Size` = signature_size, `# Mapped` = n_mapped,
+    `% Mapped` = `%`, p, FDR = fdr
+  ) %>% 
+  pander(
+    justify = "lrrrrr",
+    caption = paste(
+      "Results for Subtype enrichment testing using only genes mapped to a",
+      "consensus peak *associated with H3K27ac activity*, and where all four", 
+      "ChIP targets were considered to be present."
+    ),
+    emphasize.strong.rows = which(.$FDR < 0.05)
+  )
+```
+
+
