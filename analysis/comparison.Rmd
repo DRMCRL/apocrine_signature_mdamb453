@@ -571,10 +571,10 @@ hic <- sort(hic)
 
 H3K27ac-HiChIP obtained from [SRA](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157381) and [analysed previously](https://github.com/DRMCRL/MDA-MB-453-H3K27Ac-HiChIP), was additionally included to improve mapping of peaks to genes.
 Whilst the previous H3K27ac-derived features were obtained from the same passages/experiments as GATA3 and AR, HiChIP data was obtained from a public dataset, not produced with the DRMCRL, and were defined using only the Vehicle controls from an Abemaciclib Vs. Vehicle experiment.
-Long range interactions were included for bin sizes of `r pander(sort(as.numeric(unique(hic$bin_size)))/1e3)`kb.
+Long range interactions were included for bin sizes of `r pander(sort(as.numeric(unique(hic$bin_size)))/1e3)` kb.
 Before proceeding, the comparability of the H3K27ac-HiChIP and H3K27ac-derived features was checked.
 `r percent(length(subsetByOverlaps(hic, features)) / length(hic))` of HiChIP long-range interactions overlapped a promoter or enhancer derived from H3K27ac ChIP-seq.
-Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features))` or ChIP-Seq features mapped to a long-range interaction.
+Conversely, `r percent(length(subsetByOverlaps(features, hic)) / length(features))` or ChIP-Seq features mapped to a long-range interaction, confirming that the H3K27ac signatures within MDA-MB-453 cells are highly comparable across laboratories.
 
 ## Comparison To Key Genes
 
@@ -645,7 +645,7 @@ y_lim$H3K27ac <- bwfl$H3K27ac %>%
 ```
 
 
-## Mapping To Detected Genes
+## Mapping To Detected Genes {.tabs}
 
 
 ```{r all-gr}
@@ -703,103 +703,6 @@ By contrast, the default mapping of `mapByFeature()` would map all genes within 
 `r dht_consensus %>% as_tibble() %>% unnest(everything()) %>% distinct(gene_id) %>% nrow() %>%  divide_by(length(detected)) %>% percent()` of detected genes had one or more peaks mapped to them.
 
 Looking specifically at the peaks for which all four targets directly overlapped, `r comma(length(all_targets))` of the `r comma(length(detected))` detected genes were mapped to at least one directly overlapping binding region.
-
-### MYC
-
-As the gene *MYC* has been identified as a key target, the binding patterns within the gene were explored.
-The two binding sites with all four ChIP targets detected, within 100kb of *MYC*, and which were connected using HiChIP interactions were visualised and exported.
-
-```{r plot-myc, fig.height=10, fig.width=10, fig.cap = "Two joint binding sites either side of *MYC* connected by HiChIP interactions to the promoter. HiChIP connections were detected at all bin sizes, however, only fine-resolutions 5kb interaction bins are shown.", results='hide'}
-gr <- dht_consensus %>% 
-  filter(!!!syms(targets), mapped, enhancer) %>% 
-  filter(
-    vapply(gene_name, function(x) "MYC" %in% x, logical(1))
-  ) %>% 
-  mutate(d = distance(., subset(all_gr$gene, gene_name == "MYC"))) %>% 
-  arrange(d) %>% 
-  filter(d < 1e5)
-fs <- 14
-myc_plot <- plotHFGC(
-  gr = gr,
-  hic = hic %>%
-    subsetByOverlaps(gr) %>%
-    subsetByOverlaps(
-      subset(all_gr$gene, gene_name == "MYC")
-    ) %>% 
-    subset(as.integer(bin_size) <= 5e3),
-  hicsize = 3,
-  max = 5e7,
-  genes = tm %>%
-    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
-    split(.$detected),
-  genecol = c(
-    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
-  ),
-  coverage = bwfl, 
-  linecol = c(targets, "H3K27ac") %>% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
-    }, 
-    simplify = FALSE
-    ),
-  #ylim = lapply(y_lim, divide_by, e2 = 2),
-  cytobands = grch37.cytobands,
-  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = "meta"),
-  zoom = 1.1,
-  highlight = rgb(0, 0, 1, 0.5), 
-  title.width = 1, 
-  col.title = "black", background.title = "white",
-  showAxis = FALSE,
-  rotation.title = 90, fontsize = fs, 
-  fontface.title = 1,
-  legend = FALSE,
-  fontcolor.legend = "black"
-)
-myc_plot$chr8@dp@pars$fontcolor <- "black"
-myc_plot$Axis@dp@pars$fontcolor <- "black"
-myc_plot$Axis@dp@pars$col <- "grey30"
-myc_plot$HiC@dp@pars$fontface.title <- 1
-myc_plot$HiC@dp@pars$rotation.title <- 0
-myc_plot$Detected@dp@pars$fontface.title <- 1
-myc_plot$Detected@dp@pars$rotation.title <- 0
-myc_plot$Detected@dp@pars$fontsize.group <- fs
-myc_plot$Detected@dp@pars$cex.group <- 0.8
-myc_plot$Detected@dp@pars$fontface.group <- 1
-myc_plot$Detected@dp@pars$fontcolor.group <- "black"
-myc_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
-myc_plot$`Not-Detected`@dp@pars$fontface.title <- 1
-myc_plot$`Not-Detected`@dp@pars$rotation.title <- 0
-myc_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
-myc_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
-myc_plot$`Not-Detected`@dp@pars$just.group <- "right"
-myc_plot$`Not-Detected`@dp@pars$fontface.group <- 1
-myc_plot$AR@dp@pars$rotation.title <- 0
-myc_plot$FOXA1@dp@pars$rotation.title <- 0
-myc_plot$GATA3@dp@pars$rotation.title <- 0
-myc_plot$TFAP2B@dp@pars$rotation.title <- 0
-myc_plot$H3K27ac@dp@pars$rotation.title <- 0
-myc_plot$H3K27ac@dp@pars$legend <- TRUE
-myc_plot$H3K27ac@dp@pars$size <- 5
-ax <- myc_plot[1:2]
-hl <- HighlightTrack(
-  myc_plot[3:10], 
-  range = resize(gr, width = 2*width(gr), fix = 'center')
-)
-hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
-hl@dp@pars$lwd <- 0.5
-pdf(here::here("output", "MYC.pdf"), width = 10, height = 10)
-Gviz::plotTracks(
-  c(ax, hl),
-  myc_plot[1:10], 
-  from = min(start(gr)) - 0.1*width(range(gr)), 
-  to = max(end(gr)) + 0.1*width(range(gr)), 
-  title.width = 1,
-  margin = 40,
-  fontface.main = 1
-  )
-dev.off()
-```
 
 
 ## Apocrine Signature Enrichment
@@ -894,10 +797,12 @@ apo_genesets %>%
 ```
 
 
-### Enrichment Testing: All Sites
+### Enrichment Testing {.tabset}
 
 The set of genes mapped to sites contain all four ChIP targets were then tested for enrichment of any of the defined signatures.
 Enrichment testing as implemented in `goseq` was used, incorporating the number of consensus peaks mapped to a gene as the offset term for biased sampling.
+
+#### All Common Sites
 
 ```{r pwf-all4, fig.width=8, fig.height=6, fig.cap = "PWF for biased sampling using the number of peaks mapped to a gene as the bias offset"}
 mapped <- all_gr$gene %>% 
@@ -944,7 +849,7 @@ goseq_all4 %>%
   )
 ```
 
-### Enrichment Testing: H3K27Ac-Associated
+#### H3K27Ac-Associated Common Sites
 
 The same process was then performed restricting the mappings to those sites associated with H3K27ac binding.
 
@@ -994,4 +899,1191 @@ goseq_h3k %>%
   )
 ```
 
+#### H3K27ac Associated Sites Without TFAP2B
 
+The same process was then performed restricting the mappings to those sites associated with H3K27ac binding, where AR, FOXA1 and GATA3 are all bound but without TFAP2B.
+
+```{r pwf-noap2b, fig.width=8, fig.height=6, fig.cap = "PWF for biased sampling using the number of peaks mapped to a gene as the bias offset"}
+mapped_noap2b <- all_gr$gene %>% 
+  filter(gene_id %in% detected) %>% 
+  mutate(gene_width = width) %>% 
+  as_tibble() %>% 
+  dplyr::select(starts_with("gene")) %>% 
+  mutate(
+    mapped_to_all = gene_name %in% unlist(filter(dht_consensus, AR, FOXA1, GATA3, !TFAP2B, H3K27ac)$gene_name),
+    n_peaks = table(unlist(dht_consensus$gene_name))[gene_name] %>% 
+      as.integer(),
+    n_peaks = ifelse(is.na(n_peaks), 0, n_peaks)
+  ) %>% 
+  distinct(gene_name, .keep_all = TRUE)
+goseq_noap2b <- structure(
+  mapped_noap2b$mapped_to_all, names = mapped_noap2b$gene_name
+) %>% 
+  nullp(bias.data = mapped_noap2b$n_peaks) %>%  
+  goseq(gene2cat = genes_by_subtype) %>% 
+  as_tibble() %>% 
+  dplyr::select(
+    subtype = category,
+    p = over_represented_pvalue,
+    n_mapped = numDEInCat,
+    signature_size = numInCat
+  ) %>% 
+  mutate(fdr = p.adjust(p, "fdr"))
+```
+
+```{r res-goseq-noap2b}
+goseq_noap2b %>% 
+  mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %>% 
+  dplyr::select(
+    Subtype = subtype, `Signature Size` = signature_size, `# Mapped` = n_mapped,
+    `% Mapped` = `%`, p, FDR = fdr
+  ) %>% 
+  pander(
+    justify = "lrrrrr",
+    caption = paste(
+      "Results for Subtype enrichment testing using only genes mapped to a",
+      "consensus peak *associated with H3K27ac activity*, and where AR, FOXA1", 
+      "and GATA3 were considered to be present, but in the absence of TFAP2B."
+    ),
+    emphasize.strong.rows = which(.$FDR < 0.05)
+  )
+```
+
+
+## Visualisations: Luminal Genes {.tabset}
+
+### MYC
+
+As the gene *MYC* has been identified as a key target, the binding patterns within the gene were explored.
+The two binding sites 1) with all four ChIP targets detected, 2) within 100kb of *MYC*, and 3) which were connected using HiChIP interactions were visualised and exported.
+
+```{r plot-myc, fig.height=10, fig.width=10, results='hide', fig.cap = "Two joint binding sites either side of *MYC* connected by HiChIP interactions to the promoter. HiChIP connections were detected at all bin sizes, however, only fine-resolutions 5kb interaction bins are shown."}
+gn <- "MYC"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) %>% 
+  filter(d < 1e5)
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 5e3),
+  hicsize = 3,
+  max = 5e7,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = "meta"),
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+region_plot$`Not-Detected`@dp@pars$just.group <- "right"
+region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 2*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### GATA3
+
+```{r plot-gata3, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which map to *GATA3*. Only the high-resolution 5kb bins are shown."}
+gn <- "GATA3"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) %>% 
+  subsetByOverlaps(
+    hic %>% 
+      subset(as.integer(bin_size) == 5e3) %>% 
+      subsetByOverlaps(
+        subset(all_gr$gene, gene_name == gn)
+      )
+  )
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 5e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 2*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### FOXA1
+
+```{r plot-foxa1,  fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which map to *FOXA1* Only the high-resolution 5kb bins are shown."}
+gn <- "FOXA1"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) %>%
+  subsetByOverlaps(
+    hic %>%
+      subset(as.integer(bin_size) == 5e3) %>%
+      subsetByOverlaps(
+        subset(all_gr$gene, gene_name == gn)
+      )
+  )
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 5e3),
+  max = 1e5,
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = "meta"),
+  zoom = 1.2,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.5*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### XBP1
+
+```{r plot-xbp1, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which are within 100kb of *XBP1*. Only the high-resolution 5kb interaction bins are shown. The two additional peaks were not considered to show evidence of TFAP2B binding by macs2 callpeak and are not highlighted for this reason"}
+gn <- "XBP1"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) %>% 
+  filter(d < 100e3)
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) == 5e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = "meta"),
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### MYB
+
+```{r plot-myb, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which map to *MYB*. Only the low-resolution 20kb interaction bins are shown."}
+gn <- "MYB"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) 
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) == 20e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### GREB1
+
+```{r plot-greb1, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which map to *GREB1*. Only the low-resolution 40kb interaction bins are shown."}
+gn <- "GREB1"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) 
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 40e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+## Visualisations:: Apocrine Genes {.tabset}
+
+### CLCA2
+
+```{r plot-clca2, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which within the transcribed region for *CLCA2*. No HiC data is shown."}
+gn <- "CLCA2"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  arrange(d) 
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  collapseTranscripts = FALSE,
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 4,
+  shift = 1e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.1*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.1*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### TFAP2B
+
+```{r plot-tfap2b, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *TFAP2B* and are within 500kb of *TFAP2B*. Only the medium-resolution 10kb interaction bins are shown."}
+gn <- "TFAP2B"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  filter(d < 5e5) 
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) == 10e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@dp@pars$fontface.title <- 1
+region_plot$HiC@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+if ("Not-Detected" %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+}
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2*width(.), fix = 'center')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### KYNU
+
+```{r plot-kynu, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which map to *KYNU*. No HiC interaction bins were found in this region."}
+gn <- "KYNU"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) 
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 40e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 5,
+  shift = 3e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title <- 1
+  region_plot$HiC@dp@pars$rotation.title <- 0
+}
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+if ("Not-Detected" %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
+}
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.1*width(.), fix = 'center') %>% 
+  resize(width = 0.4 * width(.), fix = 'start')
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### DUSP6
+
+```{r plot-dusp6, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *DUSP6* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown."}
+gn <- "DUSP6"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  filter(d < 1e5)
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 5e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  shift = 3e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title <- 1
+  region_plot$HiC@dp@pars$rotation.title <- 0
+}
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+if ("Not-Detected" %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
+}
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 0.8 * width(.), fix = 'center') %>% 
+  shift(1e4)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### FGFR4
+
+```{r plot-fgfr4, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *FGFR4* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown."}
+gn <- "FGFR4"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  filter(d < 1e5)
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 5e3),
+  hicsize = 3,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title <- 1
+  region_plot$HiC@dp@pars$rotation.title <- 0
+}
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+if ("Not-Detected" %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
+}
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.5 * width(.), fix = 'center') 
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+
+### PGAP3
+
+```{r plot-pgap3, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *PGAP3* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown."}
+gn <- "PGAP3"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  filter(d < 1e5)
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>% 
+    subset(as.integer(bin_size) <= 5e3),
+  hicsize = 3,
+  max = 5e4,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title <- 1
+  region_plot$HiC@dp@pars$rotation.title <- 0
+}
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+if ("Not-Detected" %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
+}
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2 * width(.), fix = 'center') 
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
