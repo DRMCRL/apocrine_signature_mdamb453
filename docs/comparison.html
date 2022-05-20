@@ -378,7 +378,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -389,8 +389,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -403,9 +403,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -429,21 +429,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -534,15 +531,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree5597186a516a1edb81751d8e0acda27d0c9475f7targetblank5597186a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree3a37987c1975f40afba230b3cb62e15c7e562efetargetblank3a37987a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/5597186a516a1edb81751d8e0acda27d0c9475f7" target="_blank">5597186</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/3a37987c1975f40afba230b3cb62e15c7e562efe" target="_blank">3a37987</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree5597186a516a1edb81751d8e0acda27d0c9475f7targetblank5597186a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree3a37987c1975f40afba230b3cb62e15c7e562efetargetblank3a37987a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +549,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/5597186a516a1edb81751d8e0acda27d0c9475f7" target="_blank">5597186</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/3a37987c1975f40afba230b3cb62e15c7e562efe" target="_blank">3a37987</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -571,8 +568,20 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/bigwig/
 
+Untracked files:
+    Untracked:  output/CLCA2.pdf
+    Untracked:  output/DUSP6.pdf
+    Untracked:  output/FGFR4.pdf
+    Untracked:  output/FOXA1.pdf
+    Untracked:  output/GATA3.pdf
+    Untracked:  output/GREB1.pdf
+    Untracked:  output/KYNU.pdf
+    Untracked:  output/MYB.pdf
+    Untracked:  output/PGAP3.pdf
+    Untracked:  output/TFAP2B.pdf
+    Untracked:  output/XBP1.pdf
+
 Unstaged changes:
-    Modified:   analysis/comparison.Rmd
     Modified:   output/MYC.pdf
 
 </code></pre>
@@ -619,6 +628,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/3a37987c1975f40afba230b3cb62e15c7e562efe/analysis/comparison.Rmd" target="_blank">3a37987</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+<td>
+Finished first draft without motifs
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/analysis/comparison.Rmd" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+<td>
+Added enrichment testing
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/comparison.html" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+<td>
+Added enrichment testing
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1240,6 +1300,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/confint-glm-h3k27ac-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/e742af366dd30827c4b155751815179f90567f74/docs/figure/comparison.Rmd/confint-glm-h3k27ac-1.png" target="_blank">e742af3</a>
 </td>
 <td>
@@ -1340,6 +1411,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/glm-prom-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1ba686b361b4d341eed2fdafce98bddff4a700d0/docs/figure/comparison.Rmd/glm-prom-1.png" target="_blank">1ba686b</a>
 </td>
 <td>
@@ -1416,6 +1498,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/glm-enh-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1ba686b361b4d341eed2fdafce98bddff4a700d0/docs/figure/comparison.Rmd/glm-enh-1.png" target="_blank">1ba686b</a>
@@ -1534,6 +1627,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/fit-multinomial-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1ba686b361b4d341eed2fdafce98bddff4a700d0/docs/figure/comparison.Rmd/fit-multinomial-1.png" target="_blank">1ba686b</a>
 </td>
 <td>
@@ -1619,6 +1723,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/dist-to-tss-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/e742af366dd30827c4b155751815179f90567f74/docs/figure/comparison.Rmd/dist-to-tss-1.png" target="_blank">e742af3</a>
 </td>
 <td>
@@ -1686,11 +1801,13 @@ the same passages/experiments as GATA3 and AR, HiChIP data was obtained
 from a public dataset, not produced with the DRMCRL, and were defined
 using only the Vehicle controls from an Abemaciclib Vs. Vehicle
 experiment. Long range interactions were included for bin sizes of
-<em>5</em>, <em>10</em>, <em>20</em> and _40_kb. Before proceeding, the
-comparability of the H3K27ac-HiChIP and H3K27ac-derived features was
-checked. 93% of HiChIP long-range interactions overlapped a promoter or
-enhancer derived from H3K27ac ChIP-seq. Conversely, 86% or ChIP-Seq
-features mapped to a long-range interaction.</p>
+<em>5</em>, <em>10</em>, <em>20</em> and <em>40</em> kb. Before
+proceeding, the comparability of the H3K27ac-HiChIP and H3K27ac-derived
+features was checked. 93% of HiChIP long-range interactions overlapped a
+promoter or enhancer derived from H3K27ac ChIP-seq. Conversely, 86% or
+ChIP-Seq features mapped to a long-range interaction, confirming that
+the H3K27ac signatures within MDA-MB-453 cells are highly comparable
+across laboratories.</p>
 </div>
 </div>
 <div id="comparison-to-key-genes" class="section level2">
@@ -1759,8 +1876,8 @@ y_lim$H3K27ac &lt;- bwfl$H3K27ac %&gt;%
   c(0) %&gt;% 
   range()</code></pre>
 </div>
-<div id="mapping-to-detected-genes" class="section level2">
-<h2>Mapping To Detected Genes</h2>
+<div id="mapping-to-detected-genes" class="section level2 tabs">
+<h2 class="tabs">Mapping To Detected Genes</h2>
 <pre class="r"><code>rnaseq &lt;- here::here(&quot;data&quot;, &quot;rnaseq&quot;, &quot;dge.rds&quot;) %&gt;% 
   read_rds()
 counts &lt;- here::here(&quot;data&quot;, &quot;rnaseq&quot;, &quot;counts.out.gz&quot;) %&gt;% 
@@ -1818,112 +1935,6 @@ considered as an enhancer</p>
 <p>Looking specifically at the peaks for which all four targets directly
 overlapped, 10,250 of the 21,328 detected genes were mapped to at least
 one directly overlapping binding region.</p>
-<div id="myc" class="section level3">
-<h3>MYC</h3>
-<p>As the gene <em>MYC</em> has been identified as a key target, the
-binding patterns within the gene were explored. The two binding sites
-with all four ChIP targets detected, within 100kb of <em>MYC</em>, and
-which were connected using HiChIP interactions were visualised and
-exported.</p>
-<pre class="r"><code>gr &lt;- dht_consensus %&gt;% 
-  filter(!!!syms(targets), mapped, enhancer) %&gt;% 
-  filter(
-    vapply(gene_name, function(x) &quot;MYC&quot; %in% x, logical(1))
-  ) %&gt;% 
-  mutate(d = distance(., subset(all_gr$gene, gene_name == &quot;MYC&quot;))) %&gt;% 
-  arrange(d) %&gt;% 
-  filter(d &lt; 1e5)
-fs &lt;- 14
-myc_plot &lt;- plotHFGC(
-  gr = gr,
-  hic = hic %&gt;%
-    subsetByOverlaps(gr) %&gt;%
-    subsetByOverlaps(
-      subset(all_gr$gene, gene_name == &quot;MYC&quot;)
-    ) %&gt;% 
-    subset(as.integer(bin_size) &lt;= 5e3),
-  hicsize = 3,
-  max = 5e7,
-  genes = tm %&gt;%
-    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
-    split(.$detected),
-  genecol = c(
-    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
-  ),
-  coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
-  #ylim = lapply(y_lim, divide_by, e2 = 2),
-  cytobands = grch37.cytobands,
-  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
-  zoom = 1.1,
-  highlight = rgb(0, 0, 1, 0.5), 
-  title.width = 1, 
-  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
-  showAxis = FALSE,
-  rotation.title = 90, fontsize = fs, 
-  fontface.title = 1,
-  legend = FALSE,
-  fontcolor.legend = &quot;black&quot;
-)</code></pre>
-<div class="figure" style="text-align: center">
-<img src="figure/comparison.Rmd/plot-myc-1.png" alt="Two joint binding sites either side of *MYC* connected by HiChIP interactions to the promoter. HiChIP connections were detected at all bin sizes, however, only fine-resolutions 5kb interaction bins are shown." width="960" />
-<p class="caption">
-Two joint binding sites either side of <em>MYC</em> connected by HiChIP
-interactions to the promoter. HiChIP connections were detected at all
-bin sizes, however, only fine-resolutions 5kb interaction bins are
-shown.
-</p>
-</div>
-<pre class="r"><code>myc_plot$chr8@dp@pars$fontcolor &lt;- &quot;black&quot;
-myc_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
-myc_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-myc_plot$HiC@dp@pars$fontface.title &lt;- 1
-myc_plot$HiC@dp@pars$rotation.title &lt;- 0
-myc_plot$Detected@dp@pars$fontface.title &lt;- 1
-myc_plot$Detected@dp@pars$rotation.title &lt;- 0
-myc_plot$Detected@dp@pars$fontsize.group &lt;- fs
-myc_plot$Detected@dp@pars$cex.group &lt;- 0.8
-myc_plot$Detected@dp@pars$fontface.group &lt;- 1
-myc_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-myc_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-myc_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-myc_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-myc_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-myc_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-myc_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
-myc_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
-myc_plot$AR@dp@pars$rotation.title &lt;- 0
-myc_plot$FOXA1@dp@pars$rotation.title &lt;- 0
-myc_plot$GATA3@dp@pars$rotation.title &lt;- 0
-myc_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
-myc_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-myc_plot$H3K27ac@dp@pars$legend &lt;- TRUE
-myc_plot$H3K27ac@dp@pars$size &lt;- 5
-ax &lt;- myc_plot[1:2]
-hl &lt;- HighlightTrack(
-  myc_plot[3:10], 
-  range = resize(gr, width = 2*width(gr), fix = &#39;center&#39;)
-)
-hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
-hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
-pdf(here::here(&quot;output&quot;, &quot;MYC.pdf&quot;), width = 10, height = 10)
-Gviz::plotTracks(
-  c(ax, hl),
-  myc_plot[1:10], 
-  from = min(start(gr)) - 0.1*width(range(gr)), 
-  to = max(end(gr)) + 0.1*width(range(gr)), 
-  title.width = 1,
-  margin = 40,
-  fontface.main = 1
-  )
-dev.off()</code></pre>
-</div>
 </div>
 <div id="apocrine-signature-enrichment" class="section level2">
 <h2>Apocrine Signature Enrichment</h2>
@@ -2010,6 +2021,43 @@ signature. A relatively high degree of similarity was noted between some
 signature pairs, such as GZMA/CD83 and MX1/GZMA
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-upset-signatures-1">
+Past versions of upset-signatures-1.png
+</button>
+</p>
+<div id="fig-upset-signatures-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/upset-signatures-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>apo_genesets %&gt;% 
   fromList() %&gt;%
   cor() %&gt;% 
@@ -2024,14 +2072,53 @@ signature pairs, such as GZMA/CD83 and MX1/GZMA
 Correlation plot between signatures based on shared genes between groups
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-corrplot-signatures-1">
+Past versions of corrplot-signatures-1.png
+</button>
+</p>
+<div id="fig-corrplot-signatures-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/corrplot-signatures-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="enrichment-testing-all-sites" class="section level3">
-<h3>Enrichment Testing: All Sites</h3>
+</div>
+</div>
+<div id="enrichment-testing" class="section level3 tabset">
+<h3 class="tabset">Enrichment Testing</h3>
 <p>The set of genes mapped to sites contain all four ChIP targets were
 then tested for enrichment of any of the defined signatures. Enrichment
 testing as implemented in <code>goseq</code> was used, incorporating the
 number of consensus peaks mapped to a gene as the offset term for biased
 sampling.</p>
+<div id="all-common-sites" class="section level4">
+<h4>All Common Sites</h4>
 <pre class="r"><code>mapped &lt;- all_gr$gene %&gt;% 
   filter(gene_id %in% detected) %&gt;% 
   mutate(gene_width = width) %&gt;% 
@@ -2063,6 +2150,43 @@ goseq_all4 &lt;- structure(
 PWF for biased sampling using the number of peaks mapped to a gene as
 the bias offset
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pwf-all4-1">
+Past versions of pwf-all4-1.png
+</button>
+</p>
+<div id="fig-pwf-all4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/pwf-all4-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <pre class="r"><code>goseq_all4 %&gt;% 
   mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %&gt;% 
@@ -2176,8 +2300,8 @@ present.</caption>
 </tbody>
 </table>
 </div>
-<div id="enrichment-testing-h3k27ac-associated" class="section level3">
-<h3>Enrichment Testing: H3K27Ac-Associated</h3>
+<div id="h3k27ac-associated-common-sites" class="section level4">
+<h4>H3K27Ac-Associated Common Sites</h4>
 <p>The same process was then performed restricting the mappings to those
 sites associated with H3K27ac binding.</p>
 <pre class="r"><code>mapped_h3k &lt;- all_gr$gene %&gt;% 
@@ -2211,6 +2335,43 @@ goseq_h3k &lt;- structure(
 PWF for biased sampling using the number of peaks mapped to a gene as
 the bias offset
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-pwf-h3k-1">
+Past versions of pwf-h3k-1.png
+</button>
+</p>
+<div id="fig-pwf-h3k-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/pwf-h3k-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <pre class="r"><code>goseq_h3k %&gt;% 
   mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %&gt;% 
@@ -2324,6 +2485,1411 @@ all four ChIP targets were considered to be present.</caption>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="h3k27ac-associated-sites-without-tfap2b"
+class="section level4">
+<h4>H3K27ac Associated Sites Without TFAP2B</h4>
+<p>The same process was then performed restricting the mappings to those
+sites associated with H3K27ac binding, where AR, FOXA1 and GATA3 are all
+bound but without TFAP2B.</p>
+<pre class="r"><code>mapped_noap2b &lt;- all_gr$gene %&gt;% 
+  filter(gene_id %in% detected) %&gt;% 
+  mutate(gene_width = width) %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(starts_with(&quot;gene&quot;)) %&gt;% 
+  mutate(
+    mapped_to_all = gene_name %in% unlist(filter(dht_consensus, AR, FOXA1, GATA3, !TFAP2B, H3K27ac)$gene_name),
+    n_peaks = table(unlist(dht_consensus$gene_name))[gene_name] %&gt;% 
+      as.integer(),
+    n_peaks = ifelse(is.na(n_peaks), 0, n_peaks)
+  ) %&gt;% 
+  distinct(gene_name, .keep_all = TRUE)
+goseq_noap2b &lt;- structure(
+  mapped_noap2b$mapped_to_all, names = mapped_noap2b$gene_name
+) %&gt;% 
+  nullp(bias.data = mapped_noap2b$n_peaks) %&gt;%  
+  goseq(gene2cat = genes_by_subtype) %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(
+    subtype = category,
+    p = over_represented_pvalue,
+    n_mapped = numDEInCat,
+    signature_size = numInCat
+  ) %&gt;% 
+  mutate(fdr = p.adjust(p, &quot;fdr&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/pwf-noap2b-1.png" alt="PWF for biased sampling using the number of peaks mapped to a gene as the bias offset" width="768" />
+<p class="caption">
+PWF for biased sampling using the number of peaks mapped to a gene as
+the bias offset
+</p>
+</div>
+<pre class="r"><code>goseq_noap2b %&gt;% 
+  mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %&gt;% 
+  dplyr::select(
+    Subtype = subtype, `Signature Size` = signature_size, `# Mapped` = n_mapped,
+    `% Mapped` = `%`, p, FDR = fdr
+  ) %&gt;% 
+  pander(
+    justify = &quot;lrrrrr&quot;,
+    caption = paste(
+      &quot;Results for Subtype enrichment testing using only genes mapped to a&quot;,
+      &quot;consensus peak *associated with H3K27ac activity*, and where AR, FOXA1&quot;, 
+      &quot;and GATA3 were considered to be present, but in the absence of TFAP2B.&quot;
+    ),
+    emphasize.strong.rows = which(.$FDR &lt; 0.05)
+  )</code></pre>
+<table style="width:96%;">
+<caption>Results for Subtype enrichment testing using only genes mapped
+to a consensus peak <em>associated with H3K27ac activity</em>, and where
+AR, FOXA1 and GATA3 were considered to be present, but in the absence of
+TFAP2B.</caption>
+<colgroup>
+<col width="13%" />
+<col width="23%" />
+<col width="15%" />
+<col width="15%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Subtype</th>
+<th align="right">Signature Size</th>
+<th align="right"># Mapped</th>
+<th align="right">% Mapped</th>
+<th align="right">p</th>
+<th align="right">FDR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CLCA2</td>
+<td align="right">136</td>
+<td align="right">57</td>
+<td align="right">41.9%</td>
+<td align="right">0.05217</td>
+<td align="right">0.4695</td>
+</tr>
+<tr class="even">
+<td align="left">DCN</td>
+<td align="right">766</td>
+<td align="right">231</td>
+<td align="right">30.2%</td>
+<td align="right">0.1858</td>
+<td align="right">0.8361</td>
+</tr>
+<tr class="odd">
+<td align="left">ESR1</td>
+<td align="right">868</td>
+<td align="right">268</td>
+<td align="right">30.9%</td>
+<td align="right">0.3565</td>
+<td align="right">0.9153</td>
+</tr>
+<tr class="even">
+<td align="left">TPX2</td>
+<td align="right">333</td>
+<td align="right">99</td>
+<td align="right">29.7%</td>
+<td align="right">0.7114</td>
+<td align="right">0.9153</td>
+</tr>
+<tr class="odd">
+<td align="left">ADM</td>
+<td align="right">123</td>
+<td align="right">31</td>
+<td align="right">25.2%</td>
+<td align="right">0.7388</td>
+<td align="right">0.9153</td>
+</tr>
+<tr class="even">
+<td align="left">CD83</td>
+<td align="right">400</td>
+<td align="right">101</td>
+<td align="right">25.2%</td>
+<td align="right">0.8497</td>
+<td align="right">0.9153</td>
+</tr>
+<tr class="odd">
+<td align="left">MX1</td>
+<td align="right">106</td>
+<td align="right">21</td>
+<td align="right">19.8%</td>
+<td align="right">0.8611</td>
+<td align="right">0.9153</td>
+</tr>
+<tr class="even">
+<td align="left">FABP4</td>
+<td align="right">50</td>
+<td align="right">9</td>
+<td align="right">18.0%</td>
+<td align="right">0.8643</td>
+<td align="right">0.9153</td>
+</tr>
+<tr class="odd">
+<td align="left">GZMA</td>
+<td align="right">195</td>
+<td align="right">42</td>
+<td align="right">21.5%</td>
+<td align="right">0.9153</td>
+<td align="right">0.9153</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="visualisations-luminal-genes" class="section level2 tabset">
+<h2 class="tabset">Visualisations: Luminal Genes</h2>
+<div id="myc" class="section level3">
+<h3>MYC</h3>
+<p>As the gene <em>MYC</em> has been identified as a key target, the
+binding patterns within the gene were explored. The two binding sites 1)
+with all four ChIP targets detected, 2) within 100kb of <em>MYC</em>,
+and 3) which were connected using HiChIP interactions were visualised
+and exported.</p>
+<pre class="r"><code>gn &lt;- &quot;MYC&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) %&gt;% 
+  filter(d &lt; 1e5)
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 5e3),
+  hicsize = 3,
+  max = 5e7,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-myc-1.png" alt="Two joint binding sites either side of *MYC* connected by HiChIP interactions to the promoter. HiChIP connections were detected at all bin sizes, however, only fine-resolutions 5kb interaction bins are shown." width="960" />
+<p class="caption">
+Two joint binding sites either side of <em>MYC</em> connected by HiChIP
+interactions to the promoter. HiChIP connections were detected at all
+bin sizes, however, only fine-resolutions 5kb interaction bins are
+shown.
+</p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-myc-1">
+Past versions of plot-myc-1.png
+</button>
+</p>
+<div id="fig-plot-myc-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/994ec9a4dd00a58d4f3791fef5929bb29993c3f1/docs/figure/comparison.Rmd/plot-myc-1.png" target="_blank">994ec9a</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 2*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="gata3" class="section level3">
+<h3>GATA3</h3>
+<pre class="r"><code>gn &lt;- &quot;GATA3&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) %&gt;% 
+  subsetByOverlaps(
+    hic %&gt;% 
+      subset(as.integer(bin_size) == 5e3) %&gt;% 
+      subsetByOverlaps(
+        subset(all_gr$gene, gene_name == gn)
+      )
+  )
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 5e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-gata3-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *GATA3*. Only the high-resolution 5kb bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which map to <em>GATA3</em>. Only the high-resolution 5kb bins are
+shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 2*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="foxa1" class="section level3">
+<h3>FOXA1</h3>
+<pre class="r"><code>gn &lt;- &quot;FOXA1&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) %&gt;%
+  subsetByOverlaps(
+    hic %&gt;%
+      subset(as.integer(bin_size) == 5e3) %&gt;%
+      subsetByOverlaps(
+        subset(all_gr$gene, gene_name == gn)
+      )
+  )
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 5e3),
+  max = 1e5,
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
+  zoom = 1.2,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-foxa1-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *FOXA1* Only the high-resolution 5kb bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which map to <em>FOXA1</em> Only the high-resolution 5kb bins are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.5*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="xbp1" class="section level3">
+<h3>XBP1</h3>
+<pre class="r"><code>gn &lt;- &quot;XBP1&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) %&gt;% 
+  filter(d &lt; 100e3)
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) == 5e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  cytobands = grch37.cytobands,
+  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-xbp1-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which are within 100kb of *XBP1*. Only the high-resolution 5kb interaction bins are shown. The two additional peaks were not considered to show evidence of TFAP2B binding by macs2 callpeak and are not highlighted for this reason" width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which are within 100kb of <em>XBP1</em>. Only the high-resolution 5kb
+interaction bins are shown. The two additional peaks were not considered
+to show evidence of TFAP2B binding by macs2 callpeak and are not
+highlighted for this reason
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="myb" class="section level3">
+<h3>MYB</h3>
+<pre class="r"><code>gn &lt;- &quot;MYB&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) 
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) == 20e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-myb-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *MYB*. Only the low-resolution 20kb interaction bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which map to <em>MYB</em>. Only the low-resolution 20kb interaction bins
+are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="greb1" class="section level3">
+<h3>GREB1</h3>
+<pre class="r"><code>gn &lt;- &quot;GREB1&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) 
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 40e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-greb1-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *GREB1*. Only the low-resolution 40kb interaction bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which map to <em>GREB1</em>. Only the low-resolution 40kb interaction
+bins are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+</div>
+<div id="visualisations-apocrine-genes" class="section level2 tabset">
+<h2 class="tabset">Visualisations:: Apocrine Genes</h2>
+<div id="clca2" class="section level3">
+<h3>CLCA2</h3>
+<pre class="r"><code>gn &lt;- &quot;CLCA2&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  arrange(d) 
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  collapseTranscripts = FALSE,
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 4,
+  shift = 1e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-clca2-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which within the transcribed region for *CLCA2*. No HiC data is shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which within the transcribed region for <em>CLCA2</em>. No HiC data is
+shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.1*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.1*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="tfap2b" class="section level3">
+<h3>TFAP2B</h3>
+<pre class="r"><code>gn &lt;- &quot;TFAP2B&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  filter(d &lt; 5e5) 
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) == 10e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-tfap2b-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, which map to *TFAP2B* and are within 500kb of *TFAP2B*. Only the medium-resolution 10kb interaction bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, which
+map to <em>TFAP2B</em> and are within 500kb of <em>TFAP2B</em>. Only the
+medium-resolution 10kb interaction bins are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+region_plot$HiC@dp@pars$fontface.title &lt;- 1
+region_plot$HiC@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+}
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="kynu" class="section level3">
+<h3>KYNU</h3>
+<pre class="r"><code>gn &lt;- &quot;KYNU&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) 
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 40e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 5,
+  shift = 3e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-kynu-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *KYNU*. No HiC interaction bins were found in this region." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, and
+which map to <em>KYNU</em>. No HiC interaction bins were found in this
+region.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.1*width(.), fix = &#39;center&#39;) %&gt;% 
+  resize(width = 0.4 * width(.), fix = &#39;start&#39;)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="dusp6" class="section level3">
+<h3>DUSP6</h3>
+<pre class="r"><code>gn &lt;- &quot;DUSP6&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  filter(d &lt; 1e5)
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 5e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  shift = 3e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-dusp6-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, which map to *DUSP6* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, which
+map to <em>DUSP6</em> and are within 100kb of the gene. Only the
+high-resolution 5kb HiC interaction bins are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 0.8 * width(.), fix = &#39;center&#39;) %&gt;% 
+  shift(1e4)
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="fgfr4" class="section level3">
+<h3>FGFR4</h3>
+<pre class="r"><code>gn &lt;- &quot;FGFR4&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  filter(d &lt; 1e5)
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 5e3),
+  hicsize = 3,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-fgfr4-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, which map to *FGFR4* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, which
+map to <em>FGFR4</em> and are within 100kb of the gene. Only the
+high-resolution 5kb HiC interaction bins are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.5 * width(.), fix = &#39;center&#39;) 
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
+</div>
+<div id="pgap3" class="section level3">
+<h3>PGAP3</h3>
+<pre class="r"><code>gn &lt;- &quot;PGAP3&quot;
+gr &lt;- dht_consensus %&gt;% 
+  filter(!!!syms(targets), mapped, H3K27ac) %&gt;% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %&gt;% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %&gt;% 
+  filter(d &lt; 1e5)
+fs &lt;- 14
+region_plot &lt;- plotHFGC(
+  gr = gr,
+  hic = hic %&gt;%
+    subsetByOverlaps(gr) %&gt;%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %&gt;% 
+    subset(as.integer(bin_size) &lt;= 5e3),
+  hicsize = 3,
+  max = 5e4,
+  genes = tm %&gt;%
+    mutate(detected = ifelse(gene %in% detected, &quot;Detected&quot;, &quot;Not-Detected&quot;)) %&gt;%
+    split(.$detected),
+  genecol = c(
+    Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 1.1,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = &quot;black&quot;, background.title = &quot;white&quot;,
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = &quot;black&quot;
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/plot-pgap3-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, which map to *PGAP3* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown." width="960" />
+<p class="caption">
+All H3K27ac-associated peaks where all four targets were detected, which
+map to <em>PGAP3</em> and are within 100kb of the gene. Only the
+high-resolution 5kb HiC interaction bins are shown.
+</p>
+</div>
+<pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
+region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
+region_plot$Detected@dp@pars$fontface.title &lt;- 1
+region_plot$Detected@dp@pars$rotation.title &lt;- 0
+region_plot$Detected@dp@pars$fontsize.group &lt;- fs
+region_plot$Detected@dp@pars$cex.group &lt;- 0.8
+region_plot$Detected@dp@pars$fontface.group &lt;- 1
+region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
+region_plot$AR@dp@pars$rotation.title &lt;- 0
+region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
+region_plot$GATA3@dp@pars$rotation.title &lt;- 0
+region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
+region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
+region_plot$H3K27ac@dp@pars$size &lt;- 5
+ax &lt;- region_plot[1:2]
+hl &lt;- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+)
+hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
+hl@dp@pars$col &lt;- &quot;blue&quot;
+hl@dp@pars$lwd &lt;- 0.5
+pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
+plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
+  range(ignore.strand = TRUE) %&gt;% 
+  resize(width = 1.2 * width(.), fix = &#39;center&#39;) 
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
