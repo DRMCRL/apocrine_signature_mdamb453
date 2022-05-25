@@ -7,6 +7,8 @@ navbar:
     href: index.html
   - text: Comparison
     href: comparison.html
+  - text: Motif Analysis
+    href: motif_analysis.html
 output:
   workflowr::wflow_html:
     toc: yes

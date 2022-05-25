@@ -37,6 +37,7 @@ library(Gviz)
 library(readxl)
 library(corrplot)
 library(goseq)
+library(BSgenome.Hsapiens.UCSC.hg19)
 theme_set(theme_bw())
 ```
 
@@ -520,7 +521,8 @@ dht_consensus %>%
   arrange(desc(n_targets), desc(targets)) %>% 
   mutate(targets = fct_inorder(targets)) %>% 
   ggplot(aes(dist_to_tss + 1, targets, fill = H3K27ac)) +
-  geom_boxplot() +
+  # geom_boxplot() +
+  geom_violin(draw_quantiles = 0.5, trim = FALSE) +
   facet_grid(TFAP2B ~ ., scales = "free_y") +
   # coord_cartesian(xlim = c(0, 5e4)) +
   scale_x_log10(labels = comma, breaks = 10^seq(0, 5)) +
@@ -948,6 +950,59 @@ goseq_noap2b %>%
     emphasize.strong.rows = which(.$FDR < 0.05)
   )
 ```
+
+### Sequence Export
+
+```{r}
+hg19 <- BSgenome.Hsapiens.UCSC.hg19
+sq19 <- seqinfo(hg19)
+consenus_hg19 <- dht_consensus
+seqinfo(consenus_hg19) <- sq19
+features_hg19 <- features
+seqinfo(features_hg19) <- sq19
+
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, !TFAP2B) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "ar_foxa1_gata3_no_tfap2b.fa")
+  )
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, TFAP2B) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "ar_foxa1_gata3_tfap2b.fa")
+  )
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, TFAP2B, H3K27ac) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "all4_h3k27ac.fa")
+  )
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, TFAP2B, !H3K27ac) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "all4_no_h3k27ac.fa")
+  )
+```
+
 
 
 ## Visualisations: Luminal Genes {.tabset}

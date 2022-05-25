@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Steve Pederson" />
+
+<meta name="date" content="2022-05-25" />
+
+<title>Motif Analysis</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MDA-MB-453: Apocrine Signature</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="comparison.html">Comparison</a>
+</li>
+<li>
+  <a href="motif_analysis.html">Motif Analysis</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Motif Analysis</h1>
+<h4 class="author">Steve Pederson</h4>
+<h4 class="date">2022-05-25</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-05-26
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 2
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>apocrine_signature_mdamb453/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220427code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220427)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220427code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220427)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+</p>
+</div>
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div class="panel-body">
+The following chunks had caches available:
+<ul>
+<li>
+ame-by-targets
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>motif_analysis_cache</code> and re-run the analysis. To have
+workflowr automatically delete the cache directory prior to building the
+file, set <code>delete_cache = TRUE</code> when running
+<code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree718e311b8aaec0d6379a25351af1a8a9b6e18114targetblank718e311a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/718e311b8aaec0d6379a25351af1a8a9b6e18114" target="_blank">718e311</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree718e311b8aaec0d6379a25351af1a8a9b6e18114targetblank718e311a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/718e311b8aaec0d6379a25351af1a8a9b6e18114" target="_blank">718e311</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/motif_analysis_cache/
+    Ignored:    data/bigwig/
+
+Untracked files:
+    Untracked:  20220523054104_JASPAR2022_combined_matrices_30543_meme.txt
+    Untracked:  analysis/motif_analysis.Rmd
+    Untracked:  code/check_fimo.R
+    Untracked:  code/memes_tutorial.R
+    Untracked:  code/seq_comparison.sh
+    Untracked:  data/external/HOCOMOCO.v11.meme
+    Untracked:  data/external/JASPAR2022_CORE_Hsapiens.meme
+    Untracked:  data/external/all4.meme
+    Untracked:  output/all4_h3k27ac.fa
+    Untracked:  output/all4_no_h3k27ac.fa
+    Untracked:  output/ar_foxa1_gata3_no_tfap2b.fa
+    Untracked:  output/ar_foxa1_gata3_tfap2b.fa
+    Untracked:  output/meme/
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   analysis/comparison.Rmd
+    Modified:   output/CLCA2.pdf
+    Modified:   output/DUSP6.pdf
+    Modified:   output/FGFR4.pdf
+    Modified:   output/FOXA1.pdf
+    Modified:   output/GATA3.pdf
+    Modified:   output/GREB1.pdf
+    Modified:   output/KYNU.pdf
+    Modified:   output/MYB.pdf
+    Modified:   output/MYC.pdf
+    Modified:   output/PGAP3.pdf
+    Modified:   output/TFAP2B.pdf
+    Modified:   output/XBP1.pdf
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This step takes the peaks defined previously and</p>
+<ol style="list-style-type: decimal">
+<li>Assesses motif enrichment for all ChIP targets within the peaks</li>
+<li>Detect additional binding motifs</li>
+</ol>
+<p>As AR is only found bound in the presence of DHT, all peaks are taken
+using DHT-treatment as the reference condition.</p>
+<pre class="r"><code>library(memes)
+library(universalmotif)
+library(tidyverse)
+library(plyranges)
+library(extraChIPs)
+library(rtracklayer)
+library(magrittr)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(scales)
+library(pander)
+library(glue)
+library(cowplot)
+library(parallel)</code></pre>
+<pre class="r"><code>options(meme_bin = &quot;/opt/meme/bin/&quot;)
+check_meme_install()
+theme_set(theme_bw())
+panderOptions(&quot;big.mark&quot;, &quot;,&quot;)</code></pre>
+<pre class="r"><code>stringSetToViews &lt;- function(x) {
+  stopifnot(is(x, &quot;XStringSet&quot;))
+  w &lt;- unique(width(x))
+  stopifnot(length(w) == 1)
+  n &lt;- length(x)
+  starts &lt;- (seq_along(x) - 1) * w + 1
+  seq &lt;- unlist(x)
+  Views(subject = seq, start = starts, width = w)
+}
+getBestMatch &lt;- function(x, subject, min.score = &quot;80%&quot;, rc = TRUE, ...) {
+  pwm &lt;- NULL
+  if (is.matrix(x)) pwm &lt;- x
+  if (is(x, &quot;universalmotif&quot;)) pwm &lt;- x@motif
+  stopifnot(!is.null(pwm))
+  
+  stopifnot(is(subject, &quot;XStringViews&quot;))
+  w &lt;- unique(width(subject))
+  stopifnot(length(w) == 1)
+  
+  matches &lt;- matchPWM(
+    pwm, subject, min.score = min.score, with.score = TRUE, ...
+  )
+  df &lt;- as.data.frame(matches)
+  df$score &lt;- mcols(matches)$score
+  df$id &lt;- ceiling(df$start/ w)
+  df$pos &lt;- df$start - (df$id - 1) * w 
+  
+  if (rc) {
+    rc_matches &lt;-  matchPWM(
+      pwm, subject = reverseComplement(subject),
+      min.score = min.score, with.score = TRUE, 
+      ...
+    )
+    rc_df &lt;- as.data.frame(rc_matches)
+    rc_df$score &lt;- mcols(rc_matches)$score
+    rc_df$start &lt;- max(end(subject)) - end(rc_matches)
+    rc_df$end &lt;- max(end(subject)) - start(rc_matches)
+    rc_df$id &lt;- ceiling(rc_df$start/ w)
+    rc_df$pos &lt;- rc_df$start - (rc_df$id - 1) * w + 1
+    df &lt;- bind_rows(df, rc_df)
+  }
+  
+  df &lt;- arrange(df, id, desc(score))
+  df &lt;- distinct(df, id, .keep_all = TRUE)
+  df &lt;- dplyr::select(df, id, pos, seq)
+  as_tibble(df)
+  
+}</code></pre>
+<pre class="r"><code>hg19 &lt;- BSgenome.Hsapiens.UCSC.hg19
+sq19 &lt;- seqinfo(hg19)</code></pre>
+<pre class="r"><code>all_gr &lt;- here::here(&quot;data&quot;, &quot;annotations&quot;, &quot;all_gr.rds&quot;) %&gt;%
+  read_rds() %&gt;% 
+  lapply(
+    function(x) {
+      seqinfo(x) &lt;- sq19
+      x
+    }
+  )
+counts &lt;- here::here(&quot;data&quot;, &quot;rnaseq&quot;, &quot;counts.out.gz&quot;) %&gt;%
+  read_tsv(skip = 1) %&gt;%
+  dplyr::select(Geneid, ends_with(&quot;bam&quot;)) %&gt;%
+  dplyr::rename(gene_id = Geneid)
+detected &lt;- all_gr$gene %&gt;%
+  as_tibble() %&gt;%
+  distinct(gene_id, gene_name) %&gt;%
+  left_join(counts) %&gt;%
+  pivot_longer(
+    cols = ends_with(&quot;bam&quot;), names_to = &quot;sample&quot;, values_to = &quot;counts&quot;
+  ) %&gt;%
+  mutate(detected = counts &gt; 0) %&gt;%
+  group_by(gene_id, gene_name) %&gt;%
+  summarise(detected = mean(detected) &gt; 0.25, .groups = &quot;drop&quot;) %&gt;%
+  dplyr::filter(detected) %&gt;%
+  dplyr::select(starts_with(&quot;gene&quot;))</code></pre>
+<p>Pre-existing RNA-seq data was again loaded and the set of 21,173
+detected genes was defined as those with <span
+class="math inline">\(\geq 1\)</span> aligned read in at least 25% of
+samples. This dataset represented the DHT response in MDA-MB-453 cells,
+however, given the existence of both Vehicle and DHT conditions,
+represents a good representative measure of the polyadenylated
+components of the transcriptome.</p>
+<pre class="r"><code>features &lt;- here::here(&quot;data&quot;, &quot;h3k27ac&quot;) %&gt;%
+  list.files(full.names = TRUE, pattern = &quot;bed$&quot;) %&gt;%
+  sapply(import.bed, seqinfo = sq19) %&gt;%
+  lapply(granges) %&gt;%
+  setNames(basename(names(.))) %&gt;%
+  setNames(str_remove_all(names(.), &quot;s.bed&quot;)) %&gt;%
+  GRangesList() %&gt;%
+  unlist() %&gt;%
+  names_to_column(&quot;feature&quot;) %&gt;%
+  sort()</code></pre>
+<p>The set of H3K27ac-defined features was again used as a marker of
+regulatory activity, with <em>16,544</em> and <em>15,286</em> regions
+defined as enhancers or promoters respectively.</p>
+<pre class="r"><code>meme_db &lt;- here::here(&quot;data&quot;, &quot;external&quot;, &quot;JASPAR2022_CORE_Hsapiens.meme&quot;) %&gt;%
+  read_meme() %&gt;%
+  to_df() %&gt;%
+  as_tibble() %&gt;%
+  mutate(
+    across(everything(), vctrs::vec_proxy),
+    altname = str_remove(altname, &quot;MA[0-9]+\\.[0-9]*\\.&quot;),
+    organism = &quot;Homo sapiens&quot;
+  )
+meme_db_detected &lt;- meme_db %&gt;%
+  mutate(
+    gene_name = str_split(altname, pattern = &quot;::&quot;, n = 2)
+  ) %&gt;%
+  dplyr::filter(
+    vapply(
+      gene_name,
+      function(x) all(x %in% detected$gene_name),
+      logical(1)
+    )
+  )</code></pre>
+<p>The motif database was initially defined as all 727 CORE motifs found
+in <em>Homo sapiens</em>, as contained in <a
+href="https://jaspar2022.genereg.net/">JASPAR2022</a>. In order to
+minimise irrelevant results, only the 465 motifs associated with a
+detected gene were then retained.</p>
+<pre class="r"><code>dht_peaks &lt;- here::here(&quot;data&quot;, &quot;peaks&quot;) %&gt;%
+  list.files(recursive = TRUE, pattern = &quot;oracle&quot;, full.names = TRUE) %&gt;%
+  sapply(read_rds, simplify = FALSE) %&gt;%
+  lapply(function(x) x[[&quot;DHT&quot;]]) %&gt;%
+  lapply(setNames, nm = c()) %&gt;%
+  setNames(str_extract_all(names(.), &quot;AR|FOXA1|GATA3|TFAP2B&quot;)) %&gt;% 
+  lapply(
+    function(x) {
+      seqinfo(x) &lt;- sq19
+      x
+    }
+  )
+targets &lt;- names(dht_peaks)
+dht_consensus &lt;- dht_peaks %&gt;%
+  lapply(granges) %&gt;%
+  GRangesList() %&gt;%
+  unlist() %&gt;%
+  reduce() %&gt;%
+  mutate(
+    AR = overlapsAny(., dht_peaks$AR),
+    FOXA1 = overlapsAny(., dht_peaks$FOXA1),
+    GATA3 = overlapsAny(., dht_peaks$GATA3),
+    TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
+    promoter = bestOverlap(., features, var = &quot;feature&quot;, missing = &quot;None&quot;) == &quot;promoter&quot;,
+    enhancer = bestOverlap(., features, var = &quot;feature&quot;, missing = &quot;None&quot;) == &quot;enhancer&quot;,
+    H3K27ac = promoter | enhancer
+  )</code></pre>
+<pre class="r"><code>a &lt;- dht_peaks %&gt;% 
+  lapply(mutate, w = width) %&gt;% 
+  lapply(as_tibble) %&gt;% 
+  bind_rows(.id = &quot;target&quot;) %&gt;% 
+  ggplot(aes(w, stat(density), colour = target)) +
+  geom_density() +
+  scale_x_log10(breaks = c(100, 300, 600, 1e3, 2e3, 3e3), labels = comma) +
+  labs(
+    x = &quot;Peak Width (bp)&quot;, y = &quot;Density&quot;, colour = &quot;Target&quot;
+  )
+b &lt;- dht_peaks %&gt;% 
+  lapply(mutate, w = width) %&gt;% 
+  lapply(as_tibble) %&gt;% 
+  bind_rows(.id = &quot;target&quot;) %&gt;% 
+  mutate(skew = 0.5 - peak / w) %&gt;% 
+  ggplot(aes(skew, stat(density), colour = target)) +
+  geom_density() +
+  scale_x_continuous(labels = percent) +
+  labs(
+    x = &quot;% Width Between Peak Summit and Peak Centre&quot;,
+    y = &quot;Density&quot;,
+    colour = &quot;ChIP Target&quot;
+  )
+plot_grid(
+  a + theme(legend.position = &quot;none&quot;), 
+  b + theme(legend.position = &quot;none&quot;),
+  get_legend(b),
+  rel_widths = c(1, 1, 0.2), nrow = 1,
+  labels = c(&quot;A&quot;, &quot;B&quot;)
+)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-peak-shape-1.png" alt="Distributions of A) peak width and B) summit location with peaks." width="960" />
+<p class="caption">
+Distributions of A) peak width and B) summit location with peaks.
+</p>
+</div>
+</div>
+<div id="enrichment-of-expected-motifs" class="section level1">
+<h1>Enrichment of Expected Motifs</h1>
+<div id="analysis-of-motif-enrichment-ame" class="section level2">
+<h2>Analysis of Motif Enrichment (AME)</h2>
+<pre class="r"><code>grl_by_targets &lt;- dht_consensus %&gt;% 
+  as_tibble() %&gt;% 
+  pivot_longer(
+    all_of(targets), names_to = &quot;target&quot;, values_to = &quot;detected&quot;
+  ) %&gt;% 
+  dplyr::filter(detected) %&gt;% 
+  group_by(range, H3K27ac) %&gt;% 
+  summarise(
+    targets = paste(sort(target), collapse = &quot; &quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  colToRanges(var = &quot;range&quot;, seqinfo = sq19) %&gt;% 
+  sort() %&gt;% 
+  splitAsList(.$targets)</code></pre>
+<p>Union ranges were grouped by the combination of detected AR, FOXA1,
+GATA3 and TFAP2B binding, then sequences obtained corresponding to each
+union range.</p>
+<pre class="r"><code>grl_by_targets %&gt;% 
+  lapply(
+    function(x) {
+      tibble(
+        `N Sites` = length(x), 
+        `% H3K27ac` = mean(x$H3K27ac),
+        `Median Width` = floor(median(width(x)))
+      )
+    }
+  ) %&gt;% 
+  bind_rows(.id = &quot;Targets&quot;) %&gt;% 
+  mutate(
+    `N Targets` = str_count(Targets, &quot; &quot;) + 1,
+    `% H3K27ac` = percent(`% H3K27ac`, 0.1)
+  ) %&gt;% 
+  dplyr::select(contains(&quot;Targets&quot;), everything()) %&gt;% 
+  arrange(`N Targets`, Targets) %&gt;% 
+  pander(
+    justify = &quot;lrrrr&quot;,
+    caption = &quot;Summary of union ranges and which combinations of the targets were detected.&quot;
+  )</code></pre>
+<table>
+<caption>Summary of union ranges and which combinations of the targets
+were detected.</caption>
+<colgroup>
+<col width="32%" />
+<col width="16%" />
+<col width="13%" />
+<col width="16%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Targets</th>
+<th align="right">N Targets</th>
+<th align="right">N Sites</th>
+<th align="right">% H3K27ac</th>
+<th align="right">Median Width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">AR</td>
+<td align="right">1</td>
+<td align="right">395</td>
+<td align="right">13.9%</td>
+<td align="right">241</td>
+</tr>
+<tr class="even">
+<td align="left">FOXA1</td>
+<td align="right">1</td>
+<td align="right">59,404</td>
+<td align="right">12.8%</td>
+<td align="right">319</td>
+</tr>
+<tr class="odd">
+<td align="left">GATA3</td>
+<td align="right">1</td>
+<td align="right">4,284</td>
+<td align="right">19.6%</td>
+<td align="right">234</td>
+</tr>
+<tr class="even">
+<td align="left">TFAP2B</td>
+<td align="right">1</td>
+<td align="right">6,655</td>
+<td align="right">80.1%</td>
+<td align="right">301</td>
+</tr>
+<tr class="odd">
+<td align="left">AR FOXA1</td>
+<td align="right">2</td>
+<td align="right">3,543</td>
+<td align="right">17.8%</td>
+<td align="right">505</td>
+</tr>
+<tr class="even">
+<td align="left">AR GATA3</td>
+<td align="right">2</td>
+<td align="right">158</td>
+<td align="right">16.5%</td>
+<td align="right">310</td>
+</tr>
+<tr class="odd">
+<td align="left">AR TFAP2B</td>
+<td align="right">2</td>
+<td align="right">135</td>
+<td align="right">55.6%</td>
+<td align="right">414</td>
+</tr>
+<tr class="even">
+<td align="left">FOXA1 GATA3</td>
+<td align="right">2</td>
+<td align="right">9,760</td>
+<td align="right">18.1%</td>
+<td align="right">479</td>
+</tr>
+<tr class="odd">
+<td align="left">FOXA1 TFAP2B</td>
+<td align="right">2</td>
+<td align="right">3,849</td>
+<td align="right">64.6%</td>
+<td align="right">513</td>
+</tr>
+<tr class="even">
+<td align="left">GATA3 TFAP2B</td>
+<td align="right">2</td>
+<td align="right">396</td>
+<td align="right">60.6%</td>
+<td align="right">368</td>
+</tr>
+<tr class="odd">
+<td align="left">AR FOXA1 GATA3</td>
+<td align="right">3</td>
+<td align="right">6,518</td>
+<td align="right">25.2%</td>
+<td align="right">683</td>
+</tr>
+<tr class="even">
+<td align="left">AR FOXA1 TFAP2B</td>
+<td align="right">3</td>
+<td align="right">1,786</td>
+<td align="right">62.9%</td>
+<td align="right">639</td>
+</tr>
+<tr class="odd">
+<td align="left">AR GATA3 TFAP2B</td>
+<td align="right">3</td>
+<td align="right">61</td>
+<td align="right">55.7%</td>
+<td align="right">419</td>
+</tr>
+<tr class="even">
+<td align="left">FOXA1 GATA3 TFAP2B</td>
+<td align="right">3</td>
+<td align="right">1,441</td>
+<td align="right">52.0%</td>
+<td align="right">575</td>
+</tr>
+<tr class="odd">
+<td align="left">AR FOXA1 GATA3 TFAP2B</td>
+<td align="right">4</td>
+<td align="right">6,336</td>
+<td align="right">58.2%</td>
+<td align="right">814</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>meme_db_targets &lt;- meme_db_detected %&gt;% 
+  dplyr::filter(altname %in% targets) %&gt;% 
+  to_list()
+seq_by_targets &lt;- grl_by_targets %&gt;% 
+  get_sequence(hg19)
+ame_by_targets &lt;- seq_by_targets %&gt;% 
+  runAme(database = meme_db_targets)</code></pre>
+<p><a href="https://meme-suite.org/meme/doc/ame.html?man_type=web">AME
+from the meme-suite</a> was then run on each sequence to detect the
+presence of motifs associated with each target within each set of
+sequences.</p>
+<pre class="r"><code>ame_by_targets %&gt;% 
+  bind_rows(.id = &quot;targets&quot;) %&gt;% 
+  mutate(
+    motif_id = as.factor(motif_id),
+    targets = as.factor(targets),
+    TFAP2B = ifelse(
+      str_detect(targets, &quot;TFAP2B&quot;), &quot;TFAP2B&quot;, &quot;No TFAP2B&quot;
+    )
+  ) %&gt;% 
+  dplyr::filter(adj.pvalue &lt; 0.05) %&gt;% 
+  plot_ame_heatmap(
+    id = motif_id,
+    value = tp_percent,
+    group = targets
+  ) +
+  geom_label(
+    aes(label = percent(tp_percent/100, 0.1)),
+    size = 3,
+    show.legend = FALSE
+  ) +
+  facet_grid(TFAP2B ~ motif_alt_id, scales = &quot;free&quot;, space = &quot;free&quot;) +
+  scale_x_discrete(expand = expansion(c(0, 0))) +
+  scale_y_discrete(expand = expansion(c(0, 0))) +
+  labs(
+    x = &quot;Detected Motif&quot;,
+    y = &quot;Detected Targets&quot;,
+    fill = expression(widehat(&quot;TP%&quot;))
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 10),
+    axis.text.y = element_text(angle = 0, hjust = 1, size = 10),
+    panel.grid = element_blank()
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/ame-heatmap-1.png" alt="Estimated percentage of true positive matches to all binding motifs associated with each ChIP target. Only values with an enrichment adjusted p-value &lt; 0.05 are shown, such that missing values are able to be confidently assumed as not enriched for the motif. With the possible exception of GATA3 binding in the presence of AR and FOXA1 only, all provide supporting evidence for direct binding of each target to it's motif" width="960" />
+<p class="caption">
+Estimated percentage of true positive matches to all binding motifs
+associated with each ChIP target. Only values with an enrichment
+adjusted p-value &lt; 0.05 are shown, such that missing values are able
+to be confidently assumed as not enriched for the motif. With the
+possible exception of GATA3 binding in the presence of AR and FOXA1
+only, all provide supporting evidence for direct binding of each target
+to it’s motif
+</p>
+</div>
+</div>
+</div>
+<div id="motif-centrality-relative-to-tfap2b" class="section level1">
+<h1>Motif Centrality Relative to TFAP2B</h1>
+<pre class="r"><code>seq_width &lt;- 200
+min_score &lt;- percent(0.75, accuracy = 1)
+tfap2b_summits &lt;- dht_peaks$TFAP2B %&gt;% 
+  resize(width = 1, fix = &#39;start&#39;) %&gt;% 
+  shift(shift = .$peak) %&gt;% 
+  resize(width = seq_width, fix = &#39;center&#39;) %&gt;% 
+  granges() %&gt;% 
+  mutate(
+    AR = overlapsAny(., subset(dht_consensus, AR)),
+    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
+    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
+    H3K27ac = overlapsAny(., features)
+  ) 
+seq_tfap2b_summits &lt;- tfap2b_summits %&gt;% 
+  get_sequence(hg19)
+views_tfap2b_summits &lt;- stringSetToViews(seq_tfap2b_summits)
+matches_tfap2b_summits &lt;- meme_db_targets %&gt;% 
+  lapply(
+    getBestMatch, 
+    subject = views_tfap2b_summits,
+    min.score = min_score
+  ) %&gt;% 
+  setNames(
+    vapply(meme_db_targets, function(x) x@name, character(1))
+  ) %&gt;% 
+  bind_rows(.id = &quot;name&quot;) %&gt;% 
+  left_join(
+    dplyr::select(meme_db_detected, name, altname),
+    by = &quot;name&quot;
+  ) %&gt;% 
+  left_join(
+    tfap2b_summits %&gt;% 
+      as_tibble() %&gt;% 
+      mutate(id =seq_along(range)),
+    by = &quot;id&quot;
+  ) %&gt;% 
+  arrange(id) %&gt;% 
+  dplyr::select(range, any_of(targets), H3K27ac, name, altname, seq, pos)</code></pre>
+<p>Using the sites which only show detectable TFAP2B, the central 200bp
+region around the estimated TFAP2B peak summit were then assessed for
+binding of each of the motifs associated with the set of ChIP targets.
+Any matches with a match greater than 75% of the highest possible score
+were initially included, with the position of only the best scoring
+match being retained. The position of the best match, relative to the
+peak centre was then assessed.</p>
+<pre class="r"><code>matches_tfap2b_summits  %&gt;% 
+  mutate(name = glue(&quot;{name}\n({altname})&quot;)) %&gt;% 
+  ggplot(aes(pos, stat(density), colour = altname)) +
+  geom_density(aes(linetype = H3K27ac)) +
+  geom_text(
+    aes(x = seq_width/2, y = 0.001, label = lab),
+    data = . %&gt;% 
+      group_by(name) %&gt;% 
+      summarise(
+        n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;% 
+      mutate(lab = glue(&quot;n = {comma(n)}\n({percent(n/length(tfap2b_summits), 0.1)})&quot;)),
+    colour = &quot;black&quot;,
+    inherit.aes = FALSE
+  ) +
+  facet_wrap(~name) +
+  scale_linetype_manual(values = c(2, 1)) +
+  labs(
+    x = &quot;Best Match Position In Sequence&quot;,
+    y = &quot;Density&quot;,
+    colour = &quot;Motif Target&quot;
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-centrality-tfap2b-1.png" alt="Position of the best match for each motif using sequences centred at the summits of TFAP2B binding sites. Sites where H3K27ac signal was not found are shown as dashed lines. No visual difference in TFAP2B motif centrality was detected. All other motifs appeared to be uniformly distributed amongst the sequences." width="960" />
+<p class="caption">
+Position of the best match for each motif using sequences centred at the
+summits of TFAP2B binding sites. Sites where H3K27ac signal was not
+found are shown as dashed lines. No visual difference in TFAP2B motif
+centrality was detected. All other motifs appeared to be uniformly
+distributed amongst the sequences.
+</p>
+</div>
+<p>Across all motifs which were considered to represent possible matches
+to the binding site of TFAP2<span class="math inline">\(\beta\)</span>,
+matches to one or more of the motifs were found in 20,382 (97.0%) of the
+21,008 queried sequences.</p>
+</div>
+<div id="motif-discovery" class="section level1">
+<h1>Motif Discovery</h1>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.0 (2022-04-22)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.04.4 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] cowplot_1.1.1                     glue_1.6.2                       
+ [3] pander_0.6.5                      scales_1.2.0                     
+ [5] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.64.0                  
+ [7] Biostrings_2.64.0                 XVector_0.36.0                   
+ [9] magrittr_2.0.3                    rtracklayer_1.56.0               
+[11] extraChIPs_1.0.0                  SummarizedExperiment_1.26.1      
+[13] Biobase_2.56.0                    MatrixGenerics_1.8.0             
+[15] matrixStats_0.62.0                BiocParallel_1.30.2              
+[17] plyranges_1.16.0                  GenomicRanges_1.48.0             
+[19] GenomeInfoDb_1.32.2               IRanges_2.30.0                   
+[21] S4Vectors_0.34.0                  BiocGenerics_0.42.0              
+[23] forcats_0.5.1                     stringr_1.4.0                    
+[25] dplyr_1.0.9                       purrr_0.3.4                      
+[27] readr_2.1.2                       tidyr_1.2.0                      
+[29] tibble_3.1.7                      ggplot2_3.3.6                    
+[31] tidyverse_1.3.1                   universalmotif_1.14.0            
+[33] memes_1.4.1                       workflowr_1.7.0                  
+
+loaded via a namespace (and not attached):
+  [1] utf8_1.2.2                 R.utils_2.11.0            
+  [3] tidyselect_1.1.2           RSQLite_2.2.14            
+  [5] AnnotationDbi_1.58.0       htmlwidgets_1.5.4         
+  [7] grid_4.2.0                 scatterpie_0.1.7          
+  [9] munsell_0.5.0              codetools_0.2-18          
+ [11] withr_2.5.0                colorspace_2.0-3          
+ [13] filelock_1.0.2             highr_0.9                 
+ [15] knitr_1.39                 rstudioapi_0.13           
+ [17] ggside_0.2.0.9990          labeling_0.4.2            
+ [19] git2r_0.30.1               GenomeInfoDbData_1.2.8    
+ [21] polyclip_1.10-0            farver_2.1.0              
+ [23] bit64_4.0.5                rprojroot_2.0.3           
+ [25] vctrs_0.4.1                generics_0.1.2            
+ [27] xfun_0.31                  csaw_1.30.1               
+ [29] biovizBase_1.44.0          BiocFileCache_2.4.0       
+ [31] ggseqlogo_0.1              R6_2.5.1                  
+ [33] doParallel_1.0.17          clue_0.3-60               
+ [35] locfit_1.5-9.5             AnnotationFilter_1.20.0   
+ [37] bitops_1.0-7               cachem_1.0.6              
+ [39] DelayedArray_0.22.0        assertthat_0.2.1          
+ [41] vroom_1.5.7                promises_1.2.0.1          
+ [43] BiocIO_1.6.0               nnet_7.3-17               
+ [45] gtable_0.3.0               processx_3.5.3            
+ [47] ensembldb_2.20.1           rlang_1.0.2               
+ [49] GlobalOptions_0.1.2        splines_4.2.0             
+ [51] lazyeval_0.2.2             dichromat_2.0-0.1         
+ [53] broom_0.8.0                checkmate_2.1.0           
+ [55] yaml_2.3.5                 modelr_0.1.8              
+ [57] GenomicFeatures_1.48.1     backports_1.4.1           
+ [59] httpuv_1.6.5               Hmisc_4.7-0               
+ [61] EnrichedHeatmap_1.26.0     usethis_2.1.5             
+ [63] tools_4.2.0                ellipsis_0.3.2            
+ [65] jquerylib_0.1.4            RColorBrewer_1.1-3        
+ [67] Rcpp_1.0.8.3               base64enc_0.1-3           
+ [69] progress_1.2.2             zlibbioc_1.42.0           
+ [71] RCurl_1.98-1.6             ps_1.7.0                  
+ [73] prettyunits_1.1.1          rpart_4.1.16              
+ [75] GetoptLong_1.0.5           ggrepel_0.9.1             
+ [77] haven_2.5.0                cluster_2.1.3             
+ [79] here_1.0.1                 fs_1.5.2                  
+ [81] data.table_1.14.2          circlize_0.4.15           
+ [83] reprex_2.0.1               whisker_0.4               
+ [85] ProtGenerics_1.28.0        pkgload_1.2.4             
+ [87] hms_1.1.1                  evaluate_0.15             
+ [89] XML_3.99-0.9               jpeg_0.1-9                
+ [91] readxl_1.4.0               gridExtra_2.3             
+ [93] shape_1.4.6                testthat_3.1.4            
+ [95] compiler_4.2.0             biomaRt_2.52.0            
+ [97] crayon_1.5.1               R.oo_1.24.0               
+ [99] htmltools_0.5.2            ggfun_0.0.6               
+[101] later_1.3.0                tzdb_0.3.0                
+[103] Formula_1.2-4              lubridate_1.8.0           
+[105] DBI_1.1.2                  tweenr_1.0.2              
+[107] dbplyr_2.1.1               ComplexHeatmap_2.12.0     
+[109] MASS_7.3-56                GenomicInteractions_1.30.0
+[111] rappdirs_0.3.3             Matrix_1.4-1              
+[113] brio_1.1.3                 cli_3.3.0                 
+[115] R.methodsS3_1.8.1          metapod_1.4.0             
+[117] Gviz_1.40.1                igraph_1.3.1              
+[119] pkgconfig_2.0.3            getPass_0.2-2             
+[121] GenomicAlignments_1.32.0   foreign_0.8-82            
+[123] xml2_1.3.3                 InteractionSet_1.24.0     
+[125] foreach_1.5.2              bslib_0.3.1               
+[127] rvest_1.0.2                VariantAnnotation_1.42.1  
+[129] callr_3.7.0                digest_0.6.29             
+[131] rmarkdown_2.14             cellranger_1.1.0          
+[133] htmlTable_2.4.0            edgeR_3.38.1              
+[135] restfulr_0.0.13            curl_4.3.2                
+[137] Rsamtools_2.12.0           rjson_0.2.21              
+[139] lifecycle_1.0.1            jsonlite_1.8.0            
+[141] desc_1.4.1                 limma_3.52.1              
+[143] fansi_1.0.3                pillar_1.7.0              
+[145] lattice_0.20-45            KEGGREST_1.36.0           
+[147] fastmap_1.1.0              httr_1.4.3                
+[149] survival_3.2-13            png_0.1-7                 
+[151] iterators_1.0.14           cmdfun_1.0.2              
+[153] bit_4.0.4                  ggforce_0.3.3             
+[155] stringi_1.7.6              sass_0.4.1                
+[157] blob_1.2.3                 latticeExtra_0.6-29       
+[159] memoise_2.0.1             </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
