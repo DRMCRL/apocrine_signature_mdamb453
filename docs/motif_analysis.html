@@ -397,7 +397,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-27
+<strong>Last updated:</strong> 2022-05-28
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -532,15 +532,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cfftargetblank7cfa8e7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree1bf46f725877100a2a8b4a7da76611f3be92a29ftargetblank1bf46f7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cff" target="_blank">7cfa8e7</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/1bf46f725877100a2a8b4a7da76611f3be92a29f" target="_blank">1bf46f7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cfftargetblank7cfa8e7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree1bf46f725877100a2a8b4a7da76611f3be92a29ftargetblank1bf46f7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -550,7 +550,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cff" target="_blank">7cfa8e7</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/1bf46f725877100a2a8b4a7da76611f3be92a29f" target="_blank">1bf46f7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -567,9 +567,13 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
+    Ignored:    analysis/motif_analysis.html
+    Ignored:    analysis/site_libs/
     Ignored:    data/bigwig/
 
 Untracked files:
+    Untracked:  analysis/motif_analysis.knit.md
     Untracked:  output/all4_h3k27ac.fa
     Untracked:  output/all4_no_h3k27ac.fa
     Untracked:  output/ar_foxa1_gata3_no_tfap2b.fa
@@ -623,6 +627,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/analysis/motif_analysis.Rmd" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+<td>
+Added motifs distance plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/motif_analysis.html" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+<td>
+Added motifs distance plots
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -725,32 +763,19 @@ library(gt)</code></pre>
 check_meme_install()
 theme_set(theme_bw())
 panderOptions(&quot;big.mark&quot;, &quot;,&quot;)</code></pre>
-<pre class="r"><code>stringSetToViews &lt;- function(x) {
-  stopifnot(is(x, &quot;XStringSet&quot;))
-  w &lt;- unique(width(x))
-  stopifnot(length(w) == 1)
-  n &lt;- length(x)
-  starts &lt;- (seq_along(x) - 1) * w + 1
-  seq &lt;- unlist(x)
-  Views(subject = seq, start = starts, width = w)
-}
-getBestMatch &lt;- function(x, subject, min.score = &quot;80%&quot;, rc = TRUE, ...) {
+<pre class="r"><code>getBestMatch &lt;- function(x, subject, min.score = &quot;80%&quot;, rc = TRUE, ...) {
+  
   pwm &lt;- NULL
   if (is.matrix(x)) pwm &lt;- x
   if (is(x, &quot;universalmotif&quot;)) pwm &lt;- x@motif
   stopifnot(!is.null(pwm))
-  
   stopifnot(is(subject, &quot;XStringViews&quot;))
-  w &lt;- unique(width(subject))
-  stopifnot(length(w) == 1)
   
   matches &lt;- matchPWM(
     pwm, subject, min.score = min.score, with.score = TRUE, ...
   )
   df &lt;- as.data.frame(matches)
   df$score &lt;- mcols(matches)$score
-  df$id &lt;- ceiling(df$start/ w)
-  df$pos &lt;- df$start - (df$id - 1) * w 
   df$strand &lt;- &quot;+&quot;
   
   if (rc) {
@@ -761,17 +786,30 @@ getBestMatch &lt;- function(x, subject, min.score = &quot;80%&quot;, rc = TRUE, 
     )
     rc_df &lt;- as.data.frame(rc_matches)
     rc_df$score &lt;- mcols(rc_matches)$score
-    rc_df$id &lt;- ceiling(rc_df$start/ w)
-    rc_df$pos &lt;- rc_df$start - (rc_df$id - 1) * w + 1
     rc_df$strand &lt;- &quot;-&quot;
     df &lt;- bind_rows(df, rc_df)
   }
   
-  df &lt;- arrange(df, id, desc(score))
-  df &lt;- distinct(df, id, .keep_all = TRUE)
-  df &lt;- dplyr::select(df, id, pos, seq, strand)
-  df$strand &lt;- factor(df$strand, levels = c(&quot;+&quot;, &quot;-&quot;, &quot;*&quot;))
-  as_tibble(df)
+  grp_cols &lt;- c(&quot;start&quot;, &quot;end&quot;, &quot;width&quot;, &quot;seq&quot;, &quot;score&quot;)
+  grp_df &lt;- group_by(df, !!!syms(grp_cols))
+  summ_df &lt;- summarise(
+    grp_df, strand = paste(strand, collapse = &quot; &quot;), .groups=  &quot;drop&quot;
+  )
+  summ_df$strand &lt;- str_replace_all(summ_df$strand, &quot;. .&quot;, &quot;*&quot;)
+  summ_df$strand &lt;- factor(summ_df$strand, levels = c(&quot;+&quot;, &quot;-&quot;, &quot;*&quot;))
+  summ_df$view &lt;- findInterval(summ_df$start, start(subject))
+  summ_df &lt;- arrange(summ_df, view, desc(score))
+  
+  best_df &lt;- distinct(summ_df, view, .keep_all = TRUE)
+  best_df &lt;- mutate(
+    best_df,
+    start_in_view = start - start(subject)[view] + 1,
+    end_in_view = start_in_view + width
+  )
+  ## This will only be added if the views have names
+  best_df$view_name &lt;- names(subject[best_df$view])
+  
+  best_df
   
 }</code></pre>
 <pre class="r"><code>hg19 &lt;- BSgenome.Hsapiens.UCSC.hg19
@@ -1407,8 +1445,9 @@ Steve Pederson
   ) 
 seq_ar_summits &lt;- ar_summits %&gt;% 
   get_sequence(hg19)
-views_ar_summits &lt;- stringSetToViews(seq_ar_summits)
-matches_ar_summits &lt;- meme_db_targets %&gt;%
+views_ar_summits &lt;- as(seq_ar_summits, &quot;Views&quot;) %&gt;% 
+  setNames(names(seq_ar_summits))
+matches_ar_summits &lt;-meme_db_targets %&gt;%
   lapply(
     getBestMatch, 
     subject = views_ar_summits,
@@ -1422,13 +1461,9 @@ matches_ar_summits &lt;- meme_db_targets %&gt;%
     dplyr::select(meme_info, name, altname, motif_length),
     by = &quot;name&quot;
   ) %&gt;% 
-  left_join(
-    ar_summits %&gt;% 
-      as_tibble() %&gt;% 
-      mutate(id =seq_along(range)),
-    by = &quot;id&quot;
-  ) %&gt;% 
-  arrange(id) %&gt;% 
+    dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(ar_summits), by = &quot;range&quot; ) %&gt;% 
+  arrange(view) %&gt;% 
   mutate(
     target_detected = case_when(
       altname == &quot;AR&quot; ~ AR,
@@ -1441,7 +1476,7 @@ matches_ar_summits &lt;- meme_db_targets %&gt;%
     range, 
     any_of(targets), H3K27ac, 
     name, altname, target_detected, 
-    seq, motif_length, pos, strand
+    pos = start_in_view, width, strand, seq
   )</code></pre>
 <pre class="r"><code>matches_ar_summits  %&gt;% 
   mutate(
@@ -1476,7 +1511,7 @@ matches_ar_summits &lt;- meme_db_targets %&gt;%
     x = &quot;Best Match Position In Sequence&quot;,
     y = &quot;Density&quot;,
     colour = &quot;Motif Target&quot;,
-    linetype = &quot;ChIP/Motif\nTarget Detected&quot;
+    linetype = &quot;Target Detected&quot;
   )</code></pre>
 <div class="figure" style="text-align: center">
 <img src="figure/motif_analysis.Rmd/plot-centrality-ar-1.png" alt="Position of the best match for each motif using sequences centred at the summits of AR binding sites. Sites where the ChIP target was not detected are shown as dashed lines, and panels are separated by H3K27ac status. No visual difference in AR motif centrality was detected due to H3K27ac signal. A slight tendency for the best FOXA1  to also appear centrally was noted." width="960" />
@@ -1513,6 +1548,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-centrality-ar-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cff/docs/figure/motif_analysis.Rmd/plot-centrality-ar-1.png" target="_blank">7cfa8e7</a>
 </td>
 <td>
@@ -1546,7 +1592,8 @@ found in 13,433 (69.2%) of the 19,406 queried sequences.</p>
   ) 
 seq_foxa1_summits &lt;- foxa1_summits %&gt;% 
   get_sequence(hg19)
-views_foxa1_summits &lt;- stringSetToViews(seq_foxa1_summits)
+views_foxa1_summits &lt;- as(seq_foxa1_summits, &quot;Views&quot;) %&gt;% 
+  setNames(names(seq_foxa1_summits))
 matches_foxa1_summits &lt;- meme_db_targets %&gt;%
   lapply(
     getBestMatch, 
@@ -1561,13 +1608,9 @@ matches_foxa1_summits &lt;- meme_db_targets %&gt;%
     dplyr::select(meme_info, name, altname, motif_length),
     by = &quot;name&quot;
   ) %&gt;% 
-  left_join(
-    foxa1_summits %&gt;% 
-      as_tibble() %&gt;% 
-      mutate(id =seq_along(range)),
-    by = &quot;id&quot;
-  ) %&gt;% 
-  arrange(id) %&gt;% 
+    dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(foxa1_summits), by = &quot;range&quot; ) %&gt;% 
+  arrange(view) %&gt;% 
   mutate(
     target_detected = case_when(
       altname == &quot;AR&quot; ~ AR,
@@ -1580,7 +1623,7 @@ matches_foxa1_summits &lt;- meme_db_targets %&gt;%
     range, 
     any_of(targets), H3K27ac, 
     name, altname, target_detected, 
-    seq, motif_length, pos, strand
+    pos = start_in_view, width, strand, seq
   )</code></pre>
 <pre class="r"><code>matches_foxa1_summits  %&gt;% 
   mutate(
@@ -1652,6 +1695,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-centrality-foxa1-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cff/docs/figure/motif_analysis.Rmd/plot-centrality-foxa1-1.png" target="_blank">7cfa8e7</a>
 </td>
 <td>
@@ -1685,7 +1739,8 @@ found in 87,961 (94.8%) of the 92,751 queried sequences.</p>
   ) 
 seq_gata3_summits &lt;- gata3_summits %&gt;% 
   get_sequence(hg19)
-views_gata3_summits &lt;- stringSetToViews(seq_gata3_summits)
+views_gata3_summits &lt;- as(seq_gata3_summits, &quot;Views&quot;) %&gt;% 
+  setNames(names(seq_gata3_summits))
 matches_gata3_summits &lt;- meme_db_targets %&gt;%
   lapply(
     getBestMatch, 
@@ -1700,13 +1755,9 @@ matches_gata3_summits &lt;- meme_db_targets %&gt;%
     dplyr::select(meme_info, name, altname, motif_length),
     by = &quot;name&quot;
   ) %&gt;% 
-  left_join(
-    gata3_summits %&gt;% 
-      as_tibble() %&gt;% 
-      mutate(id =seq_along(range)),
-    by = &quot;id&quot;
-  ) %&gt;% 
-  arrange(id) %&gt;% 
+    dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(gata3_summits), by = &quot;range&quot; ) %&gt;% 
+  arrange(view) %&gt;% 
   mutate(
     target_detected = case_when(
       altname == &quot;AR&quot; ~ AR,
@@ -1719,7 +1770,7 @@ matches_gata3_summits &lt;- meme_db_targets %&gt;%
     range, 
     any_of(targets), H3K27ac, 
     name, altname, target_detected, 
-    seq, motif_length, pos, strand
+    pos = start_in_view, width, strand, seq
   )</code></pre>
 <pre class="r"><code>matches_gata3_summits  %&gt;% 
   mutate(
@@ -1791,6 +1842,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-centrality-gata3-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cff/docs/figure/motif_analysis.Rmd/plot-centrality-gata3-1.png" target="_blank">7cfa8e7</a>
 </td>
 <td>
@@ -1824,7 +1886,8 @@ found in 29,442 (99.2%) of the 29,666 queried sequences.</p>
   ) 
 seq_tfap2b_summits &lt;- tfap2b_summits %&gt;% 
   get_sequence(hg19)
-views_tfap2b_summits &lt;- stringSetToViews(seq_tfap2b_summits)
+views_tfap2b_summits &lt;- as(seq_tfap2b_summits, &quot;Views&quot;) %&gt;% 
+  setNames(names(seq_tfap2b_summits))
 matches_tfap2b_summits &lt;- meme_db_targets %&gt;%
   lapply(
     getBestMatch, 
@@ -1839,13 +1902,9 @@ matches_tfap2b_summits &lt;- meme_db_targets %&gt;%
     dplyr::select(meme_info, name, altname, motif_length),
     by = &quot;name&quot;
   ) %&gt;% 
-  left_join(
-    tfap2b_summits %&gt;% 
-      as_tibble() %&gt;% 
-      mutate(id =seq_along(range)),
-    by = &quot;id&quot;
-  ) %&gt;% 
-  arrange(id) %&gt;% 
+    dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(tfap2b_summits), by = &quot;range&quot; ) %&gt;% 
+  arrange(view) %&gt;% 
   mutate(
     target_detected = case_when(
       altname == &quot;AR&quot; ~ AR,
@@ -1858,7 +1917,7 @@ matches_tfap2b_summits &lt;- meme_db_targets %&gt;%
     range, 
     any_of(targets), H3K27ac, 
     name, altname, target_detected, 
-    seq, motif_length, pos, strand
+    pos = start_in_view, width, strand, seq
   )</code></pre>
 <pre class="r"><code>matches_tfap2b_summits  %&gt;% 
   mutate(
@@ -1930,6 +1989,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-centrality-tfap2b-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/88360904ce5089346cccb1f5c4c86a011fe28cd4/docs/figure/motif_analysis.Rmd/plot-centrality-tfap2b-1.png" target="_blank">8836090</a>
 </td>
 <td>
@@ -1967,8 +2037,9 @@ also be addressed directly.</p>
   ungroup() %&gt;% 
   mutate(
     ar_motif_dist = abs(pos - ar_pos),
-    label = glue(&quot;{name}\n({altname})&quot;),
-    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+    label = glue(&quot;{name} ({altname})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;),
+    target_detected = ifelse(target_detected, &quot;Target Detected&quot;, &quot;Target Undetected&quot;)
   ) %&gt;% 
   dplyr::filter(altname != &quot;AR&quot;) %&gt;% 
   group_by(name, target_detected, H3K27ac) %&gt;% 
@@ -1977,12 +2048,11 @@ also be addressed directly.</p>
   ) %&gt;% 
   dplyr::filter(q &lt;= 0.5) %&gt;%
   ggplot(
-    aes(ar_motif_dist, q, colour = altname, linetype = target_detected)
+    aes(ar_motif_dist, q, colour = label)
   ) +
   geom_line() +
-  facet_grid(H3K27ac ~ label) +
+  facet_grid(H3K27ac ~ target_detected) +
   scale_y_continuous(labels= percent) +
-  scale_linetype_manual(values = c(3, 1)) +
   labs(
     x = &quot;Distance from AR motif&quot;,
     y = &quot;Percentile&quot;,
@@ -1998,6 +2068,43 @@ difference was noticed between individual motifs, H3K27ac status, or
 whether the ChIP target was detected within the AR peak.
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-ar-dist-1">
+Past versions of plot-ar-dist-1.png
+</button>
+</p>
+<div id="fig-plot-ar-dist-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-ar-dist-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="foxa1-1" class="section level2">
 <h2>FOXA1</h2>
@@ -2011,8 +2118,9 @@ whether the ChIP target was detected within the AR peak.
   ungroup() %&gt;% 
   mutate(
     foxa1_motif_dist = abs(pos - foxa1_pos),
-    label = glue(&quot;{name}\n({altname})&quot;),
-    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+    label = glue(&quot;{name} ({altname})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;),
+    target_detected = ifelse(target_detected, &quot;Target Detected&quot;, &quot;Target Undetected&quot;)
   ) %&gt;% 
   dplyr::filter(altname != &quot;FOXA1&quot;) %&gt;% 
   group_by(name, target_detected, H3K27ac) %&gt;% 
@@ -2021,12 +2129,11 @@ whether the ChIP target was detected within the AR peak.
   ) %&gt;% 
   dplyr::filter(q &lt;= 0.5) %&gt;%
   ggplot(
-    aes(foxa1_motif_dist, q, colour = altname, linetype = target_detected)
+    aes(foxa1_motif_dist, q, colour = label)
   ) +
   geom_line() +
-  facet_grid(H3K27ac ~ label) +
+  facet_grid(H3K27ac ~ target_detected) +
   scale_y_continuous(labels= percent) +
-  scale_linetype_manual(values = c(3, 1)) +
   labs(
     x = &quot;Distance from FOXA1 motif&quot;,
     y = &quot;Percentile&quot;,
@@ -2042,6 +2149,43 @@ difference was noticed between individual motifs, H3K27ac status, or
 whether the ChIP target was detected within the FOXA1 peak.
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-foxa1-dist-1">
+Past versions of plot-foxa1-dist-1.png
+</button>
+</p>
+<div id="fig-plot-foxa1-dist-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-foxa1-dist-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="gata3-1" class="section level2">
 <h2>GATA3</h2>
@@ -2055,8 +2199,9 @@ whether the ChIP target was detected within the FOXA1 peak.
   ungroup() %&gt;% 
   mutate(
     gata3_motif_dist = abs(pos - gata3_pos),
-    label = glue(&quot;{name}\n({altname})&quot;),
-    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+    label = glue(&quot;{name} ({altname})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;),
+    target_detected = ifelse(target_detected, &quot;Target Detected&quot;, &quot;Target Undetected&quot;)
   ) %&gt;% 
   dplyr::filter(altname != &quot;GATA3&quot;) %&gt;% 
   group_by(name, target_detected, H3K27ac) %&gt;% 
@@ -2065,10 +2210,10 @@ whether the ChIP target was detected within the FOXA1 peak.
   ) %&gt;% 
   dplyr::filter(q &lt;= 0.5) %&gt;%
   ggplot(
-    aes(gata3_motif_dist, q, colour = altname, linetype = target_detected)
+    aes(gata3_motif_dist, q, colour = label)
   ) +
   geom_line() +
-  facet_grid(H3K27ac ~ label) +
+  facet_grid(H3K27ac ~ target_detected) +
   scale_y_continuous(labels= percent) +
   scale_linetype_manual(values = c(3, 1)) +
   labs(
@@ -2085,6 +2230,43 @@ showing data to the 50th percentile of distances. FOXA1 motifs tended to
 be further from the GATA3 motif for peaks where FOXA1 was detected.
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-gata3-dist-1">
+Past versions of plot-gata3-dist-1.png
+</button>
+</p>
+<div id="fig-plot-gata3-dist-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-gata3-dist-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="tfap2b-1" class="section level2">
 <h2>TFAP2B</h2>
@@ -2097,8 +2279,9 @@ be further from the GATA3 motif for peaks where FOXA1 was detected.
   ungroup() %&gt;% 
   mutate(
     tfap2b_motif_dist = abs(pos - tfap2b_pos),
-    label = glue(&quot;{name}\n({altname})&quot;),
-    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+    label = glue(&quot;{name} ({altname})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;),
+    target_detected = ifelse(target_detected, &quot;Target Detected&quot;, &quot;Target Undetected&quot;)
   ) %&gt;% 
   dplyr::filter(altname != &quot;TFAP2B&quot;) %&gt;% 
   group_by(name, target_detected, H3K27ac) %&gt;% 
@@ -2107,10 +2290,10 @@ be further from the GATA3 motif for peaks where FOXA1 was detected.
   ) %&gt;% 
   dplyr::filter(q &lt;= 0.5) %&gt;%
   ggplot(
-    aes(tfap2b_motif_dist, q, colour = altname, linetype = target_detected)
+    aes(tfap2b_motif_dist, q, colour = label)
   ) +
   geom_line() +
-  facet_grid(H3K27ac ~ label) +
+  facet_grid(H3K27ac ~ target_detected) +
   scale_y_continuous(labels= percent) +
   scale_linetype_manual(values = c(3, 1)) +
   labs(
@@ -2128,10 +2311,47 @@ difference was noticed between individual motifs, H3K27ac status, or
 whether the ChIP target was detected within the TFAP2B peak.
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-tfap2b-dist-1">
+Past versions of plot-tfap2b-dist-1.png
+</button>
+</p>
+<div id="fig-plot-tfap2b-dist-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1bf46f725877100a2a8b4a7da76611f3be92a29f/docs/figure/motif_analysis.Rmd/plot-tfap2b-dist-1.png" target="_blank">1bf46f7</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-05-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="motif-discovery" class="section level1 tabset">
-<h1 class="tabset">Motif Discovery</h1>
+</div>
+</div>
+<div id="motif-discovery" class="section level1">
+<h1>Motif Discovery</h1>
 <p>The above steps essentially perform checks on the data and verify
 that the expected binding motifs are generally driving binding of each
 target. A further step would be to determine any enriched binding motifs
@@ -2150,7 +2370,6 @@ H3K27ac-derived features) and no regulatory activity (i.e. no H3K27ac
 overlap).</p>
 <pre class="r"><code>seq_all4_by_h3k27ac &lt;- dht_consensus %&gt;%
   filter(!!!syms(targets)) %&gt;%
-  # resize(width = 800, fix = &#39;center&#39;) %&gt;%
   split(.$H3K27ac) %&gt;%
   setNames(c(&quot;no_h3k27ac&quot;, &quot;h3k27ac&quot;)) %&gt;%
   get_sequence(hg19) %&gt;%
@@ -2290,7 +2509,6 @@ Steve Pederson
     }
   ) %&gt;% 
   bind_rows() %&gt;% 
-  # dplyr::slice(1:2) %&gt;%
   dplyr::select(
     motif, id = altname, IC = icscore, nsites,
     best_match_name, best_match_altname, best_match_motif,
@@ -2314,7 +2532,7 @@ Steve Pederson
   ) %&gt;% 
   dplyr::select(
     `STREME ID` = id, `Best Match` = best_match_altname, `All Matches`,
-    IC, `Found In` = nsites, `P-value` = pval, `E-value` = eval,
+    IC, `Matches Found` = nsites, `P-value` = pval, `E-value` = eval,
     `TOMTOM Matches` = tomtom_logos
   ) %&gt;% 
   gt(
@@ -2329,7 +2547,7 @@ Steve Pederson
   ) %&gt;% 
   fmt_markdown(contains(&quot;TOMTOM&quot;)) %&gt;% 
   fmt_number(contains(&quot;val&quot;), decimals = 4) %&gt;% 
-  fmt_number(&quot;Found In&quot;, decimals = 0, use_seps = TRUE) %&gt;% 
+  fmt_number(&quot;Matches Found&quot;, decimals = 0, use_seps = TRUE) %&gt;% 
   fmt_number(&quot;IC&quot;, decimals = 2) %&gt;% 
   tab_spanner(
     label = &quot;Database Matches&quot;,
@@ -2337,7 +2555,7 @@ Steve Pederson
   ) %&gt;% 
   tab_spanner(
     label = &quot;Statistics&quot;,
-    columns = c(&quot;IC&quot;, &quot;Found In&quot;, &quot;P-value&quot;, &quot;E-value&quot;)
+    columns = c(&quot;IC&quot;, &quot;Matches Found&quot;, &quot;P-value&quot;, &quot;E-value&quot;)
   ) %&gt;% 
   text_transform(
     locations = cells_body(columns = &quot;All Matches&quot;),
@@ -2788,7 +3006,7 @@ Steve Pederson
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Best Match</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">All Matches</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">IC</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">Found In</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">Matches Found</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">P-value</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">E-value</th>
     </tr>
@@ -2862,6 +3080,315 @@ Steve Pederson
   
 </table>
 </div>
+<!-- ### Novel Motif Co-Ocurrence -->
+<div id="novel-motif-centrality" class="section level3 tabset">
+<h3 class="tabset">Novel Motif Centrality</h3>
+<p>Using the same approach as before, i.e. looking the lens of each ChIP
+target’s binding peak, any proximity effect with each ChIP target was
+assessed.</p>
+<div id="ar-2" class="section level4">
+<h4>AR</h4>
+<pre class="r"><code>streme_ar_summits &lt;- streme_all4_by_h3k27ac %&gt;% 
+  dplyr::slice(which(streme_to_keep_all4_by_h3k27ac)) %&gt;% 
+  to_list %&gt;%
+  lapply(
+    getBestMatch, 
+    subject = views_ar_summits,
+    min.score = min_score
+  ) %&gt;% 
+  setNames(
+    streme_all4_by_h3k27ac$altname[streme_to_keep_all4_by_h3k27ac]
+  ) %&gt;% 
+  bind_rows(.id = &quot;altname&quot;) %&gt;% 
+  dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(ar_summits), by = &quot;range&quot;) %&gt;% 
+  arrange(view) %&gt;% 
+  dplyr::select(
+    range, all_of(targets), H3K27ac, altname, 
+    pos = start_in_view, width, strand, seq
+  ) %&gt;% 
+  left_join(
+    tomtom_all4_by_h3k27ac[streme_to_keep_all4_by_h3k27ac] %&gt;% 
+      bind_rows() %&gt;% 
+      dplyr::select(altname, best_match = best_match_altname),
+    by = &quot;altname&quot;
+  ) </code></pre>
+<pre class="r"><code>streme_ar_summits  %&gt;%
+  mutate(
+    label = glue(&quot;{altname}\n({best_match})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+  ) %&gt;% 
+  ggplot(aes(pos, stat(density))) +
+  geom_density(aes(linetype = H3K27ac)) +
+  geom_text(
+    aes(x = seq_width/2, y = 5e-4, label = lab),
+    data = . %&gt;%
+      dplyr::filter(H3K27ac == &quot;H3K27ac&quot;) %&gt;% 
+      group_by(label) %&gt;%
+      summarise(
+        n = dplyr::n(), .groups = &quot;drop&quot;
+      ) %&gt;%
+      mutate(
+        lab = glue(
+            &quot;n = {comma(n)} ({percent(n/sum(ar_summits$H3K27ac), 0.1)})&quot;
+          )
+      ),
+    colour = &quot;black&quot;,
+    inherit.aes = FALSE
+  ) +
+  facet_wrap(~ label) +
+  scale_linetype_manual(values = c(3, 1)) +
+  labs(
+    x = &quot;Best Match Position In Sequence&quot;,
+    y = &quot;Density&quot;,
+    linetype = &quot;Overlaps H3K27ac&quot;
+  ) +
+  theme(
+    legend.position = c(2/3, 1/6)
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-centrality-ar-streme-1.png" alt="Position of the best match for each novel, H3K27ac-enriched motif using sequences centred at the summits of AR binding sites. Solid lines denote sites where H3K27ac signal was detected, whilst dashed lines indicate no H3K27ac activity. Numbers at the bottom of each panel indicate the total number of sites with a match within the AR sites overlapping H3K27ac signal." width="960" />
+<p class="caption">
+Position of the best match for each novel, H3K27ac-enriched motif using
+sequences centred at the summits of AR binding sites. Solid lines denote
+sites where H3K27ac signal was detected, whilst dashed lines indicate no
+H3K27ac activity. Numbers at the bottom of each panel indicate the total
+number of sites with a match within the AR sites overlapping H3K27ac
+signal.
+</p>
+</div>
+<p>Across all novel motifs no discernible difference was noticed in the
+positional distribution between sites showing H3K27ac signal and those
+not. However clear positional effects were evident for some of these
+motifs in relation to the AR binding peak.</p>
+</div>
+<div id="foxa1-2" class="section level4">
+<h4>FOXA1</h4>
+<pre class="r"><code>streme_foxa1_summits &lt;- streme_all4_by_h3k27ac %&gt;% 
+  dplyr::slice(which(streme_to_keep_all4_by_h3k27ac)) %&gt;% 
+  to_list %&gt;%
+  lapply(
+    getBestMatch, 
+    subject = views_foxa1_summits,
+    min.score = min_score
+  ) %&gt;% 
+  setNames(
+    streme_all4_by_h3k27ac$altname[streme_to_keep_all4_by_h3k27ac]
+  ) %&gt;% 
+  bind_rows(.id = &quot;altname&quot;) %&gt;% 
+  dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(foxa1_summits), by = &quot;range&quot;) %&gt;% 
+  arrange(view) %&gt;% 
+  dplyr::select(
+    range, all_of(targets), H3K27ac, altname, 
+    pos = start_in_view, width, strand, seq
+  ) %&gt;% 
+  left_join(
+    tomtom_all4_by_h3k27ac[streme_to_keep_all4_by_h3k27ac] %&gt;% 
+      bind_rows() %&gt;% 
+      dplyr::select(altname, best_match = best_match_altname),
+    by = &quot;altname&quot;
+  ) </code></pre>
+<pre class="r"><code>streme_foxa1_summits  %&gt;%
+  mutate(
+    label = glue(&quot;{altname}\n({best_match})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+  ) %&gt;% 
+  ggplot(aes(pos, stat(density))) +
+  geom_density(aes(linetype = H3K27ac)) +
+  geom_text(
+    aes(x = seq_width/2, y = 5e-4, label = lab),
+    data = . %&gt;%
+      dplyr::filter(H3K27ac == &quot;H3K27ac&quot;) %&gt;% 
+      group_by(label) %&gt;%
+      summarise(
+        n = dplyr::n(), .groups = &quot;drop&quot;
+      ) %&gt;%
+      mutate(
+        lab = glue(
+            &quot;n = {comma(n)} ({percent(n/sum(foxa1_summits$H3K27ac), 0.1)})&quot;
+          )
+      ),
+    colour = &quot;black&quot;,
+    inherit.aes = FALSE
+  ) +
+  facet_wrap(~ label) +
+  scale_linetype_manual(values = c(3, 1)) +
+  labs(
+    x = &quot;Best Match Position In Sequence&quot;,
+    y = &quot;Density&quot;,
+    linetype = &quot;Overlaps H3K27ac&quot;
+  ) +
+  theme(
+    legend.position = c(2/3, 1/6)
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-centrality-foxa1-streme-1.png" alt="Position of the best match for each novel, H3K27ac-enriched motif using sequences centred at the summits of FOXA1 binding sites. Solid lines denote sites where H3K27ac signal was detected, whilst dashed lines indicate no H3K27ac activity. Numbers at the bottom of each panel indicate the total number of sites with a match within the FOXA1 sites overlapping H3K27ac signal." width="960" />
+<p class="caption">
+Position of the best match for each novel, H3K27ac-enriched motif using
+sequences centred at the summits of FOXA1 binding sites. Solid lines
+denote sites where H3K27ac signal was detected, whilst dashed lines
+indicate no H3K27ac activity. Numbers at the bottom of each panel
+indicate the total number of sites with a match within the FOXA1 sites
+overlapping H3K27ac signal.
+</p>
+</div>
+<p>Across all novel motifs no discernible difference was noticed in the
+positional distribution between sites showing H3K27ac signal and those
+not. However clear positional effects were evident for all these motifs
+in relation to the FOXA1 binding peak.</p>
+</div>
+<div id="gata3-2" class="section level4">
+<h4>GATA3</h4>
+<pre class="r"><code>streme_gata3_summits &lt;- streme_all4_by_h3k27ac %&gt;% 
+  dplyr::slice(which(streme_to_keep_all4_by_h3k27ac)) %&gt;% 
+  to_list %&gt;%
+  lapply(
+    getBestMatch, 
+    subject = views_gata3_summits,
+    min.score = min_score
+  ) %&gt;% 
+  setNames(
+    streme_all4_by_h3k27ac$altname[streme_to_keep_all4_by_h3k27ac]
+  ) %&gt;% 
+  bind_rows(.id = &quot;altname&quot;) %&gt;% 
+  dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(gata3_summits), by = &quot;range&quot;) %&gt;% 
+  arrange(view) %&gt;% 
+  dplyr::select(
+    range, all_of(targets), H3K27ac, altname, 
+    pos = start_in_view, width, strand, seq
+  ) %&gt;% 
+  left_join(
+    tomtom_all4_by_h3k27ac[streme_to_keep_all4_by_h3k27ac] %&gt;% 
+      bind_rows() %&gt;% 
+      dplyr::select(altname, best_match = best_match_altname),
+    by = &quot;altname&quot;
+  ) </code></pre>
+<pre class="r"><code>streme_gata3_summits  %&gt;%
+  mutate(
+    label = glue(&quot;{altname}\n({best_match})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+  ) %&gt;% 
+  ggplot(aes(pos, stat(density))) +
+  geom_density(aes(linetype = H3K27ac)) +
+  geom_text(
+    aes(x = seq_width/2, y = 5e-4, label = lab),
+    data = . %&gt;%
+      dplyr::filter(H3K27ac == &quot;H3K27ac&quot;) %&gt;% 
+      group_by(label) %&gt;%
+      summarise(
+        n = dplyr::n(), .groups = &quot;drop&quot;
+      ) %&gt;%
+      mutate(
+        lab = glue(
+            &quot;n = {comma(n)} ({percent(n/sum(gata3_summits$H3K27ac), 0.1)})&quot;
+          )
+      ),
+    colour = &quot;black&quot;,
+    inherit.aes = FALSE
+  ) +
+  facet_wrap(~ label) +
+  scale_linetype_manual(values = c(3, 1)) +
+  labs(
+    x = &quot;Best Match Position In Sequence&quot;,
+    y = &quot;Density&quot;,
+    linetype = &quot;Overlaps H3K27ac&quot;
+  ) +
+  theme(
+    legend.position = c(2/3, 1/6)
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-centrality-gata3-streme-1.png" alt="Position of the best match for each novel, H3K27ac-enriched motif using sequences centred at the summits of GATA3 binding sites. Solid lines denote sites where H3K27ac signal was detected, whilst dashed lines indicate no H3K27ac activity. Numbers at the bottom of each panel indicate the total number of sites with a match within the GATA3 sites overlapping H3K27ac signal." width="960" />
+<p class="caption">
+Position of the best match for each novel, H3K27ac-enriched motif using
+sequences centred at the summits of GATA3 binding sites. Solid lines
+denote sites where H3K27ac signal was detected, whilst dashed lines
+indicate no H3K27ac activity. Numbers at the bottom of each panel
+indicate the total number of sites with a match within the GATA3 sites
+overlapping H3K27ac signal.
+</p>
+</div>
+<p>Across all novel motifs no discernible difference was noticed in the
+positional distribution between sites showing H3K27ac signal and those
+not. However clear positional effects were evident for some these motifs
+in relation to the GATA3 binding peak.</p>
+</div>
+<div id="tfap2b-2" class="section level4">
+<h4>TFAP2B</h4>
+<pre class="r"><code>streme_tfap2b_summits &lt;- streme_all4_by_h3k27ac %&gt;% 
+  dplyr::slice(which(streme_to_keep_all4_by_h3k27ac)) %&gt;% 
+  to_list %&gt;%
+  lapply(
+    getBestMatch, 
+    subject = views_tfap2b_summits,
+    min.score = min_score
+  ) %&gt;% 
+  setNames(
+    streme_all4_by_h3k27ac$altname[streme_to_keep_all4_by_h3k27ac]
+  ) %&gt;% 
+  bind_rows(.id = &quot;altname&quot;) %&gt;% 
+  dplyr::rename(range = view_name) %&gt;% 
+  left_join(as_tibble(tfap2b_summits), by = &quot;range&quot;) %&gt;% 
+  arrange(view) %&gt;% 
+  dplyr::select(
+    range, all_of(targets), H3K27ac, altname, 
+    pos = start_in_view, width, strand, seq
+  ) %&gt;% 
+  left_join(
+    tomtom_all4_by_h3k27ac[streme_to_keep_all4_by_h3k27ac] %&gt;% 
+      bind_rows() %&gt;% 
+      dplyr::select(altname, best_match = best_match_altname),
+    by = &quot;altname&quot;
+  ) </code></pre>
+<pre class="r"><code>streme_tfap2b_summits  %&gt;%
+  mutate(
+    label = glue(&quot;{altname}\n({best_match})&quot;),
+    H3K27ac = ifelse(H3K27ac, &quot;H3K27ac&quot;, &quot;No H3K27ac&quot;)
+  ) %&gt;% 
+  ggplot(aes(pos, stat(density))) +
+  geom_density(aes(linetype = H3K27ac)) +
+  geom_text(
+    aes(x = seq_width/2, y = 5e-4, label = lab),
+    data = . %&gt;%
+      dplyr::filter(H3K27ac == &quot;H3K27ac&quot;) %&gt;% 
+      group_by(label) %&gt;%
+      summarise(
+        n = dplyr::n(), .groups = &quot;drop&quot;
+      ) %&gt;%
+      mutate(
+        lab = glue(
+            &quot;n = {comma(n)} ({percent(n/sum(tfap2b_summits$H3K27ac), 0.1)})&quot;
+          )
+      ),
+    colour = &quot;black&quot;,
+    inherit.aes = FALSE
+  ) +
+  facet_wrap(~ label) +
+  scale_linetype_manual(values = c(3, 1)) +
+  labs(
+    x = &quot;Best Match Position In Sequence&quot;,
+    y = &quot;Density&quot;,
+    linetype = &quot;Overlaps H3K27ac&quot;
+  ) +
+  theme(
+    legend.position = c(2/3, 1/6)
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-centrality-tfap2b-streme-1.png" alt="Position of the best match for each novel, H3K27ac-enriched motif using sequences centred at the summits of TFAP2B binding sites. Solid lines denote sites where H3K27ac signal was detected, whilst dashed lines indicate no H3K27ac activity. Numbers at the bottom of each panel indicate the total number of sites with a match within the TFAP2B sites overlapping H3K27ac signal." width="960" />
+<p class="caption">
+Position of the best match for each novel, H3K27ac-enriched motif using
+sequences centred at the summits of TFAP2B binding sites. Solid lines
+denote sites where H3K27ac signal was detected, whilst dashed lines
+indicate no H3K27ac activity. Numbers at the bottom of each panel
+indicate the total number of sites with a match within the TFAP2B sites
+overlapping H3K27ac signal.
+</p>
+</div>
+<p>Across all novel motifs no discernible difference was noticed in the
+positional distribution between sites showing H3K27ac signal and those
+not. However clear positional effects were evident for all these motifs
+in relation to the TFAP2B binding peak.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2992,6 +3519,8 @@ loaded via a namespace (and not attached):
 [155] munsell_0.5.0              GetoptLong_1.0.5          
 [157] GenomeInfoDbData_1.2.8     iterators_1.0.14          
 [159] haven_2.5.0                gtable_0.3.0              </code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
