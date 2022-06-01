@@ -505,7 +505,7 @@ $1 - \alpha$ confidence intervals for the probability of class membership were t
 The distance to the nearest TSS was also checked for each of the union peaks, with the vast majority of TFAP2$\beta$-only peaks being with 1kb of a TSS, indicating a fundamental role for TFAP2$\beta$ in transcriptional regulation.
 These were much further away when bound in combination with other ChIP targets, to the point that most sites where all four were found bound were >3kb from any TSS, suggesting that an alternative role for TFAP2$\beta$ is enhancer-based gene regulation, when acting in concert with the remaining targets.
 
-```{r dist-to-tss, fig.cap = "Distance to the nearest TSS for all peaks detected with one or more of the required ChIP targets."}
+```{r dist-to-tss, fig.height = 10, fig.cap = "Distance to the nearest TSS for all peaks detected with one or more of the required ChIP targets."}
 dht_consensus %>% 
   as_tibble() %>% 
   dplyr::select(range, all_of(targets), dist_to_tss, H3K27ac) %>% 
@@ -1062,6 +1062,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1161,6 +1162,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1262,6 +1264,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1356,6 +1359,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1447,6 +1451,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1538,6 +1543,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1709,6 +1715,7 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$HiC@name <- "HiChIP"
 region_plot$HiC@dp@pars$fontface.title <- 1
 region_plot$HiC@dp@pars$rotation.title <- 0
 region_plot$Detected@dp@pars$fontface.title <- 1
@@ -1803,6 +1810,7 @@ region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
 if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@name <- "HiChIP"
   region_plot$HiC@dp@pars$fontface.title <- 1
   region_plot$HiC@dp@pars$rotation.title <- 0
 }
@@ -1901,6 +1909,7 @@ region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
 if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@name <- "HiChIP"
   region_plot$HiC@dp@pars$fontface.title <- 1
   region_plot$HiC@dp@pars$rotation.title <- 0
 }
@@ -1998,6 +2007,7 @@ region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
 if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@name <- "HiChIP"
   region_plot$HiC@dp@pars$fontface.title <- 1
   region_plot$HiC@dp@pars$rotation.title <- 0
 }
@@ -2096,6 +2106,7 @@ region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
 if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@name <- "HiChIP"
   region_plot$HiC@dp@pars$fontface.title <- 1
   region_plot$HiC@dp@pars$rotation.title <- 0
 }
@@ -2125,6 +2136,106 @@ ax <- region_plot[1:2]
 hl <- HighlightTrack(
   region_plot[seq(3, length(region_plot) - 1)], 
   range = resize(gr, width = 1.3*width(gr), fix = 'center')
+)
+hl@dp@pars$fill <- rgb(1, 1, 1, 0)
+hl@dp@pars$col <- "blue"
+hl@dp@pars$lwd <- 0.5
+pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
+plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
+  range(ignore.strand = TRUE) %>% 
+  resize(width = 1.2 * width(.), fix = 'center') 
+Gviz::plotTracks(
+  c(ax, hl),
+  from = start(plot_range), to = end(plot_range),
+  title.width = 1,
+  margin = 40,
+  fontface.main = 1
+  )
+dev.off()
+```
+
+### AR
+
+```{r plot-ar, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *AR* and are within 100kb of the gene. Only the low-resolution 20kb HiC interaction bins are shown."}
+gn <- "AR"
+gr <- dht_consensus %>% 
+  filter(!!!syms(targets), mapped, H3K27ac) %>% 
+  filter(
+    vapply(gene_name, function(x) gn %in% x, logical(1))
+  ) %>% 
+  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
+  filter(d < 1e5)
+fs <- 14
+region_plot <- plotHFGC(
+  gr = gr,
+  hic = hic %>%
+    subsetByOverlaps(gr) %>%
+    subsetByOverlaps(
+      subset(all_gr$gene, gene_name == gn)
+    ) %>%
+    subset(as.integer(bin_size) == 20e3),
+  hicsize = 3,
+  max = 5e4,
+  genes = tm %>%
+    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
+    split(.$detected),
+  genecol = c(
+    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
+  ),
+  coverage = bwfl, 
+  linecol = c(targets, "H3K27ac") %>% 
+    sapply(function(x) {
+      c(DHT = rgb(0.6, 0, 0), Veh = "grey60")
+    }, 
+    simplify = FALSE
+    ),
+  cytobands = grch37.cytobands,
+  zoom = 6,
+  shift = -6e4,
+  highlight = rgb(0, 0, 1, 0.5), 
+  title.width = 1, 
+  col.title = "black", background.title = "white",
+  showAxis = FALSE,
+  rotation.title = 90, fontsize = fs, 
+  fontface.title = 1,
+  legend = FALSE,
+  fontcolor.legend = "black"
+)
+region_plot[[1]]@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$fontcolor <- "black"
+region_plot$Axis@dp@pars$col <- "grey30"
+if ("HiC" %in% names(region_plot)) {
+  region_plot$HiC@name <- "HiChIP"
+  region_plot$HiC@dp@pars$fontface.title <- 1
+  region_plot$HiC@dp@pars$rotation.title <- 0
+}
+region_plot$Detected@dp@pars$fontface.title <- 1
+region_plot$Detected@dp@pars$rotation.title <- 0
+region_plot$Detected@dp@pars$fontsize.group <- fs
+region_plot$Detected@dp@pars$cex.group <- 0.8
+region_plot$Detected@dp@pars$fontface.group <- 1
+region_plot$Detected@dp@pars$fontcolor.group <- "black"
+if ("Not-Detected" %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
+  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
+  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
+}
+region_plot$AR@dp@pars$rotation.title <- 0
+region_plot$FOXA1@dp@pars$rotation.title <- 0
+region_plot$GATA3@dp@pars$rotation.title <- 0
+region_plot$TFAP2B@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$rotation.title <- 0
+region_plot$H3K27ac@dp@pars$legend <- TRUE
+region_plot$H3K27ac@dp@pars$size <- 5
+ax <- region_plot[1:2]
+hl <- HighlightTrack(
+  region_plot[seq(3, length(region_plot) - 1)], 
+  range = resize(gr, width = 1.3*width(gr), fix = 'center') %>% 
+    range()
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
 hl@dp@pars$col <- "blue"
