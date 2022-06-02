@@ -373,7 +373,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Comparison of all ChIP Targets</h1>
 <h4 class="author">Stephen Pederson</h4>
-<h4 class="date">01 June, 2022</h4>
+<h4 class="date">02 June, 2022</h4>
 
 </div>
 
@@ -402,7 +402,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-01
+<strong>Last updated:</strong> 2022-06-02
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -537,15 +537,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treea6276af47cce84f4875cecc503bf745b668b606ctargetblanka6276afa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treecf12cbae86fa27c7dbb5fd5af6a81cd8e7139891targetblankcf12cbaa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/a6276af47cce84f4875cecc503bf745b668b606c" target="_blank">a6276af</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/cf12cbae86fa27c7dbb5fd5af6a81cd8e7139891" target="_blank">cf12cba</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treea6276af47cce84f4875cecc503bf745b668b606ctargetblanka6276afa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treecf12cbae86fa27c7dbb5fd5af6a81cd8e7139891targetblankcf12cbaa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -555,7 +555,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/a6276af47cce84f4875cecc503bf745b668b606c" target="_blank">a6276af</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/cf12cbae86fa27c7dbb5fd5af6a81cd8e7139891" target="_blank">cf12cba</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -580,9 +580,23 @@ Untracked files:
     Untracked:  output/ar_foxa1_gata3_no_tfap2b.fa
     Untracked:  output/ar_foxa1_gata3_tfap2b.fa
     Untracked:  output/meme/
+    Untracked:  output/sites_by_h3k27ac.tsv
 
 Unstaged changes:
     Modified:   analysis/comparison.Rmd
+    Modified:   output/AR.pdf
+    Modified:   output/CLCA2.pdf
+    Modified:   output/DUSP6.pdf
+    Modified:   output/FGFR4.pdf
+    Modified:   output/FOXA1.pdf
+    Modified:   output/GATA3.pdf
+    Modified:   output/GREB1.pdf
+    Modified:   output/KYNU.pdf
+    Modified:   output/MYB.pdf
+    Modified:   output/MYC.pdf
+    Modified:   output/PGAP3.pdf
+    Modified:   output/TFAP2B.pdf
+    Modified:   output/XBP1.pdf
 
 </code></pre>
 <p>
@@ -628,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/cf12cbae86fa27c7dbb5fd5af6a81cd8e7139891/analysis/comparison.Rmd" target="_blank">cf12cba</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-01
+</td>
+<td>
+Moved AR to the correct section
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/cf12cbae86fa27c7dbb5fd5af6a81cd8e7139891/docs/comparison.html" target="_blank">cf12cba</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-01
+</td>
+<td>
+Moved AR to the correct section
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1198,7 +1246,10 @@ tbl &lt;- dht_consensus %&gt;%
     d = median(dist_to_tss),
     .groups = &quot;drop&quot;
   ) %&gt;% 
-  arrange(desc(n)) %&gt;% 
+  arrange(desc(n)) %T&gt;%
+  write_tsv(
+    here::here(&quot;output/sites_by_h3k27ac.tsv&quot;)
+  ) %&gt;% 
   reactable(
     filterable = TRUE,
     pagination = FALSE,
@@ -1332,7 +1383,7 @@ TFAP2<span class="math inline">\(\beta\)</span> clearly reduced the
 likelihood of all other ChIP targets being associated with H3K27ac
 signal.</p>
 <pre class="r"><code>inv.logit &lt;- binomial()$linkinv
-glm_h3k27ac %&gt;% 
+df &lt;- glm_h3k27ac %&gt;% 
   glht() %&gt;% 
   confint() %&gt;% 
   .[[&quot;confint&quot;]] %&gt;% 
@@ -1342,17 +1393,28 @@ glm_h3k27ac %&gt;%
   ) %&gt;% 
   arrange(desc(n_targets), desc(targets)) %&gt;% 
   mutate(
-    targets = fct_inorder(targets) %&gt;% 
+    TFAP2B = ifelse(str_detect(targets, &quot;TFAP2B&quot;), &quot;TFAP2B&quot;, &quot;No TFAP2B&quot;),
+    targets = targets %&gt;% 
+      str_remove_all(&quot;\\+TFAP2B$&quot;) %&gt;% 
+      fct_inorder() %&gt;% 
       fct_relabel(str_remove_all, pattern = &quot;targets&quot;),
     p = inv.logit(Estimate),
-    TFAP2B = ifelse(str_detect(targets, &quot;TFAP2B&quot;), &quot;TFAP2B&quot;, &quot;No TFAP2B&quot;),
-    across(all_of(c(&quot;upr&quot;, &quot;lwr&quot;)), inv.logit)
-  ) %&gt;% 
-  ggplot(aes(p, targets)) + 
+    across(all_of(c(&quot;upr&quot;, &quot;lwr&quot;)), inv.logit),
+    y = case_when(
+      str_detect(TFAP2B, &quot;No&quot;) ~ as.integer(targets) - 0.2,
+      TRUE ~ as.integer(targets) + 0.2
+    )
+  )
+df %&gt;% 
+  ggplot(aes(p, y, colour = TFAP2B)) + 
   geom_point() +
-  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = &quot;grey20&quot;) +
-  facet_grid(TFAP2B ~ ., scales = &quot;free_y&quot;) +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4) +
   scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(
+    breaks = seq_along(levels(df$targets)), labels = levels(df$targets),
+    expand = expansion(c(0.02, 0.02))
+  ) +
+  scale_colour_manual(values = c(&quot;black&quot;, &quot;red&quot;)) +
   labs(x = &quot;Probability of H3K27ac Peak Overlap&quot;, y = &quot;Detected Targets&quot;)</code></pre>
 <div class="figure" style="text-align: center">
 <img src="figure/comparison.Rmd/confint-glm-h3k27ac-1.png" alt="Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets." width="960" />
@@ -1773,9 +1835,8 @@ regulation, when acting in concert with the remaining targets.</p>
   mutate(targets = fct_inorder(targets)) %&gt;% 
   ggplot(aes(dist_to_tss + 1, targets, fill = H3K27ac)) +
   # geom_boxplot() +
-  geom_violin(draw_quantiles = 0.5, trim = FALSE) +
+  geom_violin(draw_quantiles = 0.5) +
   facet_grid(TFAP2B ~ ., scales = &quot;free_y&quot;) +
-  # coord_cartesian(xlim = c(0, 5e4)) +
   scale_x_log10(labels = comma, breaks = 10^seq(0, 5)) +
   scale_fill_manual(values = c(&quot;grey70&quot;, rgb(0.9, 0.1, 0.2))) +
   labs(x = &quot;Distance to Nearest TSS (bp+1)&quot;, y = &quot;ChIP Targets&quot;)</code></pre>
@@ -1927,7 +1988,7 @@ tm &lt;- read_rds(
 )
 bwfl &lt;- list(
   AR = here::here(&quot;data&quot;, &quot;bigwig&quot;, &quot;AR&quot;) %&gt;% 
-    list.files(pattern = &quot;merged.+bw&quot;, full.names = TRUE) %&gt;% 
+    list.files(pattern = &quot;DHT_merged.+bw&quot;, full.names = TRUE) %&gt;% 
     BigWigFileList() %&gt;% 
     setNames(
       path(.) %&gt;% 
@@ -1935,7 +1996,7 @@ bwfl &lt;- list(
         str_remove_all(&quot;_merged_treat.+&quot;)
     ),
   FOXA1 = here::here(&quot;data&quot;, &quot;bigwig&quot;, &quot;FOXA1&quot;) %&gt;% 
-    list.files(pattern = &quot;merged.+bw&quot;, full.names = TRUE) %&gt;% 
+    list.files(pattern = &quot;DHT_merged.+bw&quot;, full.names = TRUE) %&gt;% 
     BigWigFileList() %&gt;% 
     setNames(
       path(.) %&gt;% 
@@ -1943,7 +2004,7 @@ bwfl &lt;- list(
         str_remove_all(&quot;_merged_treat.+&quot;)
     ),
   GATA3 = here::here(&quot;data&quot;, &quot;bigwig&quot;, &quot;GATA3&quot;) %&gt;% 
-    list.files(pattern = &quot;merged.+bw&quot;, full.names = TRUE) %&gt;% 
+    list.files(pattern = &quot;DHT_merged.+bw&quot;, full.names = TRUE) %&gt;% 
     BigWigFileList() %&gt;% 
     setNames(
       path(.) %&gt;% 
@@ -1951,7 +2012,7 @@ bwfl &lt;- list(
         str_remove_all(&quot;_merged_treat.+&quot;)
     ),
   TFAP2B = here::here(&quot;data&quot;, &quot;bigwig&quot;, &quot;TFAP2B&quot;) %&gt;% 
-    list.files(pattern = &quot;merged.+bw&quot;, full.names = TRUE) %&gt;% 
+    list.files(pattern = &quot;DHT_merged.+bw&quot;, full.names = TRUE) %&gt;% 
     BigWigFileList() %&gt;% 
     setNames(
       path(.) %&gt;% 
@@ -1959,14 +2020,17 @@ bwfl &lt;- list(
         str_remove_all(&quot;_merged_treat.+&quot;)
     ),
   H3K27ac = here::here(&quot;data&quot;, &quot;bigwig&quot;, &quot;H3K27ac&quot;) %&gt;% 
-    list.files(pattern = &quot;merged.+bw&quot;, full.names = TRUE) %&gt;% 
+    list.files(pattern = &quot;merged_DHT.bw&quot;, full.names = TRUE) %&gt;% 
     BigWigFileList() %&gt;% 
     setNames(
       path(.) %&gt;% 
         basename() %&gt;% 
         str_extract(&quot;DHT|Veh&quot;)
     )
-)
+) %&gt;% 
+  lapply(path) %&gt;% 
+  lapply(as.character) %&gt;% 
+  BigWigFileList()
 y_lim &lt;- here::here(&quot;data&quot;, &quot;bigwig&quot;, targets) %&gt;% 
   sapply(
     list.files, pattern = &quot;merged.*summary&quot;, full.names= TRUE, simplify = FALSE
@@ -1978,9 +2042,9 @@ y_lim &lt;- here::here(&quot;data&quot;, &quot;bigwig&quot;, targets) %&gt;%
   lapply(function(x) c(0, max(x$score))) %&gt;% 
   setNames(basename(names(.)))
 y_lim$H3K27ac &lt;- bwfl$H3K27ac %&gt;% 
-  lapply(import.bw) %&gt;% 
-  lapply(function(x) max(x$score)) %&gt;% 
-  unlist() %&gt;% 
+  import.bw %&gt;% 
+  mcols() %&gt;% 
+  .[[&quot;score&quot;]] %&gt;% 
   max() %&gt;% 
   c(0) %&gt;% 
   range()</code></pre>
@@ -2784,6 +2848,157 @@ TFAP2B.</caption>
 </tbody>
 </table>
 </div>
+<div id="h3k27ac-associated-sites-without-ar" class="section level4">
+<h4>H3K27ac Associated Sites Without AR</h4>
+<p>The same process was then performed restricting the mappings to those
+sites associated with H3K27ac binding, where FOXA1, GATA3 and TFAP2B are
+all bound but without taking AR binding into account.</p>
+<pre class="r"><code>mapped_noar &lt;- all_gr$gene %&gt;% 
+  filter(gene_id %in% detected) %&gt;% 
+  mutate(gene_width = width) %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(starts_with(&quot;gene&quot;)) %&gt;% 
+  mutate(
+    mapped_to_all = gene_name %in% unlist(filter(dht_consensus, FOXA1, GATA3, TFAP2B, H3K27ac)$gene_name),
+    n_peaks = table(unlist(dht_consensus$gene_name))[gene_name] %&gt;% 
+      as.integer(),
+    n_peaks = ifelse(is.na(n_peaks), 0, n_peaks)
+  ) %&gt;% 
+  distinct(gene_name, .keep_all = TRUE)
+goseq_noar &lt;- structure(
+  mapped_noar$mapped_to_all, names = mapped_noar$gene_name
+) %&gt;% 
+  nullp(bias.data = mapped_noar$n_peaks) %&gt;%  
+  goseq(gene2cat = genes_by_subtype) %&gt;% 
+  as_tibble() %&gt;% 
+  dplyr::select(
+    subtype = category,
+    p = over_represented_pvalue,
+    n_mapped = numDEInCat,
+    signature_size = numInCat
+  ) %&gt;% 
+  mutate(fdr = p.adjust(p, &quot;fdr&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/comparison.Rmd/pwf-noar-1.png" alt="PWF for biased sampling using the number of peaks mapped to a gene as the bias offset" width="768" />
+<p class="caption">
+PWF for biased sampling using the number of peaks mapped to a gene as
+the bias offset
+</p>
+</div>
+<pre class="r"><code>goseq_noar %&gt;% 
+  mutate(`%` = percent(n_mapped / signature_size, accuracy = 0.1)) %&gt;% 
+  dplyr::select(
+    Subtype = subtype, `Signature Size` = signature_size, `# Mapped` = n_mapped,
+    `% Mapped` = `%`, p, FDR = fdr
+  ) %&gt;% 
+  pander(
+    justify = &quot;lrrrrr&quot;,
+    caption = paste(
+      &quot;Results for Subtype enrichment testing using only genes mapped to a&quot;,
+      &quot;consensus peak *associated with H3K27ac activity*, and where FOXA1&quot;, 
+      &quot;GATA3 and TFAP2B were considered to be present, but in the absence of AR.&quot;
+    ),
+    emphasize.strong.rows = which(.$FDR &lt; 0.05)
+  )</code></pre>
+<table>
+<caption>Results for Subtype enrichment testing using only genes mapped
+to a consensus peak <em>associated with H3K27ac activity</em>, and where
+FOXA1 GATA3 and TFAP2B were considered to be present, but in the absence
+of AR.</caption>
+<colgroup>
+<col width="14%" />
+<col width="20%" />
+<col width="13%" />
+<col width="14%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Subtype</th>
+<th align="right">Signature Size</th>
+<th align="right"># Mapped</th>
+<th align="right">% Mapped</th>
+<th align="right">p</th>
+<th align="right">FDR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>CLCA2</strong></td>
+<td align="right"><strong>136</strong></td>
+<td align="right"><strong>105</strong></td>
+<td align="right"><strong>77.2%</strong></td>
+<td align="right"><strong>0.0001878</strong></td>
+<td align="right"><strong>0.001691</strong></td>
+</tr>
+<tr class="even">
+<td align="left">ESR1</td>
+<td align="right">868</td>
+<td align="right">523</td>
+<td align="right">60.3%</td>
+<td align="right">0.1017</td>
+<td align="right">0.4576</td>
+</tr>
+<tr class="odd">
+<td align="left">ADM</td>
+<td align="right">123</td>
+<td align="right">73</td>
+<td align="right">59.3%</td>
+<td align="right">0.1548</td>
+<td align="right">0.4645</td>
+</tr>
+<tr class="even">
+<td align="left">TPX2</td>
+<td align="right">333</td>
+<td align="right">200</td>
+<td align="right">60.1%</td>
+<td align="right">0.3785</td>
+<td align="right">0.8516</td>
+</tr>
+<tr class="odd">
+<td align="left">FABP4</td>
+<td align="right">50</td>
+<td align="right">24</td>
+<td align="right">48.0%</td>
+<td align="right">0.7005</td>
+<td align="right">0.9734</td>
+</tr>
+<tr class="even">
+<td align="left">DCN</td>
+<td align="right">766</td>
+<td align="right">429</td>
+<td align="right">56.0%</td>
+<td align="right">0.7962</td>
+<td align="right">0.9734</td>
+</tr>
+<tr class="odd">
+<td align="left">MX1</td>
+<td align="right">106</td>
+<td align="right">48</td>
+<td align="right">45.3%</td>
+<td align="right">0.8523</td>
+<td align="right">0.9734</td>
+</tr>
+<tr class="even">
+<td align="left">GZMA</td>
+<td align="right">195</td>
+<td align="right">91</td>
+<td align="right">46.7%</td>
+<td align="right">0.9726</td>
+<td align="right">0.9734</td>
+</tr>
+<tr class="odd">
+<td align="left">CD83</td>
+<td align="right">400</td>
+<td align="right">200</td>
+<td align="right">50.0%</td>
+<td align="right">0.9734</td>
+<td align="right">0.9734</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="sequence-export" class="section level3">
 <h3>Sequence Export</h3>
@@ -2872,15 +3087,8 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
-  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
-  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
@@ -2940,43 +3148,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 2*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 3*width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3018,12 +3230,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
@@ -3083,42 +3290,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 2*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 3*width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3161,15 +3373,8 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
-  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
-  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
   zoom = 1.2,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
@@ -3181,10 +3386,11 @@ region_plot &lt;- plotHFGC(
   fontcolor.legend = &quot;black&quot;
 )</code></pre>
 <div class="figure" style="text-align: center">
-<img src="figure/comparison.Rmd/plot-foxa1-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *FOXA1* Only the high-resolution 5kb bins are shown." width="960" />
+<img src="figure/comparison.Rmd/plot-foxa1-1.png" alt="All H3K27ac-associated peaks where all four targets were detected, and which map to *FOXA1*. Only the high-resolution 5kb bins are shown." width="960" />
 <p class="caption">
 All H3K27ac-associated peaks where all four targets were detected, and
-which map to <em>FOXA1</em> Only the high-resolution 5kb bins are shown.
+which map to <em>FOXA1</em>. Only the high-resolution 5kb bins are
+shown.
 </p>
 </div>
 <p>
@@ -3227,42 +3433,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.5*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 1.5 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3298,15 +3509,8 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
-  #ylim = lapply(y_lim, divide_by, e2 = 2),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
-  # collapseTranscripts = list(Detected = FALSE, `Not-Detected` = &quot;meta&quot;),
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
@@ -3367,42 +3571,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 1.5 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3437,12 +3646,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
@@ -3502,42 +3706,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 1.5 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3572,12 +3781,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
@@ -3637,42 +3841,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
-region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
-region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
-region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
-region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
-region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 5 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3708,12 +3917,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 6,
   shift = -6e4,
@@ -3799,23 +4003,23 @@ region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;) %&gt;% 
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 3 * width(gr), fix = &#39;center&#39;) %&gt;% 
     range()
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
-  resize(width = 1.2 * width(.), fix = &#39;center&#39;) 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3845,14 +4049,9 @@ region_plot &lt;- plotHFGC(
   genecol = c(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
-  collapseTranscripts = FALSE,
+  collapseTranscripts = &quot;meta&quot;,
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 4,
   shift = 1e4,
@@ -3913,33 +4112,47 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
 region_plot$Detected@dp@pars$cex.group &lt;- 0.8
 region_plot$Detected@dp@pars$fontface.group &lt;- 1
 region_plot$Detected@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+if (&quot;Not-Detected&quot; %in% names(region_plot)) {
+  region_plot$`Not-Detected`@dp@pars$fontcolor.group &lt;- &quot;black&quot;
+  region_plot$`Not-Detected`@dp@pars$fontface.title &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$rotation.title &lt;- 0
+  region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
+  region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
+  region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
+}
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.1*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 1.2 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
-  resize(width = 1.1*width(.), fix = &#39;center&#39;)
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -3974,12 +4187,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
@@ -4039,9 +4247,11 @@ Steve Pederson
 <pre class="r"><code>region_plot[[1]]@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$fontcolor &lt;- &quot;black&quot;
 region_plot$Axis@dp@pars$col &lt;- &quot;grey30&quot;
-region_plot$HiC@name &lt;- &quot;HiChIP&quot;
-region_plot$HiC@dp@pars$fontface.title &lt;- 1
-region_plot$HiC@dp@pars$rotation.title &lt;- 0
+if (&quot;HiC&quot; %in% names(region_plot)) {
+  region_plot$HiC@name &lt;- &quot;HiChIP&quot;
+  region_plot$HiC@dp@pars$fontface.title &lt;- 1
+  region_plot$HiC@dp@pars$rotation.title &lt;- 0
+}
 region_plot$Detected@dp@pars$fontface.title &lt;- 1
 region_plot$Detected@dp@pars$rotation.title &lt;- 0
 region_plot$Detected@dp@pars$fontsize.group &lt;- fs
@@ -4055,28 +4265,30 @@ if (&quot;Not-Detected&quot; %in% names(region_plot)) {
   region_plot$`Not-Detected`@dp@pars$fontsize.group &lt;- fs
   region_plot$`Not-Detected`@dp@pars$cex.group &lt;- 0.8
   region_plot$`Not-Detected`@dp@pars$fontface.group &lt;- 1
+  region_plot$`Not-Detected`@dp@pars$just.group &lt;- &quot;right&quot;
 }
 region_plot$AR@dp@pars$rotation.title &lt;- 0
 region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 3 * width(gr), fix = &#39;center&#39;) %&gt;% 
+    reduce()
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -4110,12 +4322,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 5,
   shift = 3e4,
@@ -4201,23 +4408,23 @@ region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 1.5 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 1.1*width(.), fix = &#39;center&#39;) %&gt;% 
   resize(width = 0.4 * width(.), fix = &#39;start&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -4252,12 +4459,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   shift = 3e4,
@@ -4343,23 +4545,24 @@ region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 3 * width(gr), fix = &#39;center&#39;) %&gt;% 
+    reduce()
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
   resize(width = 0.8 * width(.), fix = &#39;center&#39;) %&gt;% 
   shift(1e4)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -4394,12 +4597,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
@@ -4484,22 +4682,22 @@ region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 2 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
-  resize(width = 1.5 * width(.), fix = &#39;center&#39;) 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,
@@ -4535,12 +4733,7 @@ region_plot &lt;- plotHFGC(
     Detected = &quot;forestgreen&quot;, &quot;Not-Detected&quot; = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = c(targets, &quot;H3K27ac&quot;) %&gt;% 
-    sapply(function(x) {
-      c(DHT = rgb(0.6, 0, 0), Veh = &quot;grey60&quot;)
-    }, 
-    simplify = FALSE
-    ),
+  linecol = rep(&quot;grey30&quot;, length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
@@ -4625,22 +4818,22 @@ region_plot$FOXA1@dp@pars$rotation.title &lt;- 0
 region_plot$GATA3@dp@pars$rotation.title &lt;- 0
 region_plot$TFAP2B@dp@pars$rotation.title &lt;- 0
 region_plot$H3K27ac@dp@pars$rotation.title &lt;- 0
-region_plot$H3K27ac@dp@pars$legend &lt;- TRUE
 region_plot$H3K27ac@dp@pars$size &lt;- 5
 ax &lt;- region_plot[1:2]
+top_panels &lt;- region_plot[names(region_plot) %in% c(&quot;HiC&quot;, &quot;Detected&quot;, &quot;Not_Detected&quot;)]
 hl &lt;- HighlightTrack(
-  region_plot[seq(3, length(region_plot) - 1)], 
-  range = resize(gr, width = 1.3*width(gr), fix = &#39;center&#39;)
+  region_plot[c(targets, &quot;H3K27ac&quot;)],
+  range = resize(gr, width = 1.5 * width(gr), fix = &#39;center&#39;)
 )
 hl@dp@pars$fill &lt;- rgb(1, 1, 1, 0)
 hl@dp@pars$col &lt;- &quot;blue&quot;
-hl@dp@pars$lwd &lt;- 0.5
+hl@dp@pars$lwd &lt;- 0.8
 pdf(here::here(&quot;output&quot;, glue(&quot;{gn}.pdf&quot;)), width = 10, height = 10)
 plot_range &lt;- c(gr, subset(all_gr$gene, gene_name == gn)) %&gt;% 
   range(ignore.strand = TRUE) %&gt;% 
-  resize(width = 1.2 * width(.), fix = &#39;center&#39;) 
+  resize(width = 1.2*width(.), fix = &#39;center&#39;)
 Gviz::plotTracks(
-  c(ax, hl),
+  c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
   title.width = 1,
   margin = 40,

@@ -299,15 +299,18 @@ grl_by_targets %>%
 meme_db_targets <- meme_db_detected %>% 
   dplyr::filter(altname %in% targets) %>% 
   to_list()
+## We should generate these as a complete set & using H3K27ac status...
 seq_by_targets <- grl_by_targets %>% 
+  # endoapply(subset, H3K27ac) %>% 
   get_sequence(hg19)
 ame_by_targets <- seq_by_targets %>% 
   runAme(database = meme_db_targets)
 ```
 
+
 [AME from the meme-suite](https://meme-suite.org/meme/doc/ame.html?man_type=web) was then run on each sequence to detect the presence of motifs associated with each target within each set of sequences.
 
-```{r ame-heatmap, fig.cap = "Estimated percentage of true positive matches to all binding motifs associated with each ChIP target. Only values with an enrichment adjusted p-value < 0.05 are shown, such that missing values are able to be confidently assumed as not enriched for the motif. With the possible exception of GATA3 binding in the presence of AR and FOXA1 only, all provide supporting evidence for direct binding of each target to it's motif"}
+```{r ame-heatmap, fig.cap = "Estimated percentage of true positive matches to all binding motifs associated with each ChIP target. Only values with an enrichment adjusted p-value < 0.05 and with True Positives in > 15% of sequences are shown, such that missing values are able to be confidently assumed as not enriched for the motif. With the possible exception of GATA3 binding in the presence of AR and FOXA1 only, all provide supporting evidence for direct binding of each target to it's motif"}
 ame_by_targets %>% 
   bind_rows(.id = "targets") %>% 
   mutate(
@@ -317,7 +320,59 @@ ame_by_targets %>%
       str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"
     )
   ) %>% 
-  dplyr::filter(adj.pvalue < 0.05) %>% 
+  dplyr::filter(
+    adj.pvalue < 0.05#, 
+    # tp_percent > 20
+  ) %>%
+  plot_ame_heatmap(
+    id = motif_id,
+    value = tp_percent,
+    group = targets
+  ) +
+  geom_label(
+    aes(label = percent(tp_percent/100, 0.1)),
+    size = 3,
+    show.legend = FALSE
+  ) +
+  facet_grid(TFAP2B ~ motif_alt_id, scales = "free", space = "free") +
+  scale_x_discrete(expand = expansion(c(0, 0))) +
+  scale_y_discrete(expand = expansion(c(0, 0))) +
+  labs(
+    x = "Detected Motif",
+    y = "Detected Targets",
+    fill = expression(widehat("TP%"))
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 10),
+    axis.text.y = element_text(angle = 0, hjust = 1, size = 10),
+    panel.grid = element_blank()
+  )
+```
+
+```{r ame-by-detected, eval=FALSE}
+ame_by_detected <- seq_by_targets %>% 
+  runAme(database = to_list(meme_db_detected))
+id <- ame_by_detected %>%
+  lapply(
+    dplyr::filter, 
+    tp_percent > 50, 
+    !motif_alt_id %in% targets, 
+    !str_detect(motif_alt_id, "(TFAP2[A-Z]|GATA[0-9]|FOX[A-Z][0-9])")
+    ) %>% 
+  bind_rows(.id = "targets") %>% 
+  arrange(motif_alt_id) %>% 
+  pull("motif_id") %>% 
+  unique() 
+ame_by_detected %>% 
+  bind_rows(.id = "targets") %>% 
+  mutate(
+    motif_id = as.factor(motif_id),
+    targets = as.factor(targets),
+    TFAP2B = ifelse(
+      str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"
+    )
+  ) %>% 
+  dplyr::filter(motif_id %in% id) %>% 
   plot_ame_heatmap(
     id = motif_id,
     value = tp_percent,
