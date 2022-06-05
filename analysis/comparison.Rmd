@@ -1232,6 +1232,7 @@ region_plot$Detected@dp@pars$fontsize.group <- fs
 region_plot$Detected@dp@pars$cex.group <- 0.8
 region_plot$Detected@dp@pars$fontface.group <- 1
 region_plot$Detected@dp@pars$fontcolor.group <- "black"
+region_plot$Detected@dp@pars$just.group <- "right"
 if ("Not-Detected" %in% names(region_plot)) {
   region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
   region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
