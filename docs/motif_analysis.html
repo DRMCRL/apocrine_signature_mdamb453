@@ -382,7 +382,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -393,8 +393,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -407,9 +407,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -433,21 +433,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -538,15 +535,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee1088ac1595379dd4f700c6dfad34e638f6d977btargetblanke1088aca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree8dde309446d2e562a920f7fa7c87e825ff5cb64dtargetblank8dde309a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e1088ac1595379dd4f700c6dfad34e638f6d977b" target="_blank">e1088ac</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/8dde309446d2e562a920f7fa7c87e825ff5cb64d" target="_blank">8dde309</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee1088ac1595379dd4f700c6dfad34e638f6d977btargetblanke1088aca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree8dde309446d2e562a920f7fa7c87e825ff5cb64dtargetblank8dde309a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -556,7 +553,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e1088ac1595379dd4f700c6dfad34e638f6d977b" target="_blank">e1088ac</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/8dde309446d2e562a920f7fa7c87e825ff5cb64d" target="_blank">8dde309</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -573,25 +570,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/bigwig/
 
 Untracked files:
-    Untracked:  data/external/MDA-MB-453_RIME_processed.xlsx
-    Untracked:  data/external/uniprot_to_ensg.txt.gz
-    Untracked:  output/all4_h3k27ac.fa
-    Untracked:  output/all4_no_h3k27ac.fa
-    Untracked:  output/ame_active_vs_inactive.rds
-    Untracked:  output/ame_by_targets.rds
-    Untracked:  output/ame_by_targets_active.rds
-    Untracked:  output/ame_inactive_vs_active.rds
-    Untracked:  output/ar_foxa1_gata3_no_tfap2b.fa
-    Untracked:  output/ar_foxa1_gata3_tfap2b.fa
     Untracked:  output/meme/
-    Untracked:  output/sites_by_h3k27ac.tsv
-
-Unstaged changes:
-    Modified:   analysis/motif_analysis.Rmd
 
 </code></pre>
 <p>
@@ -637,6 +619,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/analysis/motif_analysis.Rmd" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Updated motif analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/motif_analysis.html" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Updated motif analysis
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1472,6 +1488,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-motifs-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/7cfa8e707d2a52f7e5c4b23c23c59c4fc7873cff/docs/figure/motif_analysis.Rmd/plot-motifs-1.png" target="_blank">7cfa8e7</a>
 </td>
 <td>
@@ -1558,6 +1585,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/ame-heatmap-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/88360904ce5089346cccb1f5c4c86a011fe28cd4/docs/figure/motif_analysis.Rmd/ame-heatmap-1.png" target="_blank">8836090</a>
 </td>
 <td>
@@ -1636,6 +1674,43 @@ motif MA0811.1, whilst AR and GATA3 in combination with TFAP2B appears
 to favour MA0812.1
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ame-heatmap-active-1">
+Past versions of ame-heatmap-active-1.png
+</button>
+</p>
+<div id="fig-ame-heatmap-active-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/ame-heatmap-active-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="enrichment-of-other-motifs" class="section level2">
@@ -1675,6 +1750,43 @@ GATA3 motif.</p>
 <p class="caption">
 Comparison between GATA3 and TRPS1 motifs
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-motif-gata3-trps1-1">
+Past versions of motif-gata3-trps1-1.png
+</button>
+</p>
+<div id="fig-motif-gata3-trps1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/motif-gata3-trps1-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <pre class="r"><code>x &lt;- ame_by_targets %&gt;% 
   bind_rows(.id = &quot;targets&quot;) %&gt;% 
@@ -1743,6 +1855,43 @@ Enriched motifs when analysing all sequences associated with one or more
 ChIP targets. Motifs are only shown if found in &gt;50% of sequences
 from at least one set of peaks.
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-ame-other-all-1">
+Past versions of plot-ame-other-all-1.png
+</button>
+</p>
+<div id="fig-plot-ame-other-all-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-ame-other-all-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="h3k27ac-active-sequences" class="section level4">
 <h4>H3K27ac Active Sequences</h4>
@@ -1831,6 +1980,43 @@ are only shown if found in &gt;50% of sequences from at least one set of
 peaks.
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-ame-active-all-1">
+Past versions of plot-ame-active-all-1.png
+</button>
+</p>
+<div id="fig-plot-ame-active-all-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-ame-active-all-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="h3k27ac-active-vs-inactive" class="section level3">
@@ -1909,6 +2095,43 @@ with an asterisk. Interestingly, TFAP2B motifs appeared to be enriched
 in this set of sequences.
 </p>
 </div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-motifs-active-vs-inactive-1">
+Past versions of plot-motifs-active-vs-inactive-1.png
+</button>
+</p>
+<div id="fig-plot-motifs-active-vs-inactive-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-motifs-active-vs-inactive-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="h3k27ac-inctive-vs-active" class="section level3">
 <h3>H3K27ac Inctive Vs Active</h3>
@@ -1968,6 +2191,43 @@ with any TFs detected as bound to AR in the RIME dataset indicated with
 an asterisk. Both FOXA1 and GATA3 motifs appeared to be enriched in this
 set of sequences.
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-motifs-inactive-vs-active-1">
+Past versions of plot-motifs-inactive-vs-active-1.png
+</button>
+</p>
+<div id="fig-plot-motifs-inactive-vs-active-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-motifs-inactive-vs-active-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -2130,15 +2390,53 @@ where all four targets were detected as bound.</caption>
     y = &quot;Motifs Detected in Peak&quot;
   )</code></pre>
 <div class="figure" style="text-align: center">
-<img src="figure/motif_analysis.Rmd/plot-glm-h3k27ac-1.png" alt="Probability of a peak being active based on the detected motifs, using H3K27ac signal as a marker of an active regulatory region. Whilst some combinations suffer from low numbers, the general trend towards a strong TFAP2B motif increasing the probability of the peak being active was observed. Intervals are FWER-adjusted 95% confidence intervals, using the single-step method for estimation of the critical value." width="960" />
+<img src="figure/motif_analysis.Rmd/plot-glm-h3k27ac-1.png" alt="Probability of a peak being active based on the detected motifs, using H3K27ac signal as a marker of an active regulatory region. Only peaks where all four targets were detected were studied. Whilst some motif combinations suffer from low numbers, the general trend towards a strong TFAP2B motif increasing the probability of the peak being active was observed. Intervals are FWER-adjusted 95% confidence intervals, using the single-step method for estimation of the critical value." width="960" />
 <p class="caption">
 Probability of a peak being active based on the detected motifs, using
-H3K27ac signal as a marker of an active regulatory region. Whilst some
+H3K27ac signal as a marker of an active regulatory region. Only peaks
+where all four targets were detected were studied. Whilst some motif
 combinations suffer from low numbers, the general trend towards a strong
 TFAP2B motif increasing the probability of the peak being active was
 observed. Intervals are FWER-adjusted 95% confidence intervals, using
 the single-step method for estimation of the critical value.
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-glm-h3k27ac-1">
+Past versions of plot-glm-h3k27ac-1.png
+</button>
+</p>
+<div id="fig-plot-glm-h3k27ac-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-glm-h3k27ac-1.png" target="_blank">8dde309</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
