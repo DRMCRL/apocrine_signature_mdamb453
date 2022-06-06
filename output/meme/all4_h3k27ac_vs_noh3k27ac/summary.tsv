@@ -1,0 +1,9 @@
+MOTIF_INDEX	MOTIF_SOURCE	MOTIF_ID	ALT_ID	CONSENSUS	WIDTH	SITES	E-VALUE	E-VALUE_SOURCE	MOST_SIMILAR_MOTIF_SOURCE	MOST_SIMILAR_MOTIF	URL
+1	MEME	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	11	1392	7.4e-014	MEME	data/external/MOTIFS.meme	MA1723.1 (PRDM9)	http://jaspar.genereg.net/matrix/MA1723.1
+2	MEME	CCTGGG	MEME-2	CCTGGG	6	2532	2.4e-004	MEME	data/external/MOTIFS.meme	MA0154.4 (EBF1)	http://jaspar.genereg.net/matrix/MA0154.4
+3	STREME	1-CTCCTCCCWGCCY	STREME-1	CTCCTCCCWGCCY	13	1210	1.4e-002	STREME	data/external/MOTIFS.meme	MA1723.1 (PRDM9)	http://jaspar.genereg.net/matrix/MA1723.1
+4	MEME	CAAGCR	MEME-3	CAAGCR	6	106	4.3e-002	MEME	data/external/MOTIFS.meme	MA0897.1 (Hmx2)	http://jaspar.genereg.net/matrix/MA0897.1
+
+# MEME-ChIP (Motif Analysis of Large Nucleotide Datasets): Version 5.4.1 released on Sat Aug 21 19:23:23 2021 -0700
+# The format of this file is described at http://meme-suite.org//doc/meme-chip-output-format.html
+# meme-chip -oc output/meme/all4_h3k27ac_vs_noh3k27ac -db data/external/MOTIFS.meme -neg output/all4_no_h3k27ac.fa -desc Comparison of binding sites for all TFs based on overlap with H3K27ac-derived features output/all4_h3k27ac.fa

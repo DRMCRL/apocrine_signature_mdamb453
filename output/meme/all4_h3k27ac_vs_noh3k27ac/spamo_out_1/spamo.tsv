@@ -1,0 +1,15 @@
+prim_db	prim_id	prim_alt	prim_cons	sec_db	sec_id	sec_alt	sec_cons	trim_left	trim_right	red_db	red_id	red_alt	E-value	gap	orient	count	total	adj_p-value	p-value
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	meme.xml	CAAGCR	MEME-3	CAAGCR	0	0	.	.	.	5.12e-01	0	4	31	3979	5.83e-03	5.12e-02
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	3-DGGCTGG	STREME-3	DGGCTGG	1	0	.	.	.	7.67e-01	130	6	38	5445	8.83e-03	7.67e-02
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	meme.xml	CCTGGG	MEME-2	CCTGGG	0	0	.	.	.	1.35e+00	14	3	34	9601	1.60e-02	1.35e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	0	0	.	.	.	3.80e+00	12	2	29	7968	5.18e-02	3.80e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	7-CCCAGC	STREME-7	CCCAGC	0	0	.	.	.	5.09e+00	13	0	25	6852	7.60e-02	5.09e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	1-CTCCTCCCWGCCY	STREME-1	CTCCTCCCWGCCY	0	0	.	.	.	6.55e+00	2	3	30	8678	1.12e-01	6.55e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	2-CCAGGAAGC	STREME-2	CCAGGAAGC	0	0	.	.	.	8.10e+00	12	5	15	1695	1.69e-01	8.10e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	6-GGCCCCTG	STREME-6	GGCCCCTG	0	0	.	.	.	8.35e+00	9	1	15	3436	1.81e-01	8.35e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	4-CCTCCAA	STREME-4	CCTCCAA	0	0	.	.	.	9.77e+00	66	3	8	1354	3.43e-01	9.77e-01
+meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	streme.xml	5-GGBSVCC	STREME-5	GGBSVCC	0	0	.	.	.	9.96e+00	72	2	12	2790	4.57e-01	9.96e-01
+
+# SpaMo (Spaced Motif Analysis Tool): Version 5.4.1 compiled on May 17 2022 at 23:53:47
+# The format of this file is described at http://meme-suite.org/doc/spamo-output-format.html.
+# spamo -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/spamo_out_1 -bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -keepprimary -primary RRGSAVRSAGG output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml

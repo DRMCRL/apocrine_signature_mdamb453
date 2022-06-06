@@ -1,0 +1,70 @@
+MOTIF_INDEX	MOTIF_SOURCE	MOTIF_ID	ALT_ID	CONSENSUS	WIDTH	SITES	E-VALUE	E-VALUE_SOURCE	MOST_SIMILAR_MOTIF_SOURCE	MOST_SIMILAR_MOTIF	URL
+1	STREME	1-WRWGYAAAYA	STREME-1	WRWGYAAAYA	10	914	4.2e-043	STREME	data/external/MOTIFS.meme	FOXA1_HUMAN.H11MO.0.A	http://hocomoco.autosome.ru/motif/FOXA1_HUMAN.H11MO.0.A
+2	data/external/MOTIFS.meme	FOXA1_HUMAN.H11MO.0.A	 	TGTTTACWYWGB	12	3437	2.5e-041	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXA1_HUMAN.H11MO.0.A
+3	MEME	SCYBGRGGCWD	MEME-1	SCYBGRGGCWD	11	718	2.4e-038	MEME	data/external/MOTIFS.meme	AP2C_HUMAN.H11MO.0.A	http://hocomoco.autosome.ru/motif/AP2C_HUMAN.H11MO.0.A
+4	data/external/MOTIFS.meme	FOXA2_HUMAN.H11MO.0.A	 	TGTTTACWYWGB	12	3395	3.2e-038	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXA2_HUMAN.H11MO.0.A
+5	MEME	WRYAAAYA	MEME-2	WRYAAAYA	8	1228	1.0e-036	MEME	data/external/MOTIFS.meme	ANDR_HUMAN.H11MO.0.A	http://hocomoco.autosome.ru/motif/ANDR_HUMAN.H11MO.0.A
+6	data/external/MOTIFS.meme	AP2A_HUMAN.H11MO.0.A	 	ATKSCCTGRGGSHAD	15	3437	1.4e-033	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/AP2A_HUMAN.H11MO.0.A
+7	data/external/MOTIFS.meme	FOXM1_HUMAN.H11MO.0.A	 	TGTTTRCTYWKB	12	3667	3.6e-032	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXM1_HUMAN.H11MO.0.A
+8	STREME	2-DSCCYSRGGSH	STREME-2	DSCCYSRGGSH	11	1030	4.1e-031	STREME	data/external/MOTIFS.meme	AP2C_HUMAN.H11MO.0.A	http://hocomoco.autosome.ru/motif/AP2C_HUMAN.H11MO.0.A
+9	data/external/MOTIFS.meme	AP2C_HUMAN.H11MO.0.A	 	VTGSCCTGRGGSHR	14	3323	6.2e-029	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/AP2C_HUMAN.H11MO.0.A
+10	data/external/MOTIFS.meme	FOXA3_HUMAN.H11MO.0.B	 	CHTGTTTACWTWG	13	3495	6.1e-028	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXA3_HUMAN.H11MO.0.B
+11	data/external/MOTIFS.meme	MA0846.1	FOXC2	WAWGTAAACAWW	12	3476	1.2e-027	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0846.1
+12	data/external/MOTIFS.meme	MA0033.2	FOXL1	RTAAACA	7	3513	4.5e-027	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0033.2
+13	data/external/MOTIFS.meme	MA0847.3	FOXD2	SYTAARYAAACA	12	2993	6.8e-026	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0847.3
+14	data/external/MOTIFS.meme	MA0849.1	FOXO6	GTAAACA	7	3180	3.8e-025	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0849.1
+15	data/external/MOTIFS.meme	MA0032.2	FOXC1	WAWGTAAAYAW	11	3414	1.6e-024	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0032.2
+16	data/external/MOTIFS.meme	MA0811.1	TFAP2B	YGCCCBVRGGCA	12	3269	3.1e-024	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0811.1
+17	data/external/MOTIFS.meme	MA0042.2	FOXI1	GTAAACA	7	3351	6.0e-024	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0042.2
+18	data/external/MOTIFS.meme	MA0850.1	FOXP3	RTAAACA	7	3653	6.6e-024	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0850.1
+19	data/external/MOTIFS.meme	MA0812.1	TFAP2B	HGCCTSAGGCD	11	2853	1.2e-023	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0812.1
+20	data/external/MOTIFS.meme	MA0848.1	FOXO4	GTAAACA	7	3555	3.2e-023	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0848.1
+21	data/external/MOTIFS.meme	MA0148.4	FOXA1	WWGTAAACATNN	12	3490	8.9e-023	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0148.4
+22	data/external/MOTIFS.meme	MA1683.1	FOXA3	DWGTAAACANN	11	3516	8.9e-023	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1683.1
+23	data/external/MOTIFS.meme	MA0524.2	TFAP2C	YGCCYBVRGGCA	12	3329	9.2e-023	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0524.2
+24	data/external/MOTIFS.meme	MA0480.2	Foxo1	NDGTAAACANN	11	3617	4.9e-022	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0480.2
+25	data/external/MOTIFS.meme	FOXP2_HUMAN.H11MO.0.C	 	BTGTTTACH	9	3617	1.9e-021	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXP2_HUMAN.H11MO.0.C
+26	data/external/MOTIFS.meme	MA0851.1	Foxj3	NDAADGTAAACAAANNM	17	3116	4.3e-021	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0851.1
+27	data/external/MOTIFS.meme	FOXO3_HUMAN.H11MO.0.B	 	BYTGTTTACH	10	3526	1.0e-020	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXO3_HUMAN.H11MO.0.B
+28	data/external/MOTIFS.meme	MA0810.1	TFAP2A	YGCCCBVRGGCR	12	3244	5.3e-020	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0810.1
+29	data/external/MOTIFS.meme	MA0614.1	Foxj2	RTAAACAA	8	3350	7.3e-020	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0614.1
+30	data/external/MOTIFS.meme	MA0157.3	Foxo3	NDGTAAACARNN	12	3548	8.0e-020	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0157.3
+31	data/external/MOTIFS.meme	MA1606.1	Foxf1	DWRTAAACANN	11	3522	1.1e-019	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1606.1
+32	data/external/MOTIFS.meme	MA0047.3	FOXA2	RWGTAAACANN	11	3483	2.5e-019	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0047.3
+33	data/external/MOTIFS.meme	MA0845.1	FOXB1	WATGTAAATAT	11	3285	7.9e-019	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0845.1
+34	data/external/MOTIFS.meme	MA1607.1	Foxl2	DDWATGTAAACANN	14	3461	1.0e-018	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1607.1
+35	data/external/MOTIFS.meme	MA0003.4	TFAP2A	NNKGCCTCAGGCNN	14	3359	1.5e-018	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0003.4
+36	data/external/MOTIFS.meme	MA0613.1	FOXG1	RTAAACAW	8	1350	3.4e-018	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0613.1
+37	data/external/MOTIFS.meme	MA1103.2	FOXK2	DDGTAAACANN	11	3528	6.5e-018	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1103.2
+38	data/external/MOTIFS.meme	MA0481.3	FOXP1	NDGTAAACANH	11	3517	3.9e-017	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0481.3
+39	MEME	AAAAAAAAAAAMAAA	MEME-3	AAAAAAAAAAAMAAA	15	114	6.7e-017	MEME	data/external/MOTIFS.meme	PRDM6_HUMAN.H11MO.0.C	http://hocomoco.autosome.ru/motif/PRDM6_HUMAN.H11MO.0.C
+40	data/external/MOTIFS.meme	FOXK1_HUMAN.H11MO.0.A	 	TGTTTMCHTT	10	3671	1.3e-016	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXK1_HUMAN.H11MO.0.A
+41	data/external/MOTIFS.meme	FOXJ2_HUMAN.H11MO.0.C	 	TGTTTRTTTW	10	3053	2.3e-016	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXJ2_HUMAN.H11MO.0.C
+42	data/external/MOTIFS.meme	MA0852.2	FOXK1	NRDGTAAACAAGNN	14	3445	2.3e-015	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0852.2
+43	data/external/MOTIFS.meme	MA0030.1	FOXF2	BNAASGTAAACAAD	14	1847	2.8e-014	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0030.1
+44	data/external/MOTIFS.meme	MA1569.1	TFAP2E	YGCCYSRGGCD	11	1604	1.3e-013	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1569.1
+45	data/external/MOTIFS.meme	MA1487.2	FOXE1	VYTAAAYAAACAAH	14	3028	1.3e-013	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1487.2
+46	data/external/MOTIFS.meme	MA1489.1	FOXN3	GTAAACAA	8	2174	3.6e-013	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA1489.1
+47	STREME	5-ATRTTTA	STREME-5	ATRTTTA	7	724	3.1e-012	STREME	data/external/MOTIFS.meme	MA0845.1 (FOXB1)	http://jaspar.genereg.net/matrix/MA0845.1
+48	data/external/MOTIFS.meme	FOXC1_HUMAN.H11MO.0.C	 	CDWTGTTTACTTWRG	15	1950	2.2e-011	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXC1_HUMAN.H11MO.0.C
+49	data/external/MOTIFS.meme	MA0031.1	FOXD1	GTAAACAW	8	3035	5.0e-011	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0031.1
+50	data/external/MOTIFS.meme	MA0814.2	TFAP2C	NNGCCTGAGGCGNN	14	3240	7.8e-009	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0814.2
+51	data/external/MOTIFS.meme	MA0154.4	EBF1	NNTCCCCAGGGGANN	15	3036	2.5e-008	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0154.4
+52	data/external/MOTIFS.meme	MA0041.2	FOXD3	WAWGHAAATAAACARY	16	3411	6.1e-008	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0041.2
+53	data/external/MOTIFS.meme	AP2B_HUMAN.H11MO.0.B	 	GCCYGVGGGS	10	3424	2.7e-007	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/AP2B_HUMAN.H11MO.0.B
+54	data/external/MOTIFS.meme	MA0040.1	Foxq1	HATTGTTTATW	11	2288	4.9e-006	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0040.1
+55	data/external/MOTIFS.meme	MA0593.1	FOXP2	RWGTAAACAVR	11	2350	5.7e-006	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0593.1
+56	STREME	3-GTAAAC	STREME-3	GTAAAC	6	141	8.1e-006	STREME	data/external/MOTIFS.meme	MA0031.1 (FOXD1)	http://jaspar.genereg.net/matrix/MA0031.1
+57	data/external/MOTIFS.meme	FOXP1_HUMAN.H11MO.0.A	 	TBTGTTTMY	9	3668	1.0e-005	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXP1_HUMAN.H11MO.0.A
+58	data/external/MOTIFS.meme	FOXO4_HUMAN.H11MO.0.C	 	TTGTTTAYK	9	3084	1.2e-004	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXO4_HUMAN.H11MO.0.C
+59	STREME	13-CCCTGCAGGCA	STREME-13	13-CCCTGCAGGCA	11	47	2.8e-004	STREME	data/external/MOTIFS.meme	MA0815.1 (TFAP2C)	http://jaspar.genereg.net/matrix/MA0815.1
+60	data/external/MOTIFS.meme	FOXO1_HUMAN.H11MO.0.A	 	KBBYTGTTTHCN	12	3677	4.7e-004	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/FOXO1_HUMAN.H11MO.0.A
+61	STREME	9-GATDNHATC	STREME-9	GATDNHATC	9	195	7.4e-004	STREME	 	 	 
+62	data/external/MOTIFS.meme	ANDR_HUMAN.H11MO.0.A	 	TGTTCTTKKYTGTTTRYW	18	3461	4.3e-003	CENTRIMO	 	 	http://hocomoco.autosome.ru/motif/ANDR_HUMAN.H11MO.0.A
+63	data/external/MOTIFS.meme	MA0627.2	POU2F3	NWTATGCAAATNH	13	2763	5.3e-003	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0627.2
+64	data/external/MOTIFS.meme	MA0025.2	NFIL3	NRTTATGYAATNN	13	2800	1.3e-002	CENTRIMO	 	 	http://jaspar.genereg.net/matrix/MA0025.2
+65	STREME	4-AGATAA	STREME-4	AGATAA	6	363	2.3e-002	STREME	data/external/MOTIFS.meme	MA0036.3 (GATA2)	http://jaspar.genereg.net/matrix/MA0036.3
+
+# MEME-ChIP (Motif Analysis of Large Nucleotide Datasets): Version 5.4.1 released on Sat Aug 21 19:23:23 2021 -0700
+# The format of this file is described at http://meme-suite.org//doc/meme-chip-output-format.html
+# meme-chip -oc output/meme/all4_h3k27ac -db data/external/MOTIFS.meme -desc General profile of binding sites for all TFs based on overlap with H3K27ac-derived features output/all4_h3k27ac.fa

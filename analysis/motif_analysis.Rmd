@@ -1,7 +1,7 @@
 ---
 title: "Motif Analysis"
 author: "Steve Pederson"
-date: "2022-05-25"
+date: "`r format(Sys.Date(), '%d %B, %Y')`"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -1091,7 +1091,7 @@ meme_info %>%
 ar_summits <- dht_peaks$AR %>% 
   resize(width = 1, fix = 'start') %>% 
   shift(shift = .$peak) %>% 
-  resize(width = seq_width, fix = 'center') %>% 
+  resize(width = seq_width, fix = 'center') %>%
   granges() %>% 
   mutate(
     AR = overlapsAny(., subset(dht_consensus, AR)),
@@ -1104,13 +1104,30 @@ seq_ar_summits <- ar_summits %>%
   get_sequence(hg19)
 views_ar_summits <- as(seq_ar_summits, "Views") %>% 
   setNames(names(seq_ar_summits))
+ar_summits <- dht_peaks$AR %>%
+  mutate(w = width) %>%
+  resize(width = 1, fix = 'center') %>%
+  shift(.$peak) %>%
+  resize(width = .$w, fix = 'center') %>%
+  granges()%>% 
+  mutate(
+    AR = overlapsAny(., subset(dht_consensus, AR)),
+    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
+    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
+    TFAP2B = overlapsAny(., subset(dht_consensus, TFAP2B)),
+    H3K27ac = overlapsAny(., features)
+  ) 
+seq_ar_summits <- ar_summits %>%
+  get_sequence(hg19)
+views_ar_summits <- as(seq_ar_summits, "Views") %>%
+  setNames(names(seq_ar_summits))
 matches_ar_summits <-meme_db_detected %>%
   dplyr::filter(altname %in% targets) %>% 
   to_list() %>% 
   lapply(
     getBestMatch, 
     subject = views_ar_summits,
-    min.score = min_score
+    min.score = "70%"#min_score
   ) %>% 
   setNames(
     dplyr::filter(meme_db_detected, altname %in% targets)$name

@@ -1,0 +1,15 @@
+prim_db	prim_id	prim_alt	prim_cons	sec_db	sec_id	sec_alt	sec_cons	trim_left	trim_right	red_db	red_id	red_alt	E-value	gap	orient	count	total	adj_p-value	p-value
+meme.xml	CAAGCR	MEME-3	CAAGCR	meme.xml	CCTGGG	MEME-2	CCTGGG	0	0	.	.	.	1.31e+00	4	5	50	8117	1.55e-02	1.31e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	meme.xml	RRGSAVRSAGG	MEME-1	RRGSAVRSAGG	0	0	.	.	.	1.62e+00	104	0	29	7488	1.94e-02	1.62e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	7-CCCAGC	STREME-7	CCCAGC	0	0	.	.	.	2.18e+00	2	4	38	5765	2.69e-02	2.18e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	1-CTCCTCCCWGCCY	STREME-1	CTCCTCCCWGCCY	0	0	.	.	.	7.09e+00	135	5	46	7693	1.28e-01	7.09e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	2-CCAGGAAGC	STREME-2	CCAGGAAGC	0	0	.	.	.	7.44e+00	97	0	9	1409	1.41e-01	7.44e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	5-GGBSVCC	STREME-5	GGBSVCC	0	0	.	.	.	8.30e+00	92	3	12	2421	1.79e-01	8.30e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	3-DGGCTGG	STREME-3	DGGCTGG	1	0	.	.	.	9.02e+00	79	6	29	4579	2.28e-01	9.02e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	6-GGCCCCTG	STREME-6	GGCCCCTG	0	0	.	.	.	9.49e+00	82	2	13	2910	2.82e-01	9.49e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	meme.xml	CAAGCR	MEME-3	CAAGCR	0	0	.	.	.	9.79e+00	52	3	12	2681	3.48e-01	9.79e-01
+meme.xml	CAAGCR	MEME-3	CAAGCR	streme.xml	4-CCTCCAA	STREME-4	CCTCCAA	0	0	.	.	.	1.00e+01	108	6	10	1136	6.51e-01	1.00e+00
+
+# SpaMo (Spaced Motif Analysis Tool): Version 5.4.1 compiled on May 17 2022 at 23:53:47
+# The format of this file is described at http://meme-suite.org/doc/spamo-output-format.html.
+# spamo -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/spamo_out_3 -bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -keepprimary -primary CAAGCR output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml

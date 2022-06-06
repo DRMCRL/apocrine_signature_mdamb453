@@ -1,0 +1,86 @@
+Invoking:
+  getsize output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa 1> $metrics
+Finished invoke:
+  name: count_seqs  status: 0  time: 0.042021
+Invoking:
+  fasta-most -min 50 < output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa 1> $metrics
+Finished invoke:
+  name: most_seqs  status: 0  time: 0.116221
+Invoking:
+  fasta-center -dna -len 100 < output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa 1> output/meme/all4_tfap2b_vs_notfap2b/seqs-centered
+Finished invoke:
+  name: center_seqs  status: 0  time: 0.155964
+Invoking:
+  getsize output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_no_tfap2b.fa 1> $metrics
+Finished invoke:
+  name: count_seqs  status: 0  time: 0.046028
+Invoking:
+  fasta-center -dna -len 100 < output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_no_tfap2b.fa 1> output/meme/all4_tfap2b_vs_notfap2b/control-centered
+Finished invoke:
+  name: center_control  status: 0  time: 0.156099
+Invoking:
+  fasta-get-markov -nostatus -nosummary -dna -m 2 output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_no_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/background
+Finished invoke:
+  name: bg  status: 0  time: 0.043209
+Invoking:
+  meme output/meme/all4_tfap2b_vs_notfap2b/seqs-centered -oc output/meme/all4_tfap2b_vs_notfap2b/meme_out -mod zoops -nmotifs 3 -minw 6 -maxw 15 -bfile output/meme/all4_tfap2b_vs_notfap2b/background -dna -objfun de -neg output/meme/all4_tfap2b_vs_notfap2b/control-centered -revcomp -nostatus
+Finished invoke:
+  name: meme  status: 0  time: 1324.906624
+Invoking:
+  streme --verbosity 1 --oc output/meme/all4_tfap2b_vs_notfap2b/streme_out -dna --p output/meme/all4_tfap2b_vs_notfap2b/seqs-centered --n output/meme/all4_tfap2b_vs_notfap2b/control-centered --minw 6 --maxw 15 --order 2
+Finished invoke:
+  name: streme  status: 0  time: 153.900518
+Invoking:
+  centrimo -seqlen 500 -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/centrimo_out -bfile output/meme/all4_tfap2b_vs_notfap2b/background -neg output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_no_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: centrimo  status: 0  time: 224.099602
+Invoking:
+  tomtom -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/meme_tomtom_out -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: meme_tomtom  status: 0  time: 1.254668
+Invoking:
+  tomtom -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/streme_tomtom_out -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: streme_tomtom  status: 0  time: 5.355194
+Invoking:
+  tomtom -verbosity 1 -text -thresh 0.1 output/meme/all4_tfap2b_vs_notfap2b/combined.meme output/meme/all4_tfap2b_vs_notfap2b/combined.meme 1> output/meme/all4_tfap2b_vs_notfap2b/motif_alignment.txt
+Finished invoke:
+  name: align  status: 0  time: 0.429598
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/spamo_out_1 -bgfile output/meme/all4_tfap2b_vs_notfap2b/background -keepprimary -primary SCYYCAGGS output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml
+Finished invoke:
+  name: spamo1  status: 0  time: 12.744243
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/spamo_out_2 -bgfile output/meme/all4_tfap2b_vs_notfap2b/background -keepprimary -primary CCTGCC output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml
+Finished invoke:
+  name: spamo2  status: 0  time: 12.517805
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/spamo_out_3 -bgfile output/meme/all4_tfap2b_vs_notfap2b/background -keepprimary -primary GCTGKG output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml
+Finished invoke:
+  name: spamo3  status: 0  time: 11.171591
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/spamo_out_4 -bgfile output/meme/all4_tfap2b_vs_notfap2b/background -keepprimary -primary 3-CWSASCCCH output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml
+Finished invoke:
+  name: spamo4  status: 0  time: 11.573006
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_tfap2b_vs_notfap2b/fimo_out_1 --bgfile output/meme/all4_tfap2b_vs_notfap2b/background --motif SCYYCAGGS output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa
+Finished invoke:
+  name: fimo1  status: 0  time: 0.924717
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_tfap2b_vs_notfap2b/fimo_out_2 --bgfile output/meme/all4_tfap2b_vs_notfap2b/background --motif CCTGCC output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa
+Finished invoke:
+  name: fimo2  status: 0  time: 0.768521
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_tfap2b_vs_notfap2b/fimo_out_3 --bgfile output/meme/all4_tfap2b_vs_notfap2b/background --motif GCTGKG output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa
+Finished invoke:
+  name: fimo3  status: 0  time: 0.787919
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_tfap2b_vs_notfap2b/fimo_out_4 --bgfile output/meme/all4_tfap2b_vs_notfap2b/background --motif 3-CWSASCCCH output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa
+Finished invoke:
+  name: fimo4  status: 0  time: 0.815533
+Writing output
+Invoking:
+  meme-chip_html_to_tsv output/meme/all4_tfap2b_vs_notfap2b/meme-chip.html output/meme/all4_tfap2b_vs_notfap2b/summary.tsv "meme-chip -oc output/meme/all4_tfap2b_vs_notfap2b -db data/external/MOTIFS.meme -neg output/ar_foxa1_gata3_no_tfap2b.fa -desc Comparison of binding sites for all TFs based Presence/Absence of TFAP2B output/ar_foxa1_gata3_tfap2b.fa" 5.4.1 "Sat Aug 21 19\:23\:23 2021 -0700"
+Finished invoke:
+  name: summary  status: 0  time: 0.265983
+Done

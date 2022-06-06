@@ -1,0 +1,14 @@
+prim_db	prim_id	prim_alt	prim_cons	sec_db	sec_id	sec_alt	sec_cons	trim_left	trim_right	red_db	red_id	red_alt	E-value	gap	orient	count	total	adj_p-value	p-value
+meme.xml	GCTGKG	MEME-3	GCTGKG	meme.xml	SCYYCAGGS	MEME-1	SCYYCAGGS	0	0	.	.	.	4.27e-01	4	8	125	12060	2.90e-06	2.61e-05
+meme.xml	GCTGKG	MEME-3	GCTGKG	streme.xml	4-MCTCCCC	STREME-4	MCTCCCC	0	0	.	.	.	5.58e-01	0	1	28	6717	3.76e-06	3.38e-05
+meme.xml	GCTGKG	MEME-3	GCTGKG	streme.xml	2-SCCWSC	STREME-2	SCCWSC	0	0	.	.	.	6.39e-01	1	4	100	18937	4.29e-06	3.86e-05
+meme.xml	GCTGKG	MEME-3	GCTGKG	meme.xml	CCTGCC	MEME-2	CCTGCC	0	0	meme.xml	2-SCCWSC	STREME-2	1.59e+00	1	1	44	13630	1.44e-02	1.23e-01
+meme.xml	GCTGKG	MEME-3	GCTGKG	streme.xml	1-SCCYSRGGS	STREME-1	SCCYSRGGS	0	0	.	.	.	1.39e+00	56	7	57	9363	1.25e-02	1.07e-01
+meme.xml	GCTGKG	MEME-3	GCTGKG	streme.xml	5-GCAGAGCC	STREME-5	GCAGAGCC	0	0	.	.	.	2.56e+00	49	5	31	4260	2.40e-02	1.97e-01
+meme.xml	GCTGKG	MEME-3	GCTGKG	meme.xml	GCTGKG	MEME-3	GCTGKG	0	0	.	.	.	2.62e+00	10	8	71	6494	2.47e-02	2.01e-01
+meme.xml	GCTGKG	MEME-3	GCTGKG	streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	0	1	.	.	.	6.27e+00	1	1	30	8697	7.05e-02	4.82e-01
+meme.xml	GCTGKG	MEME-3	GCTGKG	streme.xml	7-CCAGCC	STREME-7	CCAGCC	0	0	.	.	.	9.35e+00	109	6	46	8074	1.32e-01	7.20e-01
+
+# SpaMo (Spaced Motif Analysis Tool): Version 5.4.1 compiled on May 17 2022 at 23:53:47
+# The format of this file is described at http://meme-suite.org/doc/spamo-output-format.html.
+# spamo -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/spamo_out_3 -bgfile output/meme/all4_tfap2b_vs_notfap2b/background -keepprimary -primary GCTGKG output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml

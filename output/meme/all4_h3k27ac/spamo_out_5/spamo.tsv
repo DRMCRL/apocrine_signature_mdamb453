@@ -1,0 +1,12 @@
+prim_db	prim_id	prim_alt	prim_cons	sec_db	sec_id	sec_alt	sec_cons	trim_left	trim_right	red_db	red_id	red_alt	E-value	gap	orient	count	total	adj_p-value	p-value
+streme.xml	4-AGATAA	STREME-4	AGATAA	streme.xml	5-ATRTTTA	STREME-5	ATRTTTA	0	0	.	.	.	1.46e-01	0	2	11	1129	7.42e-07	6.68e-06
+streme.xml	4-AGATAA	STREME-4	AGATAA	meme.xml	WRYAAAYA	MEME-2	WRYAAAYA	0	0	.	.	.	2.47e+00	35	2	8	820	1.73e-02	1.46e-01
+streme.xml	4-AGATAA	STREME-4	AGATAA	streme.xml	12-CCCACCCCACCCC	STREME-12	CCCACCCCACCCC	0	0	.	.	.	2.66e+00	73	5	6	211	1.87e-02	1.56e-01
+streme.xml	4-AGATAA	STREME-4	AGATAA	streme.xml	1-WRWGYAAAYA	STREME-1	WRWGYAAAYA	0	0	.	.	.	3.21e+00	28	5	11	794	2.30e-02	1.89e-01
+streme.xml	4-AGATAA	STREME-4	AGATAA	streme.xml	3-GTAAAC	STREME-3	GTAAAC	0	0	.	.	.	4.77e+00	16	3	4	173	3.60e-02	2.81e-01
+streme.xml	4-AGATAA	STREME-4	AGATAA	meme.xml	SCYBGRGGCWD	MEME-1	SCYBGRGGCWD	0	1	.	.	.	5.86e+00	30	3	7	712	4.58e-02	3.44e-01
+streme.xml	4-AGATAA	STREME-4	AGATAA	streme.xml	4-AGATAA	STREME-4	AGATAA	0	0	.	.	.	7.18e+00	56	3	4	198	5.92e-02	4.22e-01
+
+# SpaMo (Spaced Motif Analysis Tool): Version 5.4.1 compiled on May 17 2022 at 23:53:47
+# The format of this file is described at http://meme-suite.org/doc/spamo-output-format.html.
+# spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_5 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary 4-AGATAA output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml

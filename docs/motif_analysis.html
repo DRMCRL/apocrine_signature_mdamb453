@@ -11,7 +11,6 @@
 
 <meta name="author" content="Steve Pederson" />
 
-<meta name="date" content="2022-05-25" />
 
 <title>Motif Analysis</title>
 
@@ -374,7 +373,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Motif Analysis</h1>
 <h4 class="author">Steve Pederson</h4>
-<h4 class="date">2022-05-25</h4>
+<h4 class="date">06 June, 2022</h4>
 
 </div>
 
@@ -538,15 +537,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee1c43dd8c804647b9ddd68322a9071dee324afbdtargetblanke1c43dda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree0c127407bf36122be17950abac95eb8d8ddfc9b8targetblank0c12740a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e1c43dd8c804647b9ddd68322a9071dee324afbd" target="_blank">e1c43dd</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/0c127407bf36122be17950abac95eb8d8ddfc9b8" target="_blank">0c12740</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee1c43dd8c804647b9ddd68322a9071dee324afbdtargetblanke1c43dda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree0c127407bf36122be17950abac95eb8d8ddfc9b8targetblank0c12740a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -556,7 +555,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e1c43dd8c804647b9ddd68322a9071dee324afbd" target="_blank">e1c43dd</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/0c127407bf36122be17950abac95eb8d8ddfc9b8" target="_blank">0c12740</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -579,6 +578,7 @@ Untracked files:
     Untracked:  output/meme/
 
 Unstaged changes:
+    Modified:   analysis/index.Rmd
     Modified:   analysis/motif_analysis.Rmd
 
 </code></pre>
@@ -625,6 +625,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/0c127407bf36122be17950abac95eb8d8ddfc9b8/analysis/motif_analysis.Rmd" target="_blank">0c12740</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Finished regression analysis for motifs
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/0c127407bf36122be17950abac95eb8d8ddfc9b8/docs/motif_analysis.html" target="_blank">0c12740</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Finished regression analysis for motifs
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1039,15 +1073,15 @@ following <code>bash</code> command</p>
   zcat |\
   cut -f1-2,19 |\
   gzip -c &gt; data/external/uniprot_to_ensg.txt.gz</code></pre>
-<p>For RIME data the criteria for detection within a sample was simply
+<p>For RIME data, the criteria for detection within a sample was simply
 defined as the coverage being greater when using AR as the IP-target,
-than when using IgG as the IP-target. Any genes with no gene_name
-associated (i.e. only an Ensembl Gene ID) were also excluded. Under this
-approach, 241 proteins were considered as detected in <span
+than when using IgG as the IP-target. Under this approach, 241 proteins
+were considered as detected in <span
 class="math inline">\(&gt;2\)</span> of 3 samples and were retained for
 inclusion with motif analysis. When further comparing to the RNA-Seq
 data only <em>KRT9</em> was found in the RIME data without supporting
-RNA evidence.</p>
+RNA evidence. Any proteins with no gene_name associated (i.e. only an
+Ensembl Gene ID) were also excluded.</p>
 <pre class="r"><code>meme_db &lt;- here::here(&quot;data&quot;, &quot;external&quot;, &quot;JASPAR2022_CORE_Hsapiens.meme&quot;) %&gt;%
   read_meme() %&gt;%
   to_df() %&gt;%
@@ -1076,7 +1110,8 @@ meme_info &lt;- meme_db_detected %&gt;%
 in <em>Homo sapiens</em>, as contained in <a
 href="https://jaspar2022.genereg.net/">JASPAR2022</a>. In order to
 minimise irrelevant results, only the 465 motifs associated with a
-**detected as an AR interacting were then retained.</p>
+detected gene, using presence within the RNA-Seq dataset as evidence of
+detection.</p>
 <pre class="r"><code>dht_peaks &lt;- here::here(&quot;data&quot;, &quot;peaks&quot;) %&gt;%
   list.files(recursive = TRUE, pattern = &quot;oracle&quot;, full.names = TRUE) %&gt;%
   sapply(read_rds, simplify = FALSE) %&gt;%
@@ -1194,9 +1229,9 @@ Steve Pederson
   colToRanges(var = &quot;range&quot;, seqinfo = sq19) %&gt;% 
   sort() %&gt;% 
   splitAsList(.$targets)</code></pre>
-<p>Union ranges were grouped by the combination of detected AR, FOXA1,
-GATA3 and TFAP2B binding, then sequences obtained corresponding to each
-union range.</p>
+<p>Union ranges were defined by grouping by the combination of detected
+AR, FOXA1, GATA3 and TFAP2B binding, then sequences obtained
+corresponding to each union range.</p>
 <pre class="r"><code>grl_by_targets %&gt;% 
   lapply(
     function(x) {
@@ -1428,13 +1463,15 @@ interpretation</p>
 <li>Find enriched motifs</li>
 <li>Calculate similarity of enriched motifs as a correlation matrix
 <ul>
-<li>Reduce correlations &lt; 0.9 to zero</li>
+<li>Reduce correlations &lt; <span class="math inline">\(\rho\)</span>
+to zero, commonly using <span class="math inline">\(\rho=\)</span>
+0.8.</li>
 <li>Converted to a distance matrix for clustering</li>
 </ul></li>
 <li>Cluster the motifs using <code>hclust</code> and a height of
 0.9</li>
-<li>Create a consensus motif for all motifs in the cluster</li>
-<li>Report enriched consensus motifs for simpler interpretation</li>
+<li>Report the results for all motifs within a cluster as a single
+result</li>
 </ol>
 <div id="enrichment-of-chip-target-motifs" class="section level2">
 <h2>Enrichment Of ChIP Target Motifs</h2>
@@ -1539,8 +1576,8 @@ Steve Pederson
 <h3>All Sequences</h3>
 <p>AME was used to assess enrichment of motifs within the sequences
 derived from each combination of ChIP targets. Enrichment was considered
-relative to shuffled sequences as the control set, with AME only
-returning matches considered to be statistically significant.</p>
+relative to <em>shuffled sequences</em> as the control set, with AME
+only returning matches considered to be statistically significant.</p>
 <pre class="r"><code>ame_by_targets %&gt;% 
   bind_rows(.id = &quot;targets&quot;) %&gt;% 
   dplyr::filter(motif_alt_id %in% globalenv()$targets) %&gt;% 
@@ -1642,8 +1679,9 @@ class="math inline">\(\beta\)</span> motifs amongst the sites where
 TFAP2<span class="math inline">\(\beta\)</span> was not observed.</p>
 <p>The set of H3K27-associated peaks where AR, GATA3 and TFAP2<span
 class="math inline">\(\beta\)</span> were found in combination were
-notably enriched for one specific TFAP2$ motif (MA0812) to the exclusion
-of others suggesting that FOXA1 independent formation of the regulatory
+notably enriched for one specific TFAP2<span
+class="math inline">\(\beta\)</span> motif (MA0812) to the exclusion of
+others suggesting that FOXA1 independent formation of the regulatory
 complex may have a distinct mechanism. In conjunction with the increased
 occurrence of this motif, this set of peaks also contained the lowest
 enrichment for AR motifs amongst the AR-associated peaks.</p>
@@ -2142,6 +2180,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/0c127407bf36122be17950abac95eb8d8ddfc9b8/docs/figure/motif_analysis.Rmd/plot-motifs-active-vs-inactive-1.png" target="_blank">0c12740</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-motifs-active-vs-inactive-1.png" target="_blank">8dde309</a>
 </td>
 <td>
@@ -2237,6 +2286,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/0c127407bf36122be17950abac95eb8d8ddfc9b8/docs/figure/motif_analysis.Rmd/plot-motifs-inactive-vs-active-1.png" target="_blank">0c12740</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-motifs-inactive-vs-active-1.png" target="_blank">8dde309</a>
@@ -2339,78 +2399,6 @@ glm_h3K27ac &lt;- all4_motifs %&gt;%
       TRUE ~ &quot;***&quot;
     )
   ) </code></pre>
-<pre><code>Start:  AIC=8384
-H3K27ac ~ (PC1 + MA0007.2 + MA0148.4 + MA0037.3)^4
-
-                                 Df Deviance    AIC
-- PC1:MA0007.2:MA0148.4:MA0037.3  1   8352.1 8382.1
-&lt;none&gt;                                8352.0 8384.0
-
-Step:  AIC=8382.13
-H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
-    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0148.4 + MA0007.2:MA0037.3 + 
-    MA0148.4:MA0037.3 + PC1:MA0007.2:MA0148.4 + PC1:MA0007.2:MA0037.3 + 
-    PC1:MA0148.4:MA0037.3 + MA0007.2:MA0148.4:MA0037.3
-
-                             Df Deviance    AIC
-- PC1:MA0007.2:MA0148.4       1   8352.5 8380.5
-- MA0007.2:MA0148.4:MA0037.3  1   8353.6 8381.6
-- PC1:MA0007.2:MA0037.3       1   8353.8 8381.8
-&lt;none&gt;                            8352.1 8382.1
-- PC1:MA0148.4:MA0037.3       1   8355.3 8383.3
-
-Step:  AIC=8380.47
-H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
-    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0148.4 + MA0007.2:MA0037.3 + 
-    MA0148.4:MA0037.3 + PC1:MA0007.2:MA0037.3 + PC1:MA0148.4:MA0037.3 + 
-    MA0007.2:MA0148.4:MA0037.3
-
-                             Df Deviance    AIC
-- MA0007.2:MA0148.4:MA0037.3  1   8353.8 8379.8
-- PC1:MA0007.2:MA0037.3       1   8354.0 8380.0
-&lt;none&gt;                            8352.5 8380.5
-- PC1:MA0148.4:MA0037.3       1   8355.7 8381.7
-
-Step:  AIC=8379.83
-H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
-    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0148.4 + MA0007.2:MA0037.3 + 
-    MA0148.4:MA0037.3 + PC1:MA0007.2:MA0037.3 + PC1:MA0148.4:MA0037.3
-
-                        Df Deviance    AIC
-- MA0007.2:MA0148.4      1   8354.6 8378.6
-- PC1:MA0007.2:MA0037.3  1   8355.6 8379.6
-&lt;none&gt;                       8353.8 8379.8
-- PC1:MA0148.4:MA0037.3  1   8357.2 8381.2
-
-Step:  AIC=8378.59
-H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
-    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0037.3 + MA0148.4:MA0037.3 + 
-    PC1:MA0007.2:MA0037.3 + PC1:MA0148.4:MA0037.3
-
-                        Df Deviance    AIC
-- PC1:MA0007.2:MA0037.3  1   8356.3 8378.3
-&lt;none&gt;                       8354.6 8378.6
-- PC1:MA0148.4:MA0037.3  1   8358.2 8380.2
-
-Step:  AIC=8378.25
-H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
-    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0037.3 + MA0148.4:MA0037.3 + 
-    PC1:MA0148.4:MA0037.3
-
-                        Df Deviance    AIC
-- MA0007.2:MA0037.3      1   8356.7 8376.7
-&lt;none&gt;                       8356.3 8378.3
-- PC1:MA0007.2           1   8359.2 8379.2
-- PC1:MA0148.4:MA0037.3  1   8359.5 8379.5
-
-Step:  AIC=8376.67
-H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
-    PC1:MA0148.4 + PC1:MA0037.3 + MA0148.4:MA0037.3 + PC1:MA0148.4:MA0037.3
-
-                        Df Deviance    AIC
-&lt;none&gt;                       8356.7 8376.7
-- PC1:MA0007.2           1   8359.4 8377.4
-- PC1:MA0148.4:MA0037.3  1   8359.9 8377.9</code></pre>
 <pre class="r"><code>all4_motifs %&gt;% 
   group_by(name) %&gt;% 
   mutate(
@@ -2432,6 +2420,43 @@ were clearly associated with H3K27ac marks for all TFAP2B motifs, whilst
 some tendency towards lower scores was noted for FOXA1 and GATA3, in
 keeping with the above enrichment results.
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-all4-scores-1">
+Past versions of plot-all4-scores-1.png
+</button>
+</p>
+<div id="fig-plot-all4-scores-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/0c127407bf36122be17950abac95eb8d8ddfc9b8/docs/figure/motif_analysis.Rmd/plot-all4-scores-1.png" target="_blank">0c12740</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <p>To quantify the impact of motif presence within the sequences where
 all 4 ChIP targets were detected, the probability of a peak being
@@ -3393,12 +3418,13 @@ Steve Pederson
     linetype = &quot;ChIP/Motif\nTarget Detected&quot;
   )</code></pre>
 <div class="figure" style="text-align: center">
-<img src="figure/motif_analysis.Rmd/plot-foxa1-dist-1.png" alt="Distance between best matching motif and the best matching FOXA1 motif, showing data to the 50th percentile of distances. No noticable difference was noticed between individual motifs, H3K27ac status, or whether the ChIP target was detected within the FOXA1 peak." width="960" />
+<img src="figure/motif_analysis.Rmd/plot-foxa1-dist-1.png" alt="Distance between best matching motif and the best matching FOXA1 motif, showing data to the 50th percentile of distances. No noticable difference was noticed between H3K27ac status, or whether the ChIP target was detected within the FOXA1 peaks. However, both AR ang GATA3 motifs do appear to be closer to the FOXA1 motif than TFAP2B motifs." width="960" />
 <p class="caption">
 Distance between best matching motif and the best matching FOXA1 motif,
 showing data to the 50th percentile of distances. No noticable
-difference was noticed between individual motifs, H3K27ac status, or
-whether the ChIP target was detected within the FOXA1 peak.
+difference was noticed between H3K27ac status, or whether the ChIP
+target was detected within the FOXA1 peaks. However, both AR ang GATA3
+motifs do appear to be closer to the FOXA1 motif than TFAP2B motifs.
 </p>
 </div>
 <p>

@@ -1,0 +1,9 @@
+prim_db	prim_id	prim_alt	prim_cons	sec_db	sec_id	sec_alt	sec_cons	trim_left	trim_right	red_db	red_id	red_alt	E-value	gap	orient	count	total	adj_p-value	p-value
+streme.xml	9-GATDNHATC	STREME-9	GATDNHATC	streme.xml	2-DSCCYSRGGSH	STREME-2	DSCCYSRGGSH	1	1	.	.	.	2.22e+00	81	5	8	402	1.54e-02	1.31e-01
+streme.xml	9-GATDNHATC	STREME-9	GATDNHATC	streme.xml	8-RTGASTCAY	STREME-8	RTGASTCAY	0	0	.	.	.	5.01e+00	22	2	3	70	3.81e-02	2.95e-01
+streme.xml	9-GATDNHATC	STREME-9	GATDNHATC	streme.xml	4-AGATAA	STREME-4	AGATAA	0	0	.	.	.	7.66e+00	65	6	4	102	6.44e-02	4.51e-01
+streme.xml	9-GATDNHATC	STREME-9	GATDNHATC	streme.xml	7-TGTGTACACA	STREME-7	TGTGTACACA	0	0	.	.	.	8.32e+00	121	7	3	44	7.20e-02	4.89e-01
+
+# SpaMo (Spaced Motif Analysis Tool): Version 5.4.1 compiled on May 17 2022 at 23:53:47
+# The format of this file is described at http://meme-suite.org/doc/spamo-output-format.html.
+# spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_4 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary 9-GATDNHATC output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml

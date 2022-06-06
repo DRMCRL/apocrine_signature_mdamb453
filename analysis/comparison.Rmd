@@ -37,6 +37,8 @@ library(Gviz)
 library(readxl)
 library(corrplot)
 library(goseq)
+library(cowplot)
+library(scico)
 library(BSgenome.Hsapiens.UCSC.hg19)
 theme_set(theme_bw())
 ```
@@ -68,44 +70,47 @@ bar_style <- function(width = 1, fill = "#e6e6e6", height = "75%", align = c("le
 
 
 
-```{r dht-peaks}
+```{r dht-peaks, fig.height = 7, fig.cap = "Peak width distribution based on the number of replicates a peak was detected in."}
 dht_peaks <- here::here("data", "peaks") %>% 
   list.files(recursive = TRUE, pattern = "oracle", full.names = TRUE) %>% 
   sapply(read_rds, simplify = FALSE) %>% 
   lapply(function(x) x[["DHT"]]) %>% 
   lapply(setNames, nm = c()) %>% 
   setNames(str_extract_all(names(.), "AR|FOXA1|GATA3|TFAP2B"))
-dht_consensus <- dht_peaks %>%
-  lapply(granges) %>% 
-  GRangesList() %>% 
-  unlist() %>% 
-  reduce() %>% 
-  mutate(
-    AR = overlapsAny(., dht_peaks$AR),
-    FOXA1 = overlapsAny(., dht_peaks$FOXA1),
-    GATA3 = overlapsAny(., dht_peaks$GATA3),
-    TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
-  )
 targets <- names(dht_peaks)
-sq <- seqinfo(dht_consensus)
+sq <- seqinfo(dht_peaks[[1]])
+dht_peaks %>% 
+  lapply(mutate, w = width) %>%
+  lapply(as_tibble) %>%
+  bind_rows(.id = "target") %>%
+  ggplot(aes(as.factor(n_reps), w, fill = target)) +
+  geom_violin(draw_quantiles = 0.5) +
+  scale_y_log10() +
+  labs(x = "Number of Replicates", y = "Peak Width", fill = "Target")
 ```
 
-## Relationship Between Binding Regions
 
-Oracle peaks from the DHT-treated samples in each ChIP target were obtained previously using the GRAVI workflow.
-AR and GATA3 peaks were derived from the same samples/passages, whilst FOXA1 and TFAP2B ChIP-Seq experiments were performed separately.
+Given that narrow peaks were primarily associated with those detected in a single replicate, the decision was made to only retain peaks detected in $\geq2$ replicates for each target.
+This would remove the following peak numbers from each target
+
+`r dht_peaks %>% lapply(function(x) glue("{comma(sum(x$n_reps == 1))} ({percent(mean(x$n_reps == 1), 0.1)})")) %>% pander()`
 
 ```{r tbl-overlap}
 cp <- htmltools::tags$em(
-  "Summary of all oracle peaks from DHT-treated samples. FOXA1 clearly showed the most binding activity."
+  "
+  Summary of all oracle peaks from DHT-treated samples. 
+  FOXA1 clearly showed the most binding activity. 
+  Discarded peaks are those only detected in one replicate.
+  "
 )
 tbl <- dht_peaks %>% 
   lapply(
     function(x) {
       tibble(
-        n = length(x),
+        n = sum(x$n_reps > 1),
         w = median(width(x)),
-        kb = sum(width(x)) / 1e3
+        kb = sum(width(x)) / 1e3,
+        discarded = sum(x$n_reps == 1)
       )
     }
   ) %>% 
@@ -119,7 +124,8 @@ tbl <- dht_peaks %>%
       target = colDef(name = "ChIP Target"),
       n = colDef(name = "Total Peaks"),
       w = colDef(name = "Median Width"),
-      kb = colDef(name = "Total Width (kb)", format = colFormat(digits = 1))
+      kb = colDef(name = "Total Width (kb)", format = colFormat(digits = 1)),
+      discarded = colDef(name = "Discarded Peaks")
     ),
     defaultColDef = colDef(
       format = colFormat(separators = TRUE, digits = 0)
@@ -132,6 +138,78 @@ div(class = "table",
   )
 )
 ```
+
+
+```{r dht-consensus-old, echo = FALSE, eval = FALSE}
+dht_consensus <- dht_peaks %>%
+  lapply(filter, n_reps > 1) %>% 
+  lapply(granges) %>% 
+  GRangesList() %>% 
+  unlist() %>% 
+  reduce() %>% 
+  mutate(
+    AR = overlapsAny(., dht_peaks$AR),
+    FOXA1 = overlapsAny(., dht_peaks$FOXA1),
+    GATA3 = overlapsAny(., dht_peaks$GATA3),
+    TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
+    H3K27ac = overlapsAny(., features)
+  )
+```
+
+```{r dht-consensus}
+all_gr <- here::here("data", "annotations", "all_gr.rds") %>% 
+  read_rds() 
+tss <- resize(all_gr$transcript, width = 1)
+features <- here::here("data", "h3k27ac") %>% 
+  list.files(full.names = TRUE, pattern = "bed$") %>% 
+  sapply(import.bed, seqinfo = sq) %>% 
+  lapply(granges) %>% 
+  setNames(basename(names(.))) %>% 
+  setNames(str_remove_all(names(.), "s.bed")) %>% 
+  GRangesList() %>% 
+  unlist() %>% 
+  names_to_column("feature") %>% 
+  sort()
+dht_consensus <- dht_peaks %>% 
+  lapply(filter, n_reps > 1) %>% 
+  lapply(mutate, w = width) %>% 
+  lapply(resize, width = 1, fix = 'center') %>% 
+  lapply(
+    function(x) {
+      x <- shift(x, x$peak)
+      resize(x, width = round(0.9*x$w, 0), fix = 'center')
+    }
+  ) %>% 
+  lapply(granges) %>% 
+  GRangesList() %>% 
+  unlist() %>% 
+  reduce()%>% 
+  mutate(
+    AR = overlapsAny(., dht_peaks$AR),
+    FOXA1 = overlapsAny(., dht_peaks$FOXA1),
+    GATA3 = overlapsAny(., dht_peaks$GATA3),
+    TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
+    H3K27ac = propOverlap(., features) > 0.5,
+    promoter = bestOverlap(., features, var = "feature", missing = "None") == "promoter",
+    enhancer = bestOverlap(., features, var = "feature", missing = "None") == "enhancer",
+    dist_to_tss = mcols(distanceToNearest(., tss, ignore.strand = TRUE))$distance
+  )
+```
+
+Consensus peaks were then formed by:
+
+1. Centering each target's peak-set at the peak summit
+2. Resizing peaks to 90% of the initial width
+3. Merging any overlapping peaks from multiple targets
+
+Target overlap was defined as the merged peak having any overlap with the set of original peaks from each target.
+H3K27ac overlap was considered to be true if >50% of the final peak overlapped an H3K27ac-marked region.
+
+## Relationship Between Binding Regions
+
+Oracle peaks from the DHT-treated samples in each ChIP target were obtained previously using the GRAVI workflow.
+AR and GATA3 peaks were derived from the same samples/passages, whilst FOXA1 and TFAP2B ChIP-Seq experiments were performed separately.
+
 
 A set of target-agnostic set of binding regions was then defined as the union of all DHT-treat peaks across all targets.
 
@@ -150,34 +228,37 @@ dht_consensus %>%
   )
 ```
 
+### Peak Width
+
+```{r plot-group-peak-widths, fig.cap = "In most groups, wider peaks were more strongly associated with H3K27ac signal. Similarly, wider peaks were more commonly associated with multiple targets."}
+df <- dht_consensus %>% 
+  mutate(w = width) %>% 
+  as_tibble() %>% 
+  pivot_longer(
+    cols = all_of(targets),
+    names_to = "targets", values_to = "detected"
+  ) %>% 
+  dplyr::filter(detected) %>% 
+  group_by(range, H3K27ac, w) %>% 
+  summarise(
+    targets = paste(sort(targets), collapse = " "),
+    .groups = "drop"
+  ) 
+df %>% 
+  mutate(n_targets = str_count(targets, " ") + 1) %>% 
+  arrange(n_targets, targets) %>% 
+  mutate(targets = fct_inorder(targets)) %>% 
+  ggplot(aes(w, fct_rev(targets), fill = H3K27ac)) +
+  geom_boxplot() +
+  scale_x_log10() +
+  scale_fill_scico_d(palette = "berlin")
+```
+
+
 ## H3K27ac Signal {.tabset}
 
 Given the hypothesis that the co-ocurrence of all 4 ChIP targets should be associated with increased transcriptional or regulatory activity, the set of all DHT peaks were then compared to promoters and enhancers derived H2K27ac binding, as detected in the existing GATA3/AR dataset produced by Leila Hosseinzadeh.
 Any H3K27ac peak detected in this dataset was classified either as a promoter or enhancer, and thus these features can be considered as the complete set of regions with detectable H3K27ac signal from this experiment.
-
-```{r features}
-all_gr <- here::here("data", "annotations", "all_gr.rds") %>% 
-  read_rds() 
-tss <- resize(all_gr$transcript, width = 1)
-features <- here::here("data", "h3k27ac") %>% 
-  list.files(full.names = TRUE, pattern = "bed$") %>% 
-  sapply(import.bed, seqinfo = sq) %>% 
-  lapply(granges) %>% 
-  setNames(basename(names(.))) %>% 
-  setNames(str_remove_all(names(.), "s.bed")) %>% 
-  GRangesList() %>% 
-  unlist() %>% 
-  names_to_column("feature") %>% 
-  sort()
-dht_consensus %<>% 
-  mutate(
-    promoter = bestOverlap(., features, var = "feature", missing = "None") == "promoter",
-    enhancer = bestOverlap(., features, var = "feature", missing = "None") == "enhancer",
-    H3K27ac = promoter | enhancer,
-    dist_to_tss = mcols(distanceToNearest(., tss, ignore.strand = TRUE))$distance
-  )
-```
-
 
 ```{r tbl-h3k27ac-summary}
 fs <- 12
@@ -325,202 +406,185 @@ grp_h3k27ac <- dht_consensus %>%
   pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
   dplyr::filter(value) %>% 
   group_by(range, H3K27ac) %>% 
-  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
-glm_h3k27ac <- glm(H3K27ac ~ 0 + targets, family = "binomial", data = grp_h3k27ac)
+  summarise(
+    targets = paste(targets, collapse = "+"), 
+    .groups = "drop"
+  ) %>% 
+  mutate(width = width(GRanges(range)))
+glm_h3k27ac <- glm(H3K27ac ~ 0 + targets + width, family = "binomial", data = grp_h3k27ac)
 ```
 
 A simple logistic regression model was then run to estimate the probability of overlapping a peak associated with the histone mark H3K27ac for each combination of ChIP targets.
 Binding of TFAP2$\beta$ in isolation clearly had the strongest association with H3K27ac peaks, whilst the absence of TFAP2$\beta$ clearly reduced the likelihood of all other ChIP targets being associated with H3K27ac signal.
 
-
-```{r confint-glm-h3k27ac, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets."}
+```{r confint-glm-h3k27ac, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived feature, based on the combinations of detected ChIP targets. Given the impact peak width has on this probablity, intervals were generated holding width to be fixed at the median width for each group of targets."}
 inv.logit <- binomial()$linkinv
-df <- glm_h3k27ac %>% 
-  glht() %>% 
-  confint() %>% 
-  .[["confint"]] %>% 
-  as_tibble(rownames = "targets") %>% 
+new_df <- grp_h3k27ac %>% 
+  group_by(targets) %>% 
+  summarise(width = median(width), .groups = "drop")
+z <- qnorm(1 - 0.025 / nrow(new_df))
+df <- predict(glm_h3k27ac, newdata = new_df, se.fit = TRUE) %>% 
+  as_tibble() %>% 
+  dplyr::select(ends_with("fit")) %>% 
+  cbind(new_df) %>% 
   mutate(
-    n_targets = str_count(targets, "\\+") + 1
-  ) %>% 
-  arrange(desc(n_targets), desc(targets)) %>% 
+    lwr = inv.logit(fit - z*se.fit), 
+    upr = inv.logit(fit + z*se.fit), 
+    p = inv.logit(fit),
+    n_targets = str_count(targets, "\\+") + 1,
+    TFAP2B = str_detect(targets, "TFAP2B"),
+    targets = str_remove_all(targets, "\\+TFAP2B")
+  ) %>%
+  arrange(n_targets, targets) %>% 
   mutate(
-    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
-    targets = targets %>% 
-      str_remove_all("\\+TFAP2B$") %>% 
-      fct_inorder() %>% 
-      fct_relabel(str_remove_all, pattern = "targets"),
-    p = inv.logit(Estimate),
-    across(all_of(c("upr", "lwr")), inv.logit),
-    y = case_when(
-      str_detect(TFAP2B, "No") ~ as.integer(targets) - 0.2,
-      TRUE ~ as.integer(targets) + 0.2
-    )
+    targets = fct_inorder(targets) %>% fct_rev(),
+    y = as.integer(targets) - 0.2 + 0.4*TFAP2B
   )
 df %>% 
-  ggplot(aes(p, y, colour = TFAP2B)) + 
+  ggplot(aes(p, y, colour = TFAP2B)) +
   geom_point() +
-  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4) +
-  scale_x_continuous(limits = c(0, 1)) +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr)) +
   scale_y_continuous(
-    breaks = seq_along(levels(df$targets)), labels = levels(df$targets),
-    expand = expansion(c(0.02, 0.02))
+    breaks = seq_along(levels(df$targets)),
+    labels = levels(df$targets),
+    expand = expansion(0.02)
   ) +
-  scale_colour_manual(values = c("black", "red")) +
-  labs(x = "Probability of H3K27ac Peak Overlap", y = "Detected Targets")
+  scale_x_continuous(
+    breaks = seq(0, 1, by = 0.2),
+    limits = c(0, 1), expand = expansion(c(0, 0))
+  ) +
+  scale_colour_manual(values = c("grey30", "red")) +
+  labs(
+    x = "Probability of H3K27ac Peak Overlap",
+    y = "Detected Targets",
+    colour = "TFAP2B\nDetected"
+  ) +
+  theme(
+    legend.position = c(0.99, 0.01),
+    legend.justification = c(1, 0)
+  )
 ```
+
+
 
 ### Promoters Only
 
-```{r glm-prom, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived promoter, based on the combinations of detected ChIP targets."}
+```{r glm-prom, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived promoter, based on the combinations of detected ChIP targets. Given the impact peak width has on this probablity, intervals were generated holding width to be fixed at the median width for each group of targets."}
 grp_prom <- dht_consensus %>% 
   as_tibble() %>% 
   dplyr::select(range, all_of(targets), promoter) %>% 
   pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
   dplyr::filter(value) %>% 
   group_by(range, promoter) %>% 
-  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
-glm_prom <- glm(promoter ~ 0 + targets, family = "binomial", data = grp_prom)
-glm_prom %>% 
-  glht() %>% 
-  confint() %>% 
-  .[["confint"]] %>% 
-  as_tibble(rownames = "targets") %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")%>% 
+  mutate(width = width(GRanges(range)))
+glm_prom <- glm(promoter ~ 0 + targets + width, family = "binomial", data = grp_prom)
+df <- predict(glm_prom, newdata = new_df, se.fit = TRUE) %>% 
+  as_tibble() %>% 
+  dplyr::select(ends_with("fit")) %>% 
+  cbind(new_df) %>% 
   mutate(
-    n_targets = str_count(targets, "\\+") + 1
-  ) %>% 
-  arrange(desc(n_targets), desc(targets)) %>% 
+    lwr = inv.logit(fit - z*se.fit), 
+    upr = inv.logit(fit + z*se.fit), 
+    p = inv.logit(fit),
+    n_targets = str_count(targets, "\\+") + 1,
+    TFAP2B = str_detect(targets, "TFAP2B"),
+    targets = str_remove_all(targets, "\\+TFAP2B")
+  ) %>%
+  arrange(n_targets, targets) %>% 
   mutate(
-    targets = fct_inorder(targets) %>% 
-      fct_relabel(str_remove_all, pattern = "targets"),
-    p = inv.logit(Estimate),
-    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
-    across(all_of(c("upr", "lwr")), inv.logit)
-  ) %>% 
-  ggplot(aes(p, targets)) + 
+    targets = fct_inorder(targets) %>% fct_rev(),
+    y = as.integer(targets) - 0.2 + 0.4*TFAP2B
+  )
+df %>% 
+  ggplot(aes(p, y, colour = TFAP2B)) +
   geom_point() +
-  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
-  facet_grid(TFAP2B ~ ., scales = "free_y") +
-  scale_x_continuous(limits = c(0, 1)) +
-  labs(x = "Probability of Promoter Overlap", y = "Detected Targets")
+  geom_errorbarh(aes(xmin = lwr, xmax = upr)) +
+  scale_y_continuous(
+    breaks = seq_along(levels(df$targets)),
+    labels = levels(df$targets),
+    expand = expansion(0.02)
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, 1, by = 0.2),
+    limits = c(0, 1), expand = expansion(c(0, 0))
+  ) +
+  scale_colour_manual(values = c("grey30", "red")) +
+  labs(
+    x = "Probability of Promoter Overlap",
+    y = "Detected Targets",
+    colour = "TFAP2B\nDetected"
+  ) +
+  theme(
+    legend.position = c(0.99, 0.01),
+    legend.justification = c(1, 0)
+  )
 ```
 
 
 ### Enhancers Only
 
-```{r glm-enh, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived enhancer, based on the combinations of detected ChIP targets."}
+```{r glm-enh, fig.height=7, fig.cap = "Family-wise 95% Confidence Intervals for the probability of overlapping an H3K27ac-derived enhancer, based on the combinations of detected ChIP targets. Given the impact peak width has on this probablity, intervals were generated holding width to be fixed at the median width for each group of targets."}
 grp_enh <- dht_consensus %>% 
   as_tibble() %>% 
   dplyr::select(range, all_of(targets), enhancer) %>% 
   pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
   dplyr::filter(value) %>% 
   group_by(range, enhancer) %>% 
-  summarise(targets = paste(targets, collapse = "+"), .groups = "drop")
-glm_enh <- glm(enhancer ~ 0 + targets, family = "binomial", data = grp_enh)
-glm_enh %>% 
-  glht() %>% 
-  confint() %>% 
-  .[["confint"]] %>% 
-  as_tibble(rownames = "targets") %>% 
-  mutate(
-    n_targets = str_count(targets, "\\+") + 1
-  ) %>% 
-  arrange(desc(n_targets), desc(targets)) %>% 
-  mutate(
-    targets = fct_inorder(targets) %>% 
-      fct_relabel(str_remove_all, pattern = "targets"),
-    p = inv.logit(Estimate),
-    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
-    across(all_of(c("upr", "lwr")), inv.logit)
-  ) %>% 
-  ggplot(aes(p, targets)) + 
-  geom_point() +
-  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.4, colour = "grey20") +
-  facet_grid(TFAP2B ~ ., scales = "free_y") +
-  scale_x_continuous(limits = c(0, 1)) +
-  labs(x = "Probability of Enhancer Overlap", y = "Detected Targets")
-```
-
-### All Features
-
-```{r fit-multinomial, results='hide', fig.show='asis', fig.height=6, fig.cap = "Probabilities of group membership for overlapping a promoter, enhancer, or having no H3K27ac overlap. Combinations of ChIP targets are shown based on coincident binding of TFAP2B. Intervals represent 1 - &alpha; Confidence Intervals, as described in the text. Co-binding of TFAP2&beta; was strongly associated with an increased probability of a site being associated with H3K27ac peaks as defined previously."}
-df <- dht_consensus %>% 
+  summarise(targets = paste(targets, collapse = "+"), .groups = "drop") %>% 
+  mutate(width = width(GRanges(range)))
+glm_enh <- glm(enhancer ~ 0 + targets + width, family = "binomial", data = grp_enh)
+df <- predict(glm_enh, newdata = new_df, se.fit = TRUE) %>% 
   as_tibble() %>% 
+  dplyr::select(ends_with("fit")) %>% 
+  cbind(new_df) %>% 
   mutate(
-    ol = case_when(
-      promoter ~ "Promoter",
-      enhancer ~ "Enhancer",
-      TRUE ~ "No H3K27ac"
-    ) %>% 
-      fct_infreq()
-  ) %>% 
-  pivot_longer(all_of(targets), names_to = "target") %>% 
-  dplyr::filter(value) %>% 
-  group_by(range, ol) %>% 
-  summarise(
-    targets = paste(target, collapse = "+"),
-    .groups = "drop"
-  ) %>% 
-  mutate(n_targets = 1 + str_count(targets, "\\+")) %>% 
+    lwr = inv.logit(fit - z*se.fit), 
+    upr = inv.logit(fit + z*se.fit), 
+    p = inv.logit(fit),
+    n_targets = str_count(targets, "\\+") + 1,
+    TFAP2B = str_detect(targets, "TFAP2B"),
+    targets = str_remove_all(targets, "\\+TFAP2B")
+  ) %>%
   arrange(n_targets, targets) %>% 
-  mutate(targets = fct_inorder(targets))
-glm_all <- multinom(ol~ 0 + targets, data = df) 
-ci_all <- Effect("targets", glm_all, confint = TRUE, confidence.level = 1 - 0.05/15)
-list(
-  tibble(targets = ci_all$variables$targets$levels) %>% 
-    bind_cols(ci_all$prob) %>% 
-    pivot_longer(starts_with("prob"), names_to = "ol") %>% 
-    mutate(ol = str_remove_all(ol, "prob."), type = "p"),
-  tibble(targets = ci_all$variables$targets$levels) %>% 
-    bind_cols(ci_all$lower.prob) %>% 
-    pivot_longer(starts_with("L.prob"), names_to = "ol") %>% 
-    mutate(ol = str_remove_all(ol, "L.prob."), type = "lwr"),
-  tibble(targets = ci_all$variables$targets$levels) %>% 
-    bind_cols(ci_all$upper.prob) %>% 
-    pivot_longer(starts_with("U.prob"), names_to = "ol") %>% 
-    mutate(ol = str_remove_all(ol, "U.prob."), type = "upr")
-) %>% 
-  bind_rows() %>% 
-  pivot_wider(names_from = "type", values_from = value) %>% 
   mutate(
-    ol = str_replace_all(ol, "\\.", " ") %>% factor(levels = levels(df$ol)),
-    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B"),
-    targets = factor(targets, levels = levels(df$targets)) %>% 
-      fct_relabel(str_remove_all, pattern = "\\+TFAP2B"),
-    y = case_when(
-      TFAP2B == "TFAP2B" ~ as.integer(targets) + 0.2,
-      TFAP2B != "TFAP2B" ~ as.integer(targets) - 0.2
-    )
-  ) %>% 
-  # dplyr::filter(ol %in% c("Promoter", "Enhancer")) %>% 
+    targets = fct_inorder(targets) %>% fct_rev(),
+    y = as.integer(targets) - 0.2 + 0.4*TFAP2B
+  )
+df %>% 
   ggplot(aes(p, y, colour = TFAP2B)) +
   geom_point() +
-  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.25) +
-  facet_grid(.~ol, scales = "free_y", space = "free") +
+  geom_errorbarh(aes(xmin = lwr, xmax = upr)) +
   scale_y_continuous(
-    breaks = str_remove_all(levels(df$targets), "\\+TFAP2B") %>% 
-      unique() %>% 
-      seq_along(),
-    labels = str_remove_all(levels(df$targets), "\\+TFAP2B") %>% 
-      unique()
+    breaks = seq_along(levels(df$targets)),
+    labels = levels(df$targets),
+    expand = expansion(0.02)
   ) +
-  scale_colour_manual(values = c("grey70", rgb(0.9, 0.1, 0.2))) +
+  scale_x_continuous(
+    breaks = seq(0, 1, by = 0.2),
+    limits = c(0, 1), expand = expansion(c(0, 0))
+  ) +
+  scale_colour_manual(values = c("grey30", "red")) +
   labs(
-    x = expression(pi[i]),
-    y = "Targets"
+    x = "Probability of Enhancer Overlap",
+    y = "Detected Targets",
+    colour = "TFAP2B\nDetected"
+  ) +
+  theme(
+    legend.position = c(0.99, 0.01),
+    legend.justification = c(1, 0)
   )
 ```
 
-A simple multinomial model was then fit using the possible outcomes (or classes) for each site: 1) Promoter Overlap; 2) Enhancer Overlap, or 3) No H3K27ac overlap.
-$1 - \alpha$ confidence intervals for the probability of class membership were then estimated using $\alpha = 0.05/15$, given there were 15 combinations of transcription factors detected.
+
 
 ## Distance to Nearest TSS
 
 The distance to the nearest TSS was also checked for each of the union peaks, with the vast majority of TFAP2$\beta$-only peaks being with 1kb of a TSS, indicating a fundamental role for TFAP2$\beta$ in transcriptional regulation.
 These were much further away when bound in combination with other ChIP targets, to the point that most sites where all four were found bound were >3kb from any TSS, suggesting that an alternative role for TFAP2$\beta$ is enhancer-based gene regulation, when acting in concert with the remaining targets.
 
-```{r dist-to-tss, fig.height = 10, fig.cap = "Distance to the nearest TSS for all peaks detected with one or more of the required ChIP targets."}
-dht_consensus %>% 
+```{r reg-region-by-targets, fig.height=12, fig.cap = "Breaking peak overlaps into overlaps with the Core Promoter (<100bp from TSS), Distal Promoter (<2kb from TSS) and Enhancers (>2kb from TSS), the presence of TFAP2B showed in increased affinity for promoters, particularly when only binding with a single additional factor. Similarly, peaks marked as active by an overlap with H3K27ac signal were more strongly associated with promoters. Of the H3K27ac-marked peaks where TFAP2B was detected, the largets proportion which bound enhancers, was found where all three remaining targets were also detected, indicating an increased preference for enhancers with this bindin combination. Union peaks are shown A) as percentages of peaks which overlap a given region, or B) the total number of peaks which overlap a given region. The most common binding event in the dataset was clearly FOXA1 in isolation, binding regions which are not marked by H3K27ac and do not also bind TFAP2B. The next most common set of peaks was those binding FOXA1 alone in an H3K27ac marked region, followed by TFAP2B in an H3K27ac marked region."}
+df <- dht_consensus %>% 
   as_tibble() %>% 
   dplyr::select(range, all_of(targets), dist_to_tss, H3K27ac) %>% 
   pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
@@ -533,41 +597,99 @@ dht_consensus %>%
     TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B")
   ) %>% 
   arrange(desc(n_targets), desc(targets)) %>% 
-  mutate(targets = fct_inorder(targets)) %>% 
-  ggplot(aes(dist_to_tss + 1, targets, fill = H3K27ac)) +
-  # geom_boxplot() +
-  geom_violin(draw_quantiles = 0.5) +
-  facet_grid(TFAP2B ~ ., scales = "free_y") +
-  scale_x_log10(labels = comma, breaks = 10^seq(0, 5)) +
-  scale_fill_manual(values = c("grey70", rgb(0.9, 0.1, 0.2))) +
-  labs(x = "Distance to Nearest TSS (bp+1)", y = "ChIP Targets")
-```
-
-```{r dist-to-tss-densities, eval = FALSE}
-dht_consensus %>% 
-  as_tibble() %>% 
-  # sample_n(10000) %>% 
-  dplyr::select(range, all_of(targets), dist_to_tss, H3K27ac) %>% 
-  pivot_longer(cols = all_of(targets), names_to = "targets") %>% 
-  dplyr::filter(value) %>% 
-  group_by(range, dist_to_tss, H3K27ac) %>% 
-  arrange(range, targets) %>% 
-  summarise(targets = paste(targets, collapse = "+"), .groups = "drop") %>% 
   mutate(
-    n_targets = str_count(targets, "\\+") + 1,
-    TFAP2B = ifelse(str_detect(targets, "TFAP2B"), "TFAP2B", "No TFAP2B")
+    targets = fct_inorder(targets) %>% 
+      fct_relabel(str_remove_all, pattern = "\\+TFAP2B")
   ) %>% 
-  arrange(desc(n_targets), desc(targets)) %>% 
+  group_by(targets, TFAP2B, H3K27ac) %>% 
   mutate(
-    targets = str_remove_all(targets, "\\+TFAP2B"),
-    targets = fct_inorder(targets)
+    q = rank(dist_to_tss, ties.method = "first") / dplyr::n()
   ) %>% 
-  ggplot(aes(dist_to_tss + 1, stat(density), colour = TFAP2B, linetype = H3K27ac)) +
-  geom_density() +
-  facet_wrap(.~targets) +
-  scale_colour_manual(values = c("grey70", rgb(0.9, 0.1, 0.2))) +
-  scale_linetype_manual(values = c(2, 1)) +
-  scale_x_log10(labels = comma, breaks = 10^c(0:5))
+  ungroup() %>% 
+  dplyr::filter(dist_to_tss < 5e3)
+brk <- c(0, 100, 2e3, Inf)
+lb <- paste(c("Core (<100)", "Distal (<2kb)"), "Promoter") %>% 
+  c("Enhancer")
+a <- df %>% 
+  mutate(
+    region = dist_to_tss %>% 
+      cut(
+        breaks = brk, include.lowest = TRUE, labels = lb
+      )
+  ) %>% 
+  group_by(targets, TFAP2B, H3K27ac, region) %>%
+  summarise(n = dplyr::n(), .groups = "drop_last") %>% 
+  mutate(prop = n / sum(n)) %>% 
+  ungroup() %>% 
+  mutate(
+    status = ifelse(
+      H3K27ac,
+      paste("Active -", TFAP2B),
+      paste("Inactive -", TFAP2B)
+    ) %>% 
+      factor(
+        levels = c(
+          "Active - TFAP2B", "Active - No TFAP2B", 
+          "Inactive - TFAP2B", "Inactive - No TFAP2B"
+        )
+      )
+  ) %>% 
+  ggplot(aes(prop, fct_rev(status), fill = fct_rev(region))) +
+  geom_col() +
+  facet_wrap(~fct_rev(targets), ncol = 4) +
+  scale_x_continuous(labels = percent) +
+  scale_fill_viridis_d(direction = -1) +
+  labs(
+    x = "Percent (%)",
+    y = "H3K27ac Marks + TFAP2B Status",
+    fill = "Regulatory Region"
+  ) +
+  theme(legend.position = "bottom")
+b <- df %>% 
+  mutate(
+    region = dist_to_tss %>% 
+      cut(
+        breaks = brk, include.lowest = TRUE, labels = lb
+      )
+  ) %>% 
+  group_by(targets, TFAP2B, H3K27ac, region) %>%
+  summarise(n = dplyr::n(), .groups = "drop_last") %>% 
+  mutate(prop = n / sum(n)) %>% 
+  ungroup() %>% 
+  mutate(
+    status = ifelse(
+      H3K27ac,
+      paste("Active -", TFAP2B),
+      paste("Inactive -", TFAP2B)
+    ) %>% 
+      factor(
+        levels = c(
+          "Active - TFAP2B", "Active - No TFAP2B", 
+          "Inactive - TFAP2B", "Inactive - No TFAP2B"
+        )
+      )
+  ) %>% 
+  ggplot(aes(status, n, fill = fct_rev(region))) +
+  geom_col() +
+  facet_wrap(~fct_rev(targets), ncol = 4) +
+  scale_y_continuous(labels = comma) +
+  scale_fill_viridis_d(direction = -1) +
+  labs(
+    y = "Number of Peaks",
+    x = "H3K27ac Marks + TFAP2B Status",
+    fill = "Regulatory Region"
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1/2)
+  )
+plot_grid(
+  a,
+  b,
+  labels = c("A", "B"),
+  nrow = 2
+  # rel_widths = c(0.5, 0.5)
+)
 ```
 
 

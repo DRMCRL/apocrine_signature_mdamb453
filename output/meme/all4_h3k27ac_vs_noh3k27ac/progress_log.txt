@@ -1,0 +1,78 @@
+Invoking:
+  getsize output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa 1> $metrics
+Finished invoke:
+  name: count_seqs  status: 0  time: 0.03054
+Invoking:
+  fasta-most -min 50 < output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa 1> $metrics
+Finished invoke:
+  name: most_seqs  status: 0  time: 0.08921
+Invoking:
+  fasta-center -dna -len 100 < output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa 1> output/meme/all4_h3k27ac_vs_noh3k27ac/seqs-centered
+Finished invoke:
+  name: center_seqs  status: 0  time: 0.114586
+Invoking:
+  getsize output/meme/all4_h3k27ac_vs_noh3k27ac/all4_no_h3k27ac.fa 1> $metrics
+Finished invoke:
+  name: count_seqs  status: 0  time: 0.019555
+Invoking:
+  fasta-center -dna -len 100 < output/meme/all4_h3k27ac_vs_noh3k27ac/all4_no_h3k27ac.fa 1> output/meme/all4_h3k27ac_vs_noh3k27ac/control-centered
+Finished invoke:
+  name: center_control  status: 0  time: 0.101112
+Invoking:
+  fasta-get-markov -nostatus -nosummary -dna -m 2 output/meme/all4_h3k27ac_vs_noh3k27ac/all4_no_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/background
+Finished invoke:
+  name: bg  status: 0  time: 0.026024
+Invoking:
+  meme output/meme/all4_h3k27ac_vs_noh3k27ac/seqs-centered -oc output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out -mod zoops -nmotifs 3 -minw 6 -maxw 15 -bfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -dna -objfun de -neg output/meme/all4_h3k27ac_vs_noh3k27ac/control-centered -revcomp -nostatus
+Finished invoke:
+  name: meme  status: 0  time: 1318.064907
+Invoking:
+  streme --verbosity 1 --oc output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out -dna --p output/meme/all4_h3k27ac_vs_noh3k27ac/seqs-centered --n output/meme/all4_h3k27ac_vs_noh3k27ac/control-centered --minw 6 --maxw 15 --order 2
+Finished invoke:
+  name: streme  status: 0  time: 45.515723
+Invoking:
+  centrimo -seqlen 500 -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/centrimo_out -bfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -neg output/meme/all4_h3k27ac_vs_noh3k27ac/all4_no_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: centrimo  status: 0  time: 110.005322
+Invoking:
+  tomtom -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/meme_tomtom_out -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: meme_tomtom  status: 0  time: 1.571456
+Invoking:
+  tomtom -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/streme_tomtom_out -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: streme_tomtom  status: 0  time: 3.440459
+Invoking:
+  tomtom -verbosity 1 -text -thresh 0.1 output/meme/all4_h3k27ac_vs_noh3k27ac/combined.meme output/meme/all4_h3k27ac_vs_noh3k27ac/combined.meme 1> output/meme/all4_h3k27ac_vs_noh3k27ac/motif_alignment.txt
+Finished invoke:
+  name: align  status: 0  time: 0.031063
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/spamo_out_1 -bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -keepprimary -primary RRGSAVRSAGG output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo1  status: 0  time: 5.783867
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/spamo_out_2 -bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -keepprimary -primary CCTGGG output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo2  status: 0  time: 6.379977
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac_vs_noh3k27ac/spamo_out_3 -bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background -keepprimary -primary CAAGCR output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo3  status: 0  time: 4.918207
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac_vs_noh3k27ac/fimo_out_1 --bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background --motif RRGSAVRSAGG output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo1  status: 0  time: 0.525234
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac_vs_noh3k27ac/fimo_out_2 --bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background --motif CCTGGG output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo2  status: 0  time: 0.450943
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac_vs_noh3k27ac/fimo_out_3 --bgfile output/meme/all4_h3k27ac_vs_noh3k27ac/background --motif CAAGCR output/meme/all4_h3k27ac_vs_noh3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac_vs_noh3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo3  status: 0  time: 0.43183
+Writing output
+Invoking:
+  meme-chip_html_to_tsv output/meme/all4_h3k27ac_vs_noh3k27ac/meme-chip.html output/meme/all4_h3k27ac_vs_noh3k27ac/summary.tsv "meme-chip -oc output/meme/all4_h3k27ac_vs_noh3k27ac -db data/external/MOTIFS.meme -neg output/all4_no_h3k27ac.fa -desc Comparison of binding sites for all TFs based on overlap with H3K27ac-derived features output/all4_h3k27ac.fa" 5.4.1 "Sat Aug 21 19\:23\:23 2021 -0700"
+Finished invoke:
+  name: summary  status: 0  time: 0.096345
+Done

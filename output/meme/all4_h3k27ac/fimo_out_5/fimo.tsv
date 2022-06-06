@@ -1,0 +1,4 @@
+
+# FIMO (Find Individual Motif Occurrences): Version 5.4.1 compiled on May 17 2022 at 23:53:36
+# The format of this file is described at http://meme-suite.org/doc/fimo-output-format.html.
+# fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac/fimo_out_5 --bgfile output/meme/all4_h3k27ac/background --motif 4-AGATAA output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/all4_h3k27ac.fa

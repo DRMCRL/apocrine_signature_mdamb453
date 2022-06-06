@@ -1,0 +1,19 @@
+prim_db	prim_id	prim_alt	prim_cons	sec_db	sec_id	sec_alt	sec_cons	trim_left	trim_right	red_db	red_id	red_alt	E-value	gap	orient	count	total	adj_p-value	p-value
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	meme.xml	CCTGCC	MEME-2	CCTGCC	0	0	.	.	.	4.46e-02	4	7	86	14558	2.93e-07	2.63e-06
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	meme.xml	CCTGCC	MEME-2	CCTGCC	0	0	.	.	.	4.46e-02	4	3	48	14558	3.40e-06	3.06e-05
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	2-SCCWSC	STREME-2	SCCWSC	0	0	.	.	.	5.30e-01	1	7	106	20237	3.54e-06	3.19e-05
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	2-SCCWSC	STREME-2	SCCWSC	0	0	.	.	.	5.30e-01	8	0	61	20237	4.31e-06	3.88e-05
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	1-SCCYSRGGS	STREME-1	SCCYSRGGS	0	0	.	.	.	6.95e-01	15	0	34	8937	6.09e-03	5.35e-02
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	4-MCTCCCC	STREME-4	MCTCCCC	0	0	.	.	.	9.54e-01	26	0	28	6941	8.43e-03	7.34e-02
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	5-GCAGAGCC	STREME-5	GCAGAGCC	0	0	.	.	.	1.03e+00	51	6	32	4217	9.13e-03	7.93e-02
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	meme.xml	SCYYCAGGS	MEME-1	SCYYCAGGS	0	0	.	.	.	2.94e+00	10	5	67	11881	2.80e-02	2.26e-01
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	meme.xml	GCTGKG	MEME-3	GCTGKG	0	0	.	.	.	3.87e+00	0	1	29	8077	3.85e-02	2.97e-01
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	9-AACAGCAAACTGT	STREME-9	AACAGCAAACTGT	0	0	.	.	.	6.46e+00	58	5	7	381	7.35e-02	4.97e-01
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	6-AGGGTCW	STREME-6	AGGGTCW	0	0	.	.	.	6.72e+00	50	1	12	2179	7.77e-02	5.17e-01
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	10-AGAATTCTCTNAA	STREME-10	AGAATTCTCTNAA	0	0	.	.	.	7.37e+00	133	6	7	394	8.87e-02	5.67e-01
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	8-SAGCAGG	STREME-8	SAGCAGG	0	0	.	.	.	7.93e+00	6	4	41	6806	9.93e-02	6.10e-01
+streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	streme.xml	3-CWSASCCCH	STREME-3	CWSASCCCH	0	1	.	.	.	8.18e+00	2	3	26	7323	1.04e-01	6.29e-01
+
+# SpaMo (Spaced Motif Analysis Tool): Version 5.4.1 compiled on May 17 2022 at 23:53:47
+# The format of this file is described at http://meme-suite.org/doc/spamo-output-format.html.
+# spamo -verbosity 1 -oc output/meme/all4_tfap2b_vs_notfap2b/spamo_out_4 -bgfile output/meme/all4_tfap2b_vs_notfap2b/background -keepprimary -primary 3-CWSASCCCH output/meme/all4_tfap2b_vs_notfap2b/ar_foxa1_gata3_tfap2b.fa output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml output/meme/all4_tfap2b_vs_notfap2b/meme_out/meme.xml output/meme/all4_tfap2b_vs_notfap2b/streme_out/streme.xml

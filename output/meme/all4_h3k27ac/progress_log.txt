@@ -1,0 +1,86 @@
+Invoking:
+  getsize output/meme/all4_h3k27ac/all4_h3k27ac.fa 1> $metrics
+Finished invoke:
+  name: count_seqs  status: 0  time: 0.031849
+Invoking:
+  fasta-most -min 50 < output/meme/all4_h3k27ac/all4_h3k27ac.fa 1> $metrics
+Finished invoke:
+  name: most_seqs  status: 0  time: 0.091119
+Invoking:
+  fasta-center -dna -len 100 < output/meme/all4_h3k27ac/all4_h3k27ac.fa 1> output/meme/all4_h3k27ac/seqs-centered
+Finished invoke:
+  name: center_seqs  status: 0  time: 0.111371
+Invoking:
+  fasta-get-markov -nostatus -nosummary -dna -m 2 output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/background
+Finished invoke:
+  name: bg  status: 0  time: 0.031357
+Invoking:
+  meme output/meme/all4_h3k27ac/seqs-centered -oc output/meme/all4_h3k27ac/meme_out -mod zoops -nmotifs 3 -minw 6 -maxw 15 -bfile output/meme/all4_h3k27ac/background -dna -revcomp -nostatus
+Finished invoke:
+  name: meme  status: 0  time: 860.660177
+Invoking:
+  streme --verbosity 1 --oc output/meme/all4_h3k27ac/streme_out -dna --p output/meme/all4_h3k27ac/seqs-centered --minw 6 --maxw 15 --order 2
+Finished invoke:
+  name: streme  status: 0  time: 72.410062
+Invoking:
+  centrimo -seqlen 500 -verbosity 1 -oc output/meme/all4_h3k27ac/centrimo_out -bfile output/meme/all4_h3k27ac/background output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: centrimo  status: 0  time: 66.444195
+Invoking:
+  tomtom -verbosity 1 -oc output/meme/all4_h3k27ac/meme_tomtom_out -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc output/meme/all4_h3k27ac/meme_out/meme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: meme_tomtom  status: 0  time: 3.577207
+Invoking:
+  tomtom -verbosity 1 -oc output/meme/all4_h3k27ac/streme_tomtom_out -min-overlap 5 -dist pearson -evalue -thresh 1 -no-ssc output/meme/all4_h3k27ac/streme_out/streme.xml data/external/MOTIFS.meme
+Finished invoke:
+  name: streme_tomtom  status: 0  time: 7.243347
+Invoking:
+  tomtom -verbosity 1 -text -thresh 0.1 output/meme/all4_h3k27ac/combined.meme output/meme/all4_h3k27ac/combined.meme 1> output/meme/all4_h3k27ac/motif_alignment.txt
+Finished invoke:
+  name: align  status: 0  time: 3.620469
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_1 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary 1-WRWGYAAAYA output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo1  status: 0  time: 2.335314
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_2 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary SCYBGRGGCWD output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo2  status: 0  time: 1.814926
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_3 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary AAAAAAAAAAAMAAA output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo3  status: 0  time: 0.827261
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_4 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary 9-GATDNHATC output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo4  status: 0  time: 0.501759
+Invoking:
+  spamo -verbosity 1 -oc output/meme/all4_h3k27ac/spamo_out_5 -bgfile output/meme/all4_h3k27ac/background -keepprimary -primary 4-AGATAA output/meme/all4_h3k27ac/all4_h3k27ac.fa output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/streme_out/streme.xml
+Finished invoke:
+  name: spamo5  status: 0  time: 0.952219
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac/fimo_out_1 --bgfile output/meme/all4_h3k27ac/background --motif 1-WRWGYAAAYA output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo1  status: 0  time: 0.505408
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac/fimo_out_2 --bgfile output/meme/all4_h3k27ac/background --motif SCYBGRGGCWD output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo2  status: 0  time: 0.512184
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac/fimo_out_3 --bgfile output/meme/all4_h3k27ac/background --motif AAAAAAAAAAAMAAA output/meme/all4_h3k27ac/meme_out/meme.xml output/meme/all4_h3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo3  status: 0  time: 0.527919
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac/fimo_out_4 --bgfile output/meme/all4_h3k27ac/background --motif 9-GATDNHATC output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo4  status: 0  time: 0.479725
+Invoking:
+  fimo --parse-genomic-coord --verbosity 1 --oc output/meme/all4_h3k27ac/fimo_out_5 --bgfile output/meme/all4_h3k27ac/background --motif 4-AGATAA output/meme/all4_h3k27ac/streme_out/streme.xml output/meme/all4_h3k27ac/all4_h3k27ac.fa
+Finished invoke:
+  name: fimo5  status: 0  time: 0.419973
+Writing output
+Invoking:
+  meme-chip_html_to_tsv output/meme/all4_h3k27ac/meme-chip.html output/meme/all4_h3k27ac/summary.tsv "meme-chip -oc output/meme/all4_h3k27ac -db data/external/MOTIFS.meme -desc General profile of binding sites for all TFs based on overlap with H3K27ac-derived features output/all4_h3k27ac.fa" 5.4.1 "Sat Aug 21 19\:23\:23 2021 -0700"
+Finished invoke:
+  name: summary  status: 0  time: 0.131214
+Done
