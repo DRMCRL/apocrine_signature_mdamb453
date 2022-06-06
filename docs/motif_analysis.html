@@ -382,7 +382,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -393,8 +393,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -407,9 +407,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -433,18 +433,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -535,15 +538,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree8dde309446d2e562a920f7fa7c87e825ff5cb64dtargetblank8dde309a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee1c43dd8c804647b9ddd68322a9071dee324afbdtargetblanke1c43dda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/8dde309446d2e562a920f7fa7c87e825ff5cb64d" target="_blank">8dde309</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e1c43dd8c804647b9ddd68322a9071dee324afbd" target="_blank">e1c43dd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453tree8dde309446d2e562a920f7fa7c87e825ff5cb64dtargetblank8dde309a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee1c43dd8c804647b9ddd68322a9071dee324afbdtargetblanke1c43dda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -553,7 +556,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/8dde309446d2e562a920f7fa7c87e825ff5cb64d" target="_blank">8dde309</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e1c43dd8c804647b9ddd68322a9071dee324afbd" target="_blank">e1c43dd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -574,6 +577,9 @@ Ignored files:
 
 Untracked files:
     Untracked:  output/meme/
+
+Unstaged changes:
+    Modified:   analysis/motif_analysis.Rmd
 
 </code></pre>
 <p>
@@ -619,6 +625,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/e893c08d9d68b4c4565ed064d68ad0e8dba3e0e6/docs/motif_analysis.html" target="_blank">e893c08</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Build page
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2234,15 +2257,19 @@ Steve Pederson
 <div id="further-investigations" class="section level2">
 <h2>Further Investigations</h2>
 <p>Given the unexpected result that TFAP2<span
-class="math inline">\(\beta\)</span> motifs were enriched in the H3K27ac
-marked peaks, whilst FOXA1 and GATA motifs were enriched in the peaks
-not marked by H3K27ac, the co-occurence of these motifs was explored
-across both sets of peaks as a predictive tool for an active regulatory
-region. Sequences were checked for the simple presence of each motif,
-using matches with a score &gt; 80% of the maximum possible score as a
-positive match.</p>
+class="math inline">\(\beta\)</span> motifs were enriched in the
+<em>H3K27ac marked peaks</em> (i.e. active regulatory regions), whilst
+FOXA1 and GATA motifs were enriched in the peaks <strong>not
+marked</strong> by H3K27ac (i.e. inactive regulatory regions), the
+co-occurence of these motifs was explored across both sets of peaks as a
+predictive tool for an active regulatory region. Sequences were checked
+for the simple presence of each motif, using matches with a score &gt;
+60% of the maximum possible score as a positive match, to be as
+inclusive as possible. For all sequences, only <em>the highest scoring
+match to the consensus motif</em> was retained. For comparability across
+motifs, motif match scores were normalised to Z-scores.</p>
 <pre class="r"><code>inv.logit &lt;- binomial()$linkinv
-min_score &lt;- percent(0.8, accuracy = 1)
+min_score &lt;- percent(0.6, accuracy = 1)
 all4_motifs &lt;- meme_db_detected %&gt;%
   dplyr::filter(altname %in% targets) %&gt;% 
   to_list() %&gt;% 
@@ -2274,91 +2301,208 @@ all4_motifs &lt;- meme_db_detected %&gt;%
     grl_by_targets$`AR FOXA1 GATA3 TFAP2B` %&gt;% 
       as_tibble(),
     by = &quot;range&quot; 
-  ) %&gt;% 
-  group_by(range) %&gt;% 
-  summarise(
-    H3K27ac = any(H3K27ac),
-    AR = &quot;AR&quot; %in% altname,
-    FOXA1 = &quot;FOXA1&quot; %in% altname,
-    GATA3 = &quot;GATA3&quot; %in% altname,
-    TFAP2B = &quot;TFAP2B&quot; %in% altname,
-    .groups = &quot;drop&quot;
-  )
+  ) 
 glm_h3K27ac &lt;- all4_motifs %&gt;% 
-  pivot_longer(cols = all_of(targets)) %&gt;% 
-  dplyr::filter(value) %&gt;% 
-  group_by(range, H3K27ac) %&gt;%
-  summarise(motifs = paste(name, collapse = &quot; &quot;), .groups = &quot;drop&quot;) %&gt;%
-  with(glm(H3K27ac ~ 0 + motifs, family = &quot;binomial&quot;)) %&gt;%
-  glht() %&gt;%
-  confint() %&gt;%
-  .[[&quot;confint&quot;]] %&gt;%
-  as_tibble(rownames = &quot;motifs&quot;) %&gt;%
+  group_by(name) %&gt;% 
   mutate(
-    across(all_of(c(&quot;Estimate&quot;, &quot;lwr&quot;, &quot;upr&quot;)), inv.logit), 
-    TFAP2B = str_detect(motifs, &quot;TFAP2B&quot;), 
-    motifs = str_remove_all(motifs, &quot;motifs&quot;) %&gt;% 
-      str_remove_all(&quot; TFAP2B&quot;) %&gt;% 
-      as.factor() %&gt;% 
-      fct_rev(),
-    y = as.integer(motifs) - 0.2 + 0.4*TFAP2B
-  )
-cp &lt;- htmltools::tags$caption(
+    score = (score - mean(score, na.rm = TRUE)) / sd(score, na.rm = TRUE)
+  ) %&gt;% 
+  pivot_wider(
+    names_from = &quot;name&quot;, values_from = &quot;score&quot;, id_cols = c(&quot;range&quot;, &quot;H3K27ac&quot;)
+  ) %&gt;% 
+  dplyr::filter(
+    !is.na(MA0811.1), !is.na(MA0812.1), !is.na(MA0813.1)
+  ) %&gt;% 
+  mutate(
+    PC1 = cbind(MA0811.1, MA0812.1, MA0813.1) %&gt;% 
+      prcomp() %&gt;% 
+      .[[&quot;x&quot;]] %&gt;% 
+      .[,&quot;PC1&quot;]
+  ) %&gt;% 
+  with(
+    glm(H3K27ac ~ (PC1 + MA0007.2 + MA0148.4 + MA0037.3)^4, family = &quot;binomial&quot;)
+  ) %&gt;% 
+  step() %&gt;% 
+  broom::tidy() %&gt;% 
+  mutate(
+    term = term %&gt;% 
+      str_replace_all(&quot;PC1&quot;, &quot;TFAP2B (PC1)&quot;) %&gt;% 
+      str_replace_all(&quot;MA0007.2&quot;, &quot;AR&quot;) %&gt;% 
+      str_replace_all(&quot;MA0148.4&quot;, &quot;FOXA1&quot;) %&gt;% 
+      str_replace_all(&quot;MA0037.3&quot;, &quot;GATA3&quot;),
+    fdr = p.adjust(p.value, &quot;fdr&quot;),
+    ` ` = case_when(
+      fdr &gt; 0.1 ~ &quot;&quot;,
+      fdr &gt; 0.05 ~ &quot;.&quot;,
+      fdr &gt; 0.01 ~ &quot;*&quot;,
+      fdr &gt; 0.001 ~ &quot;**&quot;,
+      TRUE ~ &quot;***&quot;
+    )
+  ) </code></pre>
+<pre><code>Start:  AIC=8384
+H3K27ac ~ (PC1 + MA0007.2 + MA0148.4 + MA0037.3)^4
+
+                                 Df Deviance    AIC
+- PC1:MA0007.2:MA0148.4:MA0037.3  1   8352.1 8382.1
+&lt;none&gt;                                8352.0 8384.0
+
+Step:  AIC=8382.13
+H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
+    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0148.4 + MA0007.2:MA0037.3 + 
+    MA0148.4:MA0037.3 + PC1:MA0007.2:MA0148.4 + PC1:MA0007.2:MA0037.3 + 
+    PC1:MA0148.4:MA0037.3 + MA0007.2:MA0148.4:MA0037.3
+
+                             Df Deviance    AIC
+- PC1:MA0007.2:MA0148.4       1   8352.5 8380.5
+- MA0007.2:MA0148.4:MA0037.3  1   8353.6 8381.6
+- PC1:MA0007.2:MA0037.3       1   8353.8 8381.8
+&lt;none&gt;                            8352.1 8382.1
+- PC1:MA0148.4:MA0037.3       1   8355.3 8383.3
+
+Step:  AIC=8380.47
+H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
+    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0148.4 + MA0007.2:MA0037.3 + 
+    MA0148.4:MA0037.3 + PC1:MA0007.2:MA0037.3 + PC1:MA0148.4:MA0037.3 + 
+    MA0007.2:MA0148.4:MA0037.3
+
+                             Df Deviance    AIC
+- MA0007.2:MA0148.4:MA0037.3  1   8353.8 8379.8
+- PC1:MA0007.2:MA0037.3       1   8354.0 8380.0
+&lt;none&gt;                            8352.5 8380.5
+- PC1:MA0148.4:MA0037.3       1   8355.7 8381.7
+
+Step:  AIC=8379.83
+H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
+    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0148.4 + MA0007.2:MA0037.3 + 
+    MA0148.4:MA0037.3 + PC1:MA0007.2:MA0037.3 + PC1:MA0148.4:MA0037.3
+
+                        Df Deviance    AIC
+- MA0007.2:MA0148.4      1   8354.6 8378.6
+- PC1:MA0007.2:MA0037.3  1   8355.6 8379.6
+&lt;none&gt;                       8353.8 8379.8
+- PC1:MA0148.4:MA0037.3  1   8357.2 8381.2
+
+Step:  AIC=8378.59
+H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
+    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0037.3 + MA0148.4:MA0037.3 + 
+    PC1:MA0007.2:MA0037.3 + PC1:MA0148.4:MA0037.3
+
+                        Df Deviance    AIC
+- PC1:MA0007.2:MA0037.3  1   8356.3 8378.3
+&lt;none&gt;                       8354.6 8378.6
+- PC1:MA0148.4:MA0037.3  1   8358.2 8380.2
+
+Step:  AIC=8378.25
+H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
+    PC1:MA0148.4 + PC1:MA0037.3 + MA0007.2:MA0037.3 + MA0148.4:MA0037.3 + 
+    PC1:MA0148.4:MA0037.3
+
+                        Df Deviance    AIC
+- MA0007.2:MA0037.3      1   8356.7 8376.7
+&lt;none&gt;                       8356.3 8378.3
+- PC1:MA0007.2           1   8359.2 8379.2
+- PC1:MA0148.4:MA0037.3  1   8359.5 8379.5
+
+Step:  AIC=8376.67
+H3K27ac ~ PC1 + MA0007.2 + MA0148.4 + MA0037.3 + PC1:MA0007.2 + 
+    PC1:MA0148.4 + PC1:MA0037.3 + MA0148.4:MA0037.3 + PC1:MA0148.4:MA0037.3
+
+                        Df Deviance    AIC
+&lt;none&gt;                       8356.7 8376.7
+- PC1:MA0007.2           1   8359.4 8377.4
+- PC1:MA0148.4:MA0037.3  1   8359.9 8377.9</code></pre>
+<pre class="r"><code>all4_motifs %&gt;% 
+  group_by(name) %&gt;% 
+  mutate(
+    score = (score - mean(score, na.rm = TRUE)) / sd(score, na.rm = TRUE)
+  ) %&gt;% 
+  ggplot(aes(name, score, fill = H3K27ac)) +
+  geom_boxplot() +
+  facet_grid(.~altname, scales = &quot;free&quot;, space = &quot;free&quot;) +
+  scale_fill_manual(values = c(&quot;grey50&quot;, &quot;red&quot;)) +
+  labs(
+    x = &quot;Motif name&quot;, y = &quot;Normalised Motif Match Score&quot;
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-all4-scores-1.png" alt="Distribution of Z-Scores for matches to each motif, separated by whether the peak was associated with an H3K27ac mark. Motifs with higher scores were clearly associated with H3K27ac marks for all TFAP2B motifs, whilst some tendency towards lower scores was noted for FOXA1 and GATA3, in keeping with the above enrichment results." width="960" />
+<p class="caption">
+Distribution of Z-Scores for matches to each motif, separated by whether
+the peak was associated with an H3K27ac mark. Motifs with higher scores
+were clearly associated with H3K27ac marks for all TFAP2B motifs, whilst
+some tendency towards lower scores was noted for FOXA1 and GATA3, in
+keeping with the above enrichment results.
+</p>
+</div>
+<p>To quantify the impact of motif presence within the sequences where
+all 4 ChIP targets were detected, the probability of a peak being
+associated with H3K27ac marks was modelled using the strength of each
+motif in respect to the PWM. To avoid the high correlations between the
+three TFAP2<span class="math inline">\(\beta\)</span> motifs, these were
+combined using PC1 returned from PCA across all three motifs as a
+representative score. This may make the direction of the probability
+more difficult to interpret as a lower values on PC1 may represent a
+higher match across all 3 motifs.</p>
+<p>A logistic regression model was fitted using H3K27ac status as a the
+binary response variable with the scores for AR (MA0007.2), FOXA1
+(MA0148.4) and GATA3 (MA0037.3) motifs being combined with PC1 across
+all 3 TFAP2<span class="math inline">\(\beta\)</span> motifs as the
+predictors. The initial model was fitted incorporating 4-way
+interactions as the initial model, with terms being removed in a
+step-wise manner using Akiake’s Information Criterion (AIC).</p>
+<pre class="r"><code>cp &lt;- htmltools::tags$caption(
   glue(
     &quot;
-    Summary of detected motifs amongst all {comma(nrow(all4_motifs))} peaks 
-    where all four targets were detected as bound.
+    Results from final logistic regression model for the probability of a peak 
+    being marked by H3K27ac, based on the score of each detected motif&#39;s match 
+    to the PWM. The presence of any TFAP2B motif had the strongest impact, with 
+    these clearly denoting an increased association with H3K27ac marks. 
+    A strong AR motif also had a positive impact on the probability of the peak 
+    being active. 
+    Moderate evidence was also found for motifs which strongly match FOXA1 
+    exerting a negative influence on the probability of H3K27ac marks, with 
+    weak evidence for GATA3 motifs also having this effect.
+    No specific combinations of motifs were considered to have any combinatorial 
+    impact.
     &quot;
   )
 )
-tbl &lt;- all4_motifs %&gt;% 
-  pivot_longer(cols = c(&quot;AR&quot;, &quot;FOXA1&quot;, &quot;GATA3&quot;)) %&gt;% 
-  dplyr::filter(value) %&gt;% 
-  group_by(range, H3K27ac, TFAP2B) %&gt;%
-  summarise(motifs = paste(name, collapse = &quot; &quot;), .groups = &quot;drop&quot;) %&gt;%
-  group_by(H3K27ac, TFAP2B, motifs) %&gt;% 
-  summarise(n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;% 
-  pivot_wider(
-    names_from = &quot;H3K27ac&quot;, values_from = &quot;n&quot;, values_fill = 0,
-    names_prefix = &quot;H3K27ac_&quot;
-  ) %&gt;% 
-  arrange(motifs) %&gt;% 
-  mutate(
-    n_peaks = H3K27ac_TRUE + H3K27ac_FALSE,
-    `% Peaks` = n_peaks / nrow(all4_motifs),
-    n_active = H3K27ac_TRUE,
-    `% Active` = H3K27ac_TRUE / n_peaks
-  ) %&gt;% 
-  dplyr::select(-starts_with(&quot;H3K27ac&quot;)) %&gt;% 
+tbl &lt;- glm_h3K27ac %&gt;% 
   reactable(
     columns = list(
-      TFAP2B = colDef(
-        name = &quot;TFAP2B Motif&quot;,
+      term = colDef(
+        name = &quot;Motif&quot;,
+        cell = function(value) str_replace_all(value, &quot;:&quot;, &quot; : &quot;),
+        minWidth = 150
+      ),
+      estimate = colDef(
+        name = &quot;Estimate&quot;, format = colFormat(digits = 3)
+      ),
+      std.error = colDef(show = FALSE),
+      statistic = colDef(name = &quot;Test Statistic&quot;),
+      p.value = colDef(
+        show = FALSE,
         cell = function(value) {
-          ifelse(value, &quot;\u2714&quot;, &quot;\u2716&quot;)
-        }, 
-        style = function(value) {
-          cl &lt;- ifelse(value, &quot;forestgreen&quot;, &quot;red&quot;)
-          list(color = cl)
+          ifelse(
+            value &lt; 0.001,
+            sprintf(&quot;%.2e&quot;, value),
+            sprintf(&quot;%.3f&quot;, value)
+          )
         }
       ),
-      motifs = colDef(name = &quot;Other Detected Motifs&quot;),
-      n_peaks = colDef(
-        name = &quot;# Peaks&quot;, format = colFormat(separators = TRUE)
-      ),
-      `% Peaks` = colDef(
-        format = colFormat(percent = TRUE, digits = 1),
-        style = function(value) bar_style(width = value, align = &quot;right&quot;)
-      ),
-      n_active = colDef(
-        name = &quot;H3K27ac Overlap&quot;, format = colFormat(separators = TRUE)
-      ),
-      `% Active` = colDef(
-        format = colFormat(percent = TRUE, digits = 1),
-        style = function(value) bar_style(width = value, align = &quot;right&quot;)
+      fdr = colDef(
+        name = &quot;P&lt;sub&gt;FDR&lt;/sub&gt;&quot;, html = TRUE,
+        cell = function(value) {
+          ifelse(
+            value &lt; 0.001,
+            sprintf(&quot;%.2e&quot;, value),
+            sprintf(&quot;%.3f&quot;, value)
+          )
+        }
       )
-    ), 
-    pagination = FALSE
+    ),
+    defaultColDef = colDef(
+      format = colFormat(digits = 2)
+    )
   )
 div(class = &quot;table&quot;,
   div(class = &quot;table-header&quot;,
@@ -2369,73 +2513,20 @@ div(class = &quot;table&quot;,
 <div class="table">
 <div class="table-header">
 <div class="caption">
-<caption>Summary of detected motifs amongst all 6,336 peaks 
-where all four targets were detected as bound.</caption>
+<caption>Results from final logistic regression model for the probability of a peak 
+being marked by H3K27ac, based on the score of each detected motif's match 
+to the PWM. The presence of any TFAP2B motif had the strongest impact, with 
+these clearly denoting an increased association with H3K27ac marks. 
+A strong AR motif also had a positive impact on the probability of the peak 
+being active. 
+Moderate evidence was also found for motifs which strongly match FOXA1 
+exerting a negative influence on the probability of H3K27ac marks, with 
+weak evidence for GATA3 motifs also having this effect.
+No specific combinations of motifs were considered to have any combinatorial 
+impact.</caption>
 </div>
-<div id="htmlwidget-07ea6572c8a1bc173f9a" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-07ea6572c8a1bc173f9a">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"TFAP2B":[true,false,true,false,true,false,true,true,false,true,false,true],"motifs":["AR","AR FOXA1","AR FOXA1","AR FOXA1 GATA3","AR FOXA1 GATA3","AR GATA3","AR GATA3","FOXA1","FOXA1 GATA3","FOXA1 GATA3","GATA3","GATA3"],"n_peaks":[16,1,19,359,2796,33,489,22,237,1905,47,398],"% Peaks":[0.00252525252525253,0.000157828282828283,0.00299873737373737,0.0566603535353535,0.441287878787879,0.00520833333333333,0.0771780303030303,0.00347222222222222,0.037405303030303,0.300662878787879,0.00741792929292929,0.0628156565656566],"n_active":[12,0,10,148,1690,15,334,16,101,1063,26,260],"% Active":[0.75,0,0.526315789473684,0.412256267409471,0.604434907010014,0.454545454545455,0.683026584867076,0.727272727272727,0.426160337552743,0.558005249343832,0.553191489361702,0.653266331658292]},"columns":[{"accessor":"TFAP2B","name":"TFAP2B Motif","type":"logical","cell":["✔","✖","✔","✖","✔","✖","✔","✔","✖","✔","✖","✔"],"style":[{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"},{"color":"red"},{"color":"forestgreen"}]},{"accessor":"motifs","name":"Other Detected Motifs","type":"character"},{"accessor":"n_peaks","name":"# Peaks","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}}},{"accessor":"% Peaks","name":"% Peaks","type":"numeric","format":{"cell":{"digits":1,"percent":true},"aggregated":{"digits":1,"percent":true}},"style":[{"backgroundImage":"linear-gradient(90deg, transparent 99.7474747474748%, #e6e6e6 99.7474747474748%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 99.9842171717172%, #e6e6e6 99.9842171717172%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 99.7001262626263%, #e6e6e6 99.7001262626263%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 94.3339646464647%, #e6e6e6 94.3339646464647%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 55.8712121212121%, #e6e6e6 55.8712121212121%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 99.4791666666667%, #e6e6e6 99.4791666666667%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 92.282196969697%, #e6e6e6 92.282196969697%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 99.6527777777778%, #e6e6e6 99.6527777777778%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 96.2594696969697%, #e6e6e6 96.2594696969697%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 69.9337121212121%, #e6e6e6 69.9337121212121%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 99.2582070707071%, #e6e6e6 99.2582070707071%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 93.7184343434343%, #e6e6e6 93.7184343434343%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null}]},{"accessor":"n_active","name":"H3K27ac Overlap","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}}},{"accessor":"% Active","name":"% Active","type":"numeric","format":{"cell":{"digits":1,"percent":true},"aggregated":{"digits":1,"percent":true}},"style":[{"backgroundImage":"linear-gradient(90deg, transparent 25%, #e6e6e6 25%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 100%, #e6e6e6 100%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 47.3684210526316%, #e6e6e6 47.3684210526316%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 58.7743732590529%, #e6e6e6 58.7743732590529%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 39.5565092989986%, #e6e6e6 39.5565092989986%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 54.5454545454545%, #e6e6e6 54.5454545454545%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 31.6973415132924%, #e6e6e6 31.6973415132924%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 27.2727272727273%, #e6e6e6 27.2727272727273%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 57.3839662447257%, #e6e6e6 57.3839662447257%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 44.1994750656168%, #e6e6e6 44.1994750656168%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 44.6808510638298%, #e6e6e6 44.6808510638298%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, transparent 34.6733668341708%, #e6e6e6 34.6733668341708%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null}]}],"pagination":false,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"70029bde82849d025e3461e90389adb9"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-<pre class="r"><code>glm_h3K27ac %&gt;% 
-  ggplot(aes(Estimate, y, colour = TFAP2B)) +
-  geom_point() +
-  geom_errorbarh(aes(xmin = lwr, xmax = upr), height = 0.36) +
-  scale_y_continuous(
-    breaks = seq_along(levels(glm_h3K27ac$motifs)),
-    labels = levels(glm_h3K27ac$motifs)
-  ) +
-  scale_colour_manual(values = c(&quot;black&quot;, &quot;red&quot;)) +
-  labs(
-    x = &quot;P(H3K27ac)&quot;,
-    y = &quot;Motifs Detected in Peak&quot;
-  )</code></pre>
-<div class="figure" style="text-align: center">
-<img src="figure/motif_analysis.Rmd/plot-glm-h3k27ac-1.png" alt="Probability of a peak being active based on the detected motifs, using H3K27ac signal as a marker of an active regulatory region. Only peaks where all four targets were detected were studied. Whilst some motif combinations suffer from low numbers, the general trend towards a strong TFAP2B motif increasing the probability of the peak being active was observed. Intervals are FWER-adjusted 95% confidence intervals, using the single-step method for estimation of the critical value." width="960" />
-<p class="caption">
-Probability of a peak being active based on the detected motifs, using
-H3K27ac signal as a marker of an active regulatory region. Only peaks
-where all four targets were detected were studied. Whilst some motif
-combinations suffer from low numbers, the general trend towards a strong
-TFAP2B motif increasing the probability of the peak being active was
-observed. Intervals are FWER-adjusted 95% confidence intervals, using
-the single-step method for estimation of the critical value.
-</p>
-</div>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-glm-h3k27ac-1">
-Past versions of plot-glm-h3k27ac-1.png
-</button>
-</p>
-<div id="fig-plot-glm-h3k27ac-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/8dde309446d2e562a920f7fa7c87e825ff5cb64d/docs/figure/motif_analysis.Rmd/plot-glm-h3k27ac-1.png" target="_blank">8dde309</a>
-</td>
-<td>
-Steve Pederson
-</td>
-<td>
-2022-06-06
-</td>
-</tr>
-</tbody>
-</table>
+<div id="htmlwidget-9929d7c7769fe1c64f8c" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9929d7c7769fe1c64f8c">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["(Intercept)","TFAP2B (PC1)","AR","FOXA1","GATA3","TFAP2B (PC1):AR","TFAP2B (PC1):FOXA1","TFAP2B (PC1):GATA3","FOXA1:GATA3","TFAP2B (PC1):FOXA1:GATA3"],"estimate":[0.338787064602443,-0.327693093192586,0.109203566193269,-0.0621879135441713,-0.0570270106425893,-0.0385259839425157,0.00140157280476538,0.0224685049288083,0.0116315491527727,0.0405793828034182],"std.error":[0.0263372923113076,0.0228976517196857,0.0264193332773918,0.0264242136950616,0.0266303709166141,0.0231726491493563,0.0230676379752324,0.0233232371856922,0.0261710182744573,0.0225330431588613],"statistic":[12.8633976719387,-14.3112096036844,4.13347169085145,-2.35344424102177,-2.14142757609926,-1.66256277796299,0.0607592682991747,0.963352760593272,0.444443889450225,1.80088337457695],"p.value":[7.23262222518358e-38,1.86245460935587e-46,3.57324326422858e-05,0.0186003972858041,0.0322395731156702,0.0963999871386211,0.951550929544972,0.33537052430108,0.656721687740093,0.0717212639556916],"fdr":[3.61631111259179e-37,1.86245460935587e-45,0.000119108108807619,0.0465009932145101,0.0644791462313403,0.137714267340887,0.951550929544972,0.41921315537635,0.729690764155658,0.119535439926153]," ":["***","***","***","*",".","","","","",""]},"columns":[{"accessor":"term","name":"Motif","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"cell":["(Intercept)","TFAP2B (PC1)","AR","FOXA1","GATA3","TFAP2B (PC1) : AR","TFAP2B (PC1) : FOXA1","TFAP2B (PC1) : GATA3","FOXA1 : GATA3","TFAP2B (PC1) : FOXA1 : GATA3"],"minWidth":150},{"accessor":"estimate","name":"Estimate","type":"numeric","format":{"cell":{"digits":3},"aggregated":{"digits":3}}},{"accessor":"std.error","name":"std.error","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"show":false},{"accessor":"statistic","name":"Test Statistic","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}}},{"accessor":"p.value","name":"p.value","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"show":false,"cell":["7.23e-38","1.86e-46","3.57e-05","0.019","0.032","0.096","0.952","0.335","0.657","0.072"]},{"accessor":"fdr","name":"P<sub>FDR<\/sub>","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"cell":["3.62e-37","1.86e-45","1.19e-04","0.047","0.064","0.138","0.952","0.419","0.730","0.120"],"html":true},{"accessor":" ","name":" ","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}}}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"01643897f5f824a20ad2a71b40e4f691"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
