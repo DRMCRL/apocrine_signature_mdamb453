@@ -277,6 +277,10 @@ The motif database was initially defined as all `r nrow(meme_db)` CORE motifs fo
 In order to minimise irrelevant results, only the `r nrow(meme_db_detected)` motifs associated with a detected gene, using presence within the RNA-Seq dataset as evidence of detection.
 
 ```{r load-peaks}
+dht_consensus <- read_rds(
+  here::here("output/dht_consensus.rds")
+)
+seqinfo(dht_consensus) <- sq19
 dht_peaks <- here::here("data", "peaks") %>%
   list.files(recursive = TRUE, pattern = "oracle", full.names = TRUE) %>%
   sapply(read_rds, simplify = FALSE) %>%
@@ -286,58 +290,12 @@ dht_peaks <- here::here("data", "peaks") %>%
   lapply(
     function(x) {
       seqinfo(x) <- sq19
-      x
+      subsetByOverlaps(x, dht_consensus)
     }
   )
 targets <- names(dht_peaks)
-dht_consensus <- dht_peaks %>%
-  lapply(granges) %>%
-  GRangesList() %>%
-  unlist() %>%
-  reduce() %>%
-  mutate(
-    AR = overlapsAny(., dht_peaks$AR),
-    FOXA1 = overlapsAny(., dht_peaks$FOXA1),
-    GATA3 = overlapsAny(., dht_peaks$GATA3),
-    TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
-    promoter = bestOverlap(., features, var = "feature", missing = "None") == "promoter",
-    enhancer = bestOverlap(., features, var = "feature", missing = "None") == "enhancer",
-    H3K27ac = promoter | enhancer
-  )
 ```
 
-```{r plot-peak-shape, fig.height=6, fig.cap = "Distributions of A) peak width and B) summit location with peaks."}
-a <- dht_peaks %>% 
-  lapply(mutate, w = width) %>% 
-  lapply(as_tibble) %>% 
-  bind_rows(.id = "target") %>% 
-  ggplot(aes(w, stat(density), colour = target)) +
-  geom_density() +
-  scale_x_log10(breaks = c(100, 300, 600, 1e3, 2e3, 3e3), labels = comma) +
-  labs(
-    x = "Peak Width (bp)", y = "Density", colour = "Target"
-  )
-b <- dht_peaks %>% 
-  lapply(mutate, w = width) %>% 
-  lapply(as_tibble) %>% 
-  bind_rows(.id = "target") %>% 
-  mutate(skew = 0.5 - peak / w) %>% 
-  ggplot(aes(skew, stat(density), colour = target)) +
-  geom_density() +
-  scale_x_continuous(labels = percent) +
-  labs(
-    x = "% Width Between Peak Summit and Peak Centre",
-    y = "Density",
-    colour = "ChIP Target"
-  )
-plot_grid(
-  a + theme(legend.position = "none"), 
-  b + theme(legend.position = "none"),
-  get_legend(b),
-  rel_widths = c(1, 1, 0.2), nrow = 1,
-  labels = c("A", "B")
-)
-```
 
 # Analysis of Motif Enrichment (AME)
 
@@ -356,6 +314,7 @@ grl_by_targets <- dht_consensus %>%
   colToRanges(var = "range", seqinfo = sq19) %>% 
   sort() %>% 
   splitAsList(.$targets)
+dht_consensus$targets <- bestOverlap(dht_consensus, grl_by_targets)
 ```
 
 
@@ -402,6 +361,19 @@ if (!file.exists(rds_ame_by_targets)) {
       database = to_list(meme_db_detected), 
       mc.cores = min(n_cores, length(.))
     )
+  nulls <- ame_by_targets %>% 
+    vapply(is, logical(1), "data.frame") %>% 
+    not() %>% 
+    which() %>% 
+    names()
+  if (length(nulls) > 0) {
+    ame_by_targets[nulls] <- seq_by_targets[nulls] %>% 
+      lapply(unlist) %>% 
+      lapply(
+        runAme, 
+        database = to_list(meme_db_detected)
+      )
+  }
   write_rds(ame_by_targets, rds_ame_by_targets, compress = "gz")
 } else {
   ame_by_targets <- read_rds(rds_ame_by_targets)
@@ -417,6 +389,19 @@ if (!file.exists(rds_ame_by_targets_active)) {
       database = to_list(meme_db_detected), 
       mc.cores = min(n_cores, length(.))
     )
+  nulls <- ame_by_targets_active %>% 
+    vapply(is, logical(1), "data.frame") %>% 
+    not() %>% 
+    which() %>% 
+    names()
+  if (length(nulls) > 0) {
+    ame_by_targets_active[nulls] <- seq_by_targets[nulls] %>% 
+      lapply(function(x) x[["TRUE"]]) %>% 
+      lapply(
+        runAme, 
+        database = to_list(meme_db_detected)
+      )
+  }
   write_rds(ame_by_targets_active, rds_ame_by_targets_active, compress = "gz")
 } else {
   ame_by_targets_active <- read_rds(rds_ame_by_targets_active)
@@ -432,6 +417,19 @@ if (!file.exists(rds_ame_active_vs_inactive)) {
       },
       mc.cores = min(n_cores, length(.))
     )
+  nulls <- ame_active_vs_inactive %>% 
+    vapply(is, logical(1), "data.frame") %>% 
+    not() %>% 
+    which() %>% 
+    names()
+  if (length(nulls) > 0) {
+    ame_active_vs_inactive[nulls] <- seq_by_targets[nulls] %>% 
+      lapply(
+        function(x) {
+          runAme(x[["TRUE"]], x[["FALSE"]], database = to_list(meme_db_detected))
+        }
+      )
+  }
   write_rds(ame_active_vs_inactive, rds_ame_active_vs_inactive, compress = "gz")
 } else {
   ame_active_vs_inactive <- read_rds(rds_ame_active_vs_inactive)
@@ -447,6 +445,19 @@ if (!file.exists(rds_ame_inactive_vs_active)) {
       },
       mc.cores = min(n_cores, length(.))
     )
+  nulls <- ame_inactive_vs_active %>% 
+    vapply(is, logical(1), "data.frame") %>% 
+    not() %>% 
+    which() %>% 
+    names()
+  if (length(nulls) > 0) {
+    ame_inactive_vs_active[nulls] <- seq_by_targets[nulls] %>% 
+      lapply(
+        function(x) {
+          runAme(x[["FALSE"]], x[["TRUE"]], database = to_list(meme_db_detected))
+        }
+      )
+  }
   write_rds(ame_inactive_vs_active, rds_ame_inactive_vs_active, compress = "gz")
 } else {
   ame_inactive_vs_active <- read_rds(rds_ame_inactive_vs_active)
@@ -884,7 +895,7 @@ ame_inactive_vs_active$`AR FOXA1 GATA3 TFAP2B` %>%
 
 ## Further Investigations
 
-Given the unexpected result that TFAP2$\beta$ motifs were enriched in the *H3K27ac marked peaks* (i.e. active regulatory regions), whilst FOXA1 and GATA motifs were enriched in the peaks **not marked** by H3K27ac (i.e. inactive regulatory regions), the co-occurence of these motifs was explored across both sets of peaks as a predictive tool for an active regulatory region.
+Given the unexpected result that TFAP2$\beta$ motifs were enriched in the *H3K27ac marked peaks* (i.e. active regulatory regions), whilst FOXA1 and GATA motifs were enriched in the peaks **not marked** by H3K27ac (i.e. inactive regulatory regions), the co-occurrence of these motifs was explored across both sets of peaks as a predictive tool for an active regulatory region.
 Sequences were checked for the simple presence of each motif, using matches with a score > 60% of the maximum possible score as a positive match, to be as inclusive as possible.
 For all sequences, only *the highest scoring match to the consensus motif* was retained.
 For comparability across motifs, motif match scores were normalised to Z-scores.
@@ -939,10 +950,12 @@ glm_h3K27ac <- all4_motifs %>%
     PC1 = cbind(MA0811.1, MA0812.1, MA0813.1) %>% 
       prcomp() %>% 
       .[["x"]] %>% 
-      .[,"PC1"]
+      .[,"PC1"] %>% 
+      multiply_by(-1), # This always seems to come out in the opposite direction to observed
+    width = width(GRanges(range))
   ) %>% 
   with(
-    glm(H3K27ac ~ (PC1 + MA0007.2 + MA0148.4 + MA0037.3)^4, family = "binomial")
+    glm(H3K27ac ~ width + (PC1 + MA0007.2 + MA0148.4 + MA0037.3)^4 , family = "binomial")
   ) %>% 
   step() %>% 
   broom::tidy() %>% 
@@ -983,7 +996,7 @@ To avoid the high correlations between the three TFAP2$\beta$ motifs, these were
 This may make the direction of the probability more difficult to interpret as a lower values on PC1 may represent a higher match across all 3 motifs.
 
 A logistic regression model was fitted using H3K27ac status as a the binary response variable with the scores for AR (MA0007.2), FOXA1 (MA0148.4) and GATA3 (MA0037.3) motifs being combined with PC1 across all 3 TFAP2$\beta$ motifs as the predictors.
-The initial model was fitted incorporating 4-way interactions as the initial model, with terms being removed in a step-wise manner using Akiake's Information Criterion (AIC).
+The initial model was fitted incorporating 4-way interactions as the initial model, along with peak width, with terms being removed in a step-wise manner using Akaike's Information Criterion (AIC).
 
 
 ```{r tbl-glm-h3k27ac}
@@ -992,23 +1005,22 @@ cp <- htmltools::tags$caption(
     "
     Results from final logistic regression model for the probability of a peak 
     being marked by H3K27ac, based on the score of each detected motif's match 
-    to the PWM. The presence of any TFAP2B motif had the strongest impact, with 
-    these clearly denoting an increased association with H3K27ac marks. 
-    A strong AR motif also had a positive impact on the probability of the peak 
-    being active. 
-    Moderate evidence was also found for motifs which strongly match FOXA1 
-    exerting a negative influence on the probability of H3K27ac marks, with 
-    weak evidence for GATA3 motifs also having this effect.
-    No specific combinations of motifs were considered to have any combinatorial 
-    impact.
+    to the PWM, and the overall width of the peak. Whilst the width of the peak 
+    clearly had a significant influence on the probability of a peak being 
+    considered active, via H3K27ac, the presence of a strong TFAP2B motif also 
+    had a clear influence on the likelihood of a peak being considered active.
+    Conversely, the stronger matches to the core FOXA1 and GATA3 motifs 
+    indicated a decreased association with H3K27ac marks, as predicted by the 
+    sequence enrichment analysis.
     "
   )
 )
 tbl <- glm_h3K27ac %>% 
+  mutate(term = str_replace_all(term, "width", "Peak Width")) %>% 
   reactable(
     columns = list(
       term = colDef(
-        name = "Motif",
+        name = "Model Term",
         cell = function(value) str_replace_all(value, ":", " : "),
         minWidth = 150
       ),
@@ -1052,586 +1064,105 @@ div(class = "table",
 
 
 
-# Motif Centrality Relative to Each Target {.tabset}
-
-```{r centrality-params}
-seq_width <- 200
-min_score <- percent(0.75, accuracy = 1)
-```
-
-In order to assess any association in binding patterns, the binding peak (i.e.) summit of each ChIP target was taken as a viewpoint and the centrality of the best matching sequence motif for that target was assessed.
-Sequences were extended `r glue("{seq_width}bp")` from each summit and the best sequence match to each binding motif were retained.
-Sequence matches with a score > `r min_score` of the highest possible score were initially included before reducing matches to those with the highest score.
-
-The motifs obtained form the larger database were all `r nrow(dplyr::filter(meme_info, altname %in% targets))` motifs defined as candidate binding sites for each of the `r length(targets)` ChIP targets.
-
-```{r tbl-motifs}
-meme_info %>% 
-  dplyr::filter(altname %in% targets) %>% 
-  arrange(altname, desc(icscore)) %>% 
-  dplyr::rename(
-    `Motif ID` = name, 
-    Target = altname, 
-    IC = icscore, 
-    `Length (bp)` = motif_length
-  ) %>% 
-  pander(
-    justify = "llrr",
-    caption = paste(
-      "Motifs use for checking defined target binding sites. Motifs are ranked",
-      "within each ChIP target by information content (IC)."
-    )
-  )
-```
-
-
-## AR
-
-```{r ar-best-motif}
-ar_summits <- dht_peaks$AR %>% 
-  resize(width = 1, fix = 'start') %>% 
-  shift(shift = .$peak) %>% 
-  resize(width = seq_width, fix = 'center') %>%
-  granges() %>% 
-  mutate(
-    AR = overlapsAny(., subset(dht_consensus, AR)),
-    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
-    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
-    TFAP2B = overlapsAny(., subset(dht_consensus, TFAP2B)),
-    H3K27ac = overlapsAny(., features)
-  ) 
-seq_ar_summits <- ar_summits %>% 
-  get_sequence(hg19)
-views_ar_summits <- as(seq_ar_summits, "Views") %>% 
-  setNames(names(seq_ar_summits))
-ar_summits <- dht_peaks$AR %>%
-  mutate(w = width) %>%
-  resize(width = 1, fix = 'center') %>%
-  shift(.$peak) %>%
-  resize(width = .$w, fix = 'center') %>%
-  granges()%>% 
-  mutate(
-    AR = overlapsAny(., subset(dht_consensus, AR)),
-    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
-    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
-    TFAP2B = overlapsAny(., subset(dht_consensus, TFAP2B)),
-    H3K27ac = overlapsAny(., features)
-  ) 
-seq_ar_summits <- ar_summits %>%
-  get_sequence(hg19)
-views_ar_summits <- as(seq_ar_summits, "Views") %>%
-  setNames(names(seq_ar_summits))
-matches_ar_summits <-meme_db_detected %>%
-  dplyr::filter(altname %in% targets) %>% 
-  to_list() %>% 
-  lapply(
-    getBestMatch, 
-    subject = views_ar_summits,
-    min.score = "70%"#min_score
-  ) %>% 
-  setNames(
-    dplyr::filter(meme_db_detected, altname %in% targets)$name
-  ) %>% 
-  bind_rows(.id = "name") %>% 
-  left_join(
-    dplyr::select(meme_info, name, altname, motif_length),
-    by = "name"
-  ) %>% 
-  dplyr::rename(range = view_name) %>% 
-  left_join(as_tibble(ar_summits), by = "range" ) %>% 
-  arrange(view) %>% 
-  mutate(
-    target_detected = case_when(
-      altname == "AR" ~ AR,
-      altname == "FOXA1" ~ FOXA1,
-      altname == "GATA3" ~ GATA3,
-      altname == "TFAP2B" ~ TFAP2B
-    )
-  ) %>% 
-  dplyr::select(
-    range, 
-    any_of(targets), H3K27ac, 
-    name, altname, target_detected, 
-    pos = start_in_view, width, strand, seq
-  )
-```
-
-```{r plot-centrality-ar, fig.height = 6, fig.cap = "Position of the best match for each motif using sequences centred at the summits of AR binding sites. Sites where the ChIP target was not detected are shown as dashed lines, and panels are separated by H3K27ac status. No visual difference in AR motif centrality was detected due to H3K27ac signal. A slight tendency for the best FOXA1  to also appear centrally was noted."}
-matches_ar_summits  %>% 
-  mutate(
-    label = glue("{name}\n({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac")
-  ) %>% 
-  ggplot(aes(pos, stat(density), colour = altname)) +
-  geom_density(aes(linetype = target_detected)) +
-  geom_text(
-    aes(x = seq_width/2, y = 0.001, label = lab),
-    data = . %>% 
-      group_by(label, H3K27ac) %>% 
-      summarise(
-        n = dplyr::n(), .groups = "drop"
-      ) %>% 
-      mutate(
-        lab = case_when(
-          H3K27ac == "H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(ar_summits$H3K27ac), 0.1)})"
-          ),
-          H3K27ac == "No H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(!ar_summits$H3K27ac), 0.1)})"
-          )
-        )
-      ),
-    colour = "black",
-    inherit.aes = FALSE
-  ) +
-  facet_grid(H3K27ac ~ label) +
-  scale_linetype_manual(values = c(3, 1)) +
-  labs(
-    x = "Best Match Position In Sequence",
-    y = "Density",
-    colour = "Motif Target",
-    linetype = "Target Detected"
-  )
-```
-
-Across all motifs which were considered to represent possible matches to the binding site of AR, matches to one or more of the motifs were found in `r comma(length(unique(dplyr::filter(matches_ar_summits, altname == "AR")$range)))` (`r percent(length(unique(dplyr::filter(matches_ar_summits, altname == "AR")$range))/ length(ar_summits), 0.1)`) of the `r comma(length(ar_summits))` queried sequences.
-
-## FOXA1
-
-```{r foxa1-best-motif}
-foxa1_summits <- dht_peaks$FOXA1 %>% 
-  resize(width = 1, fix = 'start') %>% 
-  shift(shift = .$peak) %>% 
-  resize(width = seq_width, fix = 'center') %>% 
-  granges() %>% 
-  mutate(
-    AR = overlapsAny(., subset(dht_consensus, AR)),
-    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
-    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
-    TFAP2B = overlapsAny(., subset(dht_consensus, TFAP2B)),
-    H3K27ac = overlapsAny(., features)
-  ) 
-seq_foxa1_summits <- foxa1_summits %>% 
-  get_sequence(hg19)
-views_foxa1_summits <- as(seq_foxa1_summits, "Views") %>% 
-  setNames(names(seq_foxa1_summits))
-matches_foxa1_summits <- meme_db_detected %>%
-  dplyr::filter(altname %in% targets) %>% 
-  to_list() %>% 
-  lapply(
-    getBestMatch, 
-    subject = views_foxa1_summits,
-    min.score = min_score
-  ) %>% 
-  setNames(
-    dplyr::filter(meme_db_detected, altname %in% targets)$name
-  ) %>% 
-  bind_rows(.id = "name") %>% 
-  left_join(
-    dplyr::select(meme_info, name, altname, motif_length),
-    by = "name"
-  ) %>% 
-  dplyr::rename(range = view_name) %>% 
-  left_join(as_tibble(foxa1_summits), by = "range" ) %>% 
-  arrange(view) %>% 
-  mutate(
-    target_detected = case_when(
-      altname == "AR" ~ AR,
-      altname == "FOXA1" ~ FOXA1,
-      altname == "GATA3" ~ GATA3,
-      altname == "TFAP2B" ~ TFAP2B
-    )
-  ) %>% 
-  dplyr::select(
-    range, 
-    any_of(targets), H3K27ac, 
-    name, altname, target_detected, 
-    pos = start_in_view, width, strand, seq
-  )
-```
-
-```{r plot-centrality-foxa1, fig.height = 6, fig.cap = "Position of the best match for each motif using sequences centred at the summits of FOXA1 binding sites. Sites where the ChIP target was not detected are shown as dashed lines, and panels are separated by H3K27ac status.  No visual difference in FOXA1 motif centrality was detected due to H3K27ac signal. A slight tendency for the best FOXA1  to also appear centrally was noted."}
-matches_foxa1_summits  %>% 
-  mutate(
-    label = glue("{name}\n({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac")
-  ) %>% 
-  ggplot(aes(pos, stat(density), colour = altname)) +
-  geom_density(aes(linetype = target_detected)) +
-  geom_text(
-    aes(x = seq_width/2, y = 0.001, label = lab),
-    data = . %>% 
-      group_by(label, H3K27ac) %>% 
-      summarise(
-        n = dplyr::n(), .groups = "drop"
-      ) %>% 
-      mutate(
-        lab = case_when(
-          H3K27ac == "H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(foxa1_summits$H3K27ac), 0.1)})"
-          ),
-          H3K27ac == "No H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(!foxa1_summits$H3K27ac), 0.1)})"
-          )
-        )
-      ),
-    colour = "black",
-    inherit.aes = FALSE
-  ) +
-  facet_grid(H3K27ac ~ label) +
-  scale_linetype_manual(values = c(3, 1)) +
-  labs(
-    x = "Best Match Position In Sequence",
-    y = "Density",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
-```
-
-Across all motifs which were considered to represent possible matches to the binding site of FOXA1, matches to one or more of the motifs were found in `r comma(length(unique(dplyr::filter(matches_foxa1_summits, altname == "FOXA1")$range)))` (`r percent(length(unique(dplyr::filter(matches_foxa1_summits, altname == "FOXA1")$range))/ length(foxa1_summits), 0.1)`) of the `r comma(length(foxa1_summits))` queried sequences.
-
-## GATA3
-
-```{r gata3-best-motif}
-gata3_summits <- dht_peaks$GATA3 %>% 
-  resize(width = 1, fix = 'start') %>% 
-  shift(shift = .$peak) %>% 
-  resize(width = seq_width, fix = 'center') %>% 
-  granges() %>% 
-  mutate(
-    AR = overlapsAny(., subset(dht_consensus, AR)),
-    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
-    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
-    TFAP2B = overlapsAny(., subset(dht_consensus, TFAP2B)),
-    H3K27ac = overlapsAny(., features)
-  ) 
-seq_gata3_summits <- gata3_summits %>% 
-  get_sequence(hg19)
-views_gata3_summits <- as(seq_gata3_summits, "Views") %>% 
-  setNames(names(seq_gata3_summits))
-matches_gata3_summits <- meme_db_detected %>%
-  dplyr::filter(altname %in% targets) %>% 
-  to_list() %>% 
-  lapply(
-    getBestMatch, 
-    subject = views_gata3_summits,
-    min.score = min_score
-  ) %>% 
-  setNames(
-    dplyr::filter(meme_db_detected, altname %in% targets)$name
-  ) %>% 
-  bind_rows(.id = "name") %>% 
-  left_join(
-    dplyr::select(meme_info, name, altname, motif_length),
-    by = "name"
-  ) %>% 
-    dplyr::rename(range = view_name) %>% 
-  left_join(as_tibble(gata3_summits), by = "range" ) %>% 
-  arrange(view) %>% 
-  mutate(
-    target_detected = case_when(
-      altname == "AR" ~ AR,
-      altname == "FOXA1" ~ FOXA1,
-      altname == "GATA3" ~ GATA3,
-      altname == "TFAP2B" ~ TFAP2B
-    )
-  ) %>% 
-  dplyr::select(
-    range, 
-    any_of(targets), H3K27ac, 
-    name, altname, target_detected, 
-    pos = start_in_view, width, strand, seq
-  )
-```
-
-```{r plot-centrality-gata3, fig.height = 6, fig.cap = "Position of the best match for each motif using sequences centred at the summits of GATA3 binding sites. Sites where the ChIP target was not detected are shown as dashed lines, and panels are separated by H3K27ac status. No visual difference in GATA3 motif centrality was detected due to H3K27ac signal. A slight tendency for the best FOXA1  to also appear centrally was noted."}
-matches_gata3_summits  %>% 
-  mutate(
-    label = glue("{name}\n({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac")
-  ) %>% 
-  ggplot(aes(pos, stat(density), colour = altname)) +
-  geom_density(aes(linetype = target_detected)) +
-  geom_text(
-    aes(x = seq_width/2, y = 0.001, label = lab),
-    data = . %>% 
-      group_by(label, H3K27ac) %>% 
-      summarise(
-        n = dplyr::n(), .groups = "drop"
-      ) %>% 
-      mutate(
-        lab = case_when(
-          H3K27ac == "H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(gata3_summits$H3K27ac), 0.1)})"
-          ),
-          H3K27ac == "No H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(!gata3_summits$H3K27ac), 0.1)})"
-          )
-        )
-      ),
-    colour = "black",
-    inherit.aes = FALSE
-  ) +
-  facet_grid(H3K27ac ~ label) +
-  scale_linetype_manual(values = c(3, 1)) +
-  labs(
-    x = "Best Match Position In Sequence",
-    y = "Density",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
-```
-
-Across all motifs which were considered to represent possible matches to the binding site of GATA3, matches to one or more of the motifs were found in `r comma(length(unique(dplyr::filter(matches_gata3_summits, altname == "GATA3")$range)))` (`r percent(length(unique(dplyr::filter(matches_gata3_summits, altname == "GATA3")$range))/ length(gata3_summits), 0.1)`) of the `r comma(length(gata3_summits))` queried sequences.
-
-
-## TFAP2B
-
-```{r tfap2b-best-motif}
-tfap2b_summits <- dht_peaks$TFAP2B %>% 
-  resize(width = 1, fix = 'start') %>% 
-  shift(shift = .$peak) %>% 
-  resize(width = seq_width, fix = 'center') %>% 
-  granges() %>% 
-  mutate(
-    AR = overlapsAny(., subset(dht_consensus, AR)),
-    FOXA1 = overlapsAny(., subset(dht_consensus, FOXA1)),
-    GATA3 = overlapsAny(., subset(dht_consensus, GATA3)),
-    TFAP2B = overlapsAny(., subset(dht_consensus, TFAP2B)),
-    H3K27ac = overlapsAny(., features)
-  ) 
-seq_tfap2b_summits <- tfap2b_summits %>% 
-  get_sequence(hg19)
-views_tfap2b_summits <- as(seq_tfap2b_summits, "Views") %>% 
-  setNames(names(seq_tfap2b_summits))
-matches_tfap2b_summits <- meme_db_detected %>%
-  dplyr::filter(altname %in% targets) %>% 
-  to_list() %>% 
-  lapply(
-    getBestMatch, 
-    subject = views_tfap2b_summits,
-    min.score = min_score
-  ) %>% 
-  setNames(
-    dplyr::filter(meme_db_detected, altname %in% targets)$name
-  ) %>% 
-  bind_rows(.id = "name") %>% 
-  left_join(
-    dplyr::select(meme_info, name, altname, motif_length),
-    by = "name"
-  ) %>% 
-    dplyr::rename(range = view_name) %>% 
-  left_join(as_tibble(tfap2b_summits), by = "range" ) %>% 
-  arrange(view) %>% 
-  mutate(
-    target_detected = case_when(
-      altname == "AR" ~ AR,
-      altname == "FOXA1" ~ FOXA1,
-      altname == "GATA3" ~ GATA3,
-      altname == "TFAP2B" ~ TFAP2B
-    )
-  ) %>% 
-  dplyr::select(
-    range, 
-    any_of(targets), H3K27ac, 
-    name, altname, target_detected, 
-    pos = start_in_view, width, strand, seq
-  )
-```
-
-```{r plot-centrality-tfap2b, fig.height = 6, fig.cap = "Position of the best match for each motif using sequences centred at the summits of TFAP2B binding sites. Sites where the ChIP target was not detected are shown as dashed lines, and panels are separated by H3K27ac status. No visual difference in TFAP2B motif centrality was detected. All other motifs appeared to be uniformly distributed amongst the sequences."}
-matches_tfap2b_summits  %>% 
-  mutate(
-    label = glue("{name}\n({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac")
-  ) %>% 
-  ggplot(aes(pos, stat(density), colour = altname)) +
-  geom_density(aes(linetype = target_detected)) +
-  geom_text(
-    aes(x = seq_width/2, y = 0.001, label = lab),
-    data = . %>% 
-      group_by(label, H3K27ac) %>% 
-      summarise(
-        n = dplyr::n(), .groups = "drop"
-      ) %>% 
-      mutate(
-        lab = case_when(
-          H3K27ac == "H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(tfap2b_summits$H3K27ac), 0.1)})"
-          ),
-          H3K27ac == "No H3K27ac" ~ glue(
-            "n = {comma(n)}\n({percent(n/sum(!tfap2b_summits$H3K27ac), 0.1)})"
-          )
-        )
-      ),
-    colour = "black",
-    inherit.aes = FALSE
-  ) +
-  facet_grid(H3K27ac ~ label) +
-  scale_linetype_manual(values = c(3, 1)) +
-  labs(
-    x = "Best Match Position In Sequence",
-    y = "Density",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
-```
-
-Across all motifs which were considered to represent possible matches to the binding site of TFAP2$\beta$, matches to one or more of the motifs were found in `r comma(length(unique(dplyr::filter(matches_tfap2b_summits, altname == "TFAP2B")$range)))` (`r percent(length(unique(dplyr::filter(matches_tfap2b_summits, altname == "TFAP2B")$range))/ length(tfap2b_summits), 0.1)`) of the `r comma(length(tfap2b_summits))` queried sequences.
-
 # Distance Between Motifs {.tabset}
 
-Whilst the above section revealed some degree of association between AR and FOXA1 sites, as well as clear separation between all targets and TFAP2B motifs, the distribution of distances between motif matches can also be addressed directly.
+The distance between the best match to each motif was then assessed for the set of peaks for which *all four targets were detected*, separated by H3K27ac status.
 
-## AR
 
-```{r plot-ar-dist, fig.height=6, fig.cap = "Distance between best matching motif and the best matching AR motif, showing data to the 50th percentile of distances. No noticable difference was noticed between individual motifs, H3K27ac status, or whether the ChIP target was detected within the AR peak."}
-matches_ar_summits %>%
-  group_by(range) %>% 
-  dplyr::filter(any(altname == "AR")) %>% 
-  mutate(
-    ar_pos = pos[altname == "AR"],
-    ar_strand = strand[altname == "AR"]
+```{r fig-compare-distance, fig.width=8, fig.height=10, fig.cap= "Distances between motifs for the best match for each motif. For comparisons to TFAP2B motifs, the nearest of the three was selected. Whilst the median distances between AR, FOXA1 and GATA3 motifs tended to be between 160 and 200bp, the median distances between TFAP2B motifs and the the other motifs tended to be around 80 to 100bp, suggesting that TFAP2B may bind between two of the other three targets in many complexes. A trend towards motifs being further aart within the active regulatory regions was moted, but a simple explanation for this remains elusive."}
+pwm_lengths <- structure(meme_info$motif_length, names = meme_info$name)
+all4_motifs %>% 
+  arrange(view) %>% 
+  ## The best strategy is to find the distance between centres, then add half
+  ## the width of each motif
+  mutate(match_centre = (start_in_view + end_in_view) / 2) %>% 
+  pivot_wider(
+    names_from = "name", values_from = "match_centre", id_cols = c("range", "H3K27ac")
   ) %>% 
-  ungroup() %>% 
   mutate(
-    ar_motif_dist = abs(pos - ar_pos),
-    label = glue("{name} ({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac"),
-    target_detected = ifelse(target_detected, "Target Detected", "Target Undetected")
+    ## AR
+    MA0007.2_MA0037.3 = abs(MA0007.2  - MA0037.3 ) - 0.5*(sum(pwm_lengths[c("MA0007.2", "MA0037.3")])),
+    MA0007.2_MA0148.4 = abs(MA0007.2  - MA0148.4 ) - 0.5*(sum(pwm_lengths[c("MA0007.2", "MA0148.4")])),
+    MA0007.2_MA0811.1 = abs(MA0007.2  - MA0811.1 ) - 0.5*(sum(pwm_lengths[c("MA0007.2", "MA0811.1")])),
+    MA0007.2_MA0812.1 = abs(MA0007.2  - MA0812.1 ) - 0.5*(sum(pwm_lengths[c("MA0007.2", "MA0812.1")])),
+    MA0007.2_MA0813.1 = abs(MA0007.2  - MA0813.1 ) - 0.5*(sum(pwm_lengths[c("MA0007.2", "MA0813.1")])),
+    ## FOXA1
+    MA0148.4_MA0037.3 = abs(MA0148.4  - MA0037.3 ) - 0.5*(sum(pwm_lengths[c("MA0148.4", "MA0037.3")])),
+    MA0148.4_MA0811.1 = abs(MA0148.4  - MA0811.1 ) - 0.5*(sum(pwm_lengths[c("MA0148.4", "MA0811.1")])),
+    MA0148.4_MA0812.1 = abs(MA0148.4  - MA0812.1 ) - 0.5*(sum(pwm_lengths[c("MA0148.4", "MA0812.1")])),
+    MA0148.4_MA0813.1 = abs(MA0148.4  - MA0813.1 ) - 0.5*(sum(pwm_lengths[c("MA0148.4", "MA0813.1")])),
+    ## GATA3
+    MA0037.3_MA0811.1 = abs(MA0037.3  - MA0811.1 ) - 0.5*(sum(pwm_lengths[c("MA0037.3", "MA0811.1")])),
+    MA0037.3_MA0812.1 = abs(MA0037.3  - MA0812.1 ) - 0.5*(sum(pwm_lengths[c("MA0037.3", "MA0812.1")])),
+    MA0037.3_MA0813.1 = abs(MA0037.3  - MA0813.1 ) - 0.5*(sum(pwm_lengths[c("MA0037.3", "MA0813.1")])),
   ) %>% 
-  dplyr::filter(altname != "AR") %>% 
-  group_by(name, target_detected, H3K27ac) %>% 
+  dplyr::select(range, H3K27ac, contains("_")) %>% 
+  pivot_longer(starts_with("MA"), names_to = "motifs", values_to = "d") %>% 
+  separate(motifs, into = c("pwm_1", "pwm_2"), sep = "_") %>% 
+  left_join(
+    dplyr::select(meme_info, pwm_1 = name, altname_1 = altname), by = "pwm_1"
+  ) %>% 
+  left_join(
+    dplyr::select(meme_info, pwm_2 = name, altname_2 = altname), by = "pwm_2"
+  ) %>% 
+  arrange(range, d) %>% 
+  distinct(range, altname_1, altname_2, .keep_all = TRUE) %>% 
+  unite("comparison", starts_with("altname"), sep = " - ") %>%
   mutate(
-    q = rank(ar_motif_dist, ties = "first") / length(ar_motif_dist)
+    d = ifelse(d < 0, 0, d),
+    H3K27ac = ifelse(H3K27ac, "Active", "Inactive")
   ) %>% 
-  dplyr::filter(q <= 0.5) %>%
-  ggplot(
-    aes(ar_motif_dist, q, colour = label)
+  ggplot(aes(d, stat(density), colour = H3K27ac)) +
+  geom_density() +
+  geom_vline(
+    aes(xintercept = med, colour = H3K27ac),
+    data = . %>% 
+      group_by(comparison, H3K27ac) %>% 
+      summarise(med = median(d), .groups = "drop"),
+    show.legend = FALSE
   ) +
-  geom_line() +
-  facet_grid(H3K27ac ~ target_detected) +
-  scale_y_continuous(labels= percent) +
-  labs(
-    x = "Distance from AR motif",
-    y = "Percentile",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
-```
-
-## FOXA1
-
-```{r plot-foxa1-dist, fig.height=6, fig.cap = "Distance between best matching motif and the best matching FOXA1 motif, showing data to the 50th percentile of distances. No noticable difference was noticed between H3K27ac status, or whether the ChIP target was detected within the FOXA1 peaks. However, both AR ang GATA3 motifs do appear to be closer to the FOXA1 motif than TFAP2B motifs."}
-matches_foxa1_summits %>%
-  group_by(range) %>% 
-  dplyr::filter(any(altname == "FOXA1")) %>% 
-  mutate(
-    foxa1_pos = pos[altname == "FOXA1"],
-    foxa1_strand = strand[altname == "FOXA1"]
-  ) %>% 
-  ungroup() %>% 
-  mutate(
-    foxa1_motif_dist = abs(pos - foxa1_pos),
-    label = glue("{name} ({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac"),
-    target_detected = ifelse(target_detected, "Target Detected", "Target Undetected")
-  ) %>% 
-  dplyr::filter(altname != "FOXA1") %>% 
-  group_by(name, target_detected, H3K27ac) %>% 
-  mutate(
-    q = rank(foxa1_motif_dist, ties = "first") / length(foxa1_motif_dist)
-  ) %>% 
-  dplyr::filter(q <= 0.5) %>%
-  ggplot(
-    aes(foxa1_motif_dist, q, colour = label)
-  ) +
-  geom_line() +
-  facet_grid(H3K27ac ~ target_detected) +
-  scale_y_continuous(labels= percent) +
-  labs(
-    x = "Distance from FOXA1 motif",
-    y = "Percentile",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
+  facet_grid(comparison ~ ., scales = "free_y") +
+  scale_colour_manual(values = c("red", "black")) +
+  coord_cartesian(xlim = c(0, 500)) +
+  theme(legend.position = "top")
 ```
 
 
-## GATA3
-
-```{r plot-gata3-dist, fig.height=6, fig.cap = "Distance between best matching motif and the best matching GATA3 motif, showing data to the 50th percentile of distances. FOXA1 motifs tended to be further from the GATA3 motif for peaks where FOXA1 was detected."}
-matches_gata3_summits %>%
-  group_by(range) %>% 
-  dplyr::filter(any(altname == "GATA3")) %>% 
-  mutate(
-    gata3_pos = pos[altname == "GATA3"],
-    gata3_strand = strand[altname == "GATA3"]
+```{r plot-motif-strad, echo=FALSE, eval=FALSE}
+all4_motifs %>% 
+  arrange(view) %>%
+  pivot_wider(names_from = "name", values_from = "strand", id_cols = c("range", "H3K27ac")) %>% 
+  group_by(H3K27ac, MA0007.2, MA0037.3, MA0148.4, MA0811.1) %>% 
+  tally() %>% 
+  ungroup() %>%
+  group_by(H3K27ac) %>% 
+  mutate(p = n / sum(n)) %>% 
+  ungroup() %>%
+  unite(strand, starts_with("MA"), sep = "/") %>% 
+  dplyr::filter(!str_detect(strand, "\\*")) %>% 
+  dplyr::mutate(
+    n_plus = str_count(strand, "\\+"),
+    n_neg = str_count(strand, "\\-"),
+    n_same = case_when(
+      n_plus == n_neg ~ 2L,
+      n_plus > n_neg ~ n_plus,
+      n_plus < n_neg ~ n_neg
+    ) %>% as.factor(),
+    strand = case_when(
+      strand %in% c("+/+/+/+", "-/-/-/-") ~ "Same Strand",
+      strand %in% c("-/+/+/+", "+/-/-/-") ~ "AR Diff",
+      strand %in% c("-/+/-/+", "+/-/+/-") ~ "AR/GATA3 Paired  + FOXA1/TFAP2B Paired Inverse",
+      strand %in% c("-/-/+/+", "+/+/-/-") ~ "AR/FOXA1 Paired  + GATA3/TFAP2B Paired Inverse",
+      strand %in% c("-/+/+/-", "+/-/-/+") ~ "AR/TFAP2B Paired  + FOXA1/GATA3 Paired Inverse",
+      strand %in% c("+/-/+/+", "-/+/-/-") ~ "FOXA1 Diff",
+      strand %in% c("+/+/-/+", "-/-/+/-") ~ "GATA3 Diff",
+      strand %in% c("+/+/+/-", "-/-/-/+") ~ "TFAP2B Diff",
+    )
   ) %>% 
-  ungroup() %>% 
-  mutate(
-    gata3_motif_dist = abs(pos - gata3_pos),
-    label = glue("{name} ({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac"),
-    target_detected = ifelse(target_detected, "Target Detected", "Target Undetected")
-  ) %>% 
-  dplyr::filter(altname != "GATA3") %>% 
-  group_by(name, target_detected, H3K27ac) %>% 
-  mutate(
-    q = rank(gata3_motif_dist, ties = "first") / length(gata3_motif_dist)
-  ) %>% 
-  dplyr::filter(q <= 0.5) %>%
-  ggplot(
-    aes(gata3_motif_dist, q, colour = label)
-  ) +
-  geom_line() +
-  facet_grid(H3K27ac ~ target_detected) +
-  scale_y_continuous(labels= percent) +
-  scale_linetype_manual(values = c(3, 1)) +
-  labs(
-    x = "Distance from GATA3 motif",
-    y = "Percentile",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
+  group_by(strand, H3K27ac) %>% 
+  summarise(p = sum(p), n_same = unique(n_same)) %>% 
+  ggplot(aes(p, fct_rev(strand), fill = H3K27ac)) + 
+  geom_col(position = "dodge") + 
+  facet_grid(fct_rev(n_same) ~ ., scales = "free_y", space = "free_y")
 ```
-
-
-## TFAP2B
-
-```{r plot-tfap2b-dist, fig.height=6, fig.width = 8, fig.cap = "Distance between best matching motif and the best matching TFAP2B motif, showing data to the 50th percentile of distances. No noticable difference was noticed between individual motifs, H3K27ac status, or whether the ChIP target was detected within the TFAP2B peak."}
-matches_tfap2b_summits %>%
-  group_by(range) %>% 
-  dplyr::filter(any(altname == "TFAP2B")) %>% 
-  mutate(
-    tfap2b_pos = pos[altname == "TFAP2B"][1],
-  ) %>% 
-  ungroup() %>% 
-  mutate(
-    tfap2b_motif_dist = abs(pos - tfap2b_pos),
-    label = glue("{name} ({altname})"),
-    H3K27ac = ifelse(H3K27ac, "H3K27ac", "No H3K27ac"),
-    target_detected = ifelse(target_detected, "Target Detected", "Target Undetected")
-  ) %>% 
-  dplyr::filter(altname != "TFAP2B") %>% 
-  group_by(name, target_detected, H3K27ac) %>% 
-  mutate(
-    q = rank(tfap2b_motif_dist, ties = "first") / length(tfap2b_motif_dist)
-  ) %>% 
-  dplyr::filter(q <= 0.5) %>%
-  ggplot(
-    aes(tfap2b_motif_dist, q, colour = label)
-  ) +
-  geom_line() +
-  facet_grid(H3K27ac ~ target_detected) +
-  scale_y_continuous(labels= percent) +
-  scale_linetype_manual(values = c(3, 1)) +
-  labs(
-    x = "Distance from TFAP2B motif",
-    y = "Percentile",
-    colour = "Motif Target",
-    linetype = "ChIP/Motif\nTarget Detected"
-  )
-```
-
 

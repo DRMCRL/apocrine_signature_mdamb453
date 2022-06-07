@@ -173,10 +173,10 @@ features <- here::here("data", "h3k27ac") %>%
 dht_consensus <- dht_peaks %>% 
   lapply(filter, n_reps > 1) %>% 
   lapply(mutate, w = width) %>% 
-  lapply(resize, width = 1, fix = 'center') %>% 
   lapply(
     function(x) {
       x <- shift(x, x$peak)
+      x <- resize(x, width = 1, fix = 'start')
       resize(x, width = round(0.9*x$w, 0), fix = 'center')
     }
   ) %>% 
@@ -190,8 +190,8 @@ dht_consensus <- dht_peaks %>%
     GATA3 = overlapsAny(., dht_peaks$GATA3),
     TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
     H3K27ac = propOverlap(., features) > 0.5,
-    promoter = bestOverlap(., features, var = "feature", missing = "None") == "promoter",
-    enhancer = bestOverlap(., features, var = "feature", missing = "None") == "enhancer",
+    promoter = bestOverlap(., features, var = "feature", missing = "None", min_prop = 0.5) == "promoter",
+    enhancer = bestOverlap(., features, var = "feature", missing = "None", min_prop = 0.5) == "enhancer",
     dist_to_tss = mcols(distanceToNearest(., tss, ignore.strand = TRUE))$distance
   )
 ```
@@ -1140,59 +1140,6 @@ goseq_noar %>%
 ```
 
 
-### Sequence Export
-
-```{r seq-export}
-hg19 <- BSgenome.Hsapiens.UCSC.hg19
-sq19 <- seqinfo(hg19)
-consenus_hg19 <- dht_consensus
-seqinfo(consenus_hg19) <- sq19
-features_hg19 <- features
-seqinfo(features_hg19) <- sq19
-
-getSeq(
-  hg19,
-  consenus_hg19 %>% 
-    filter(AR, FOXA1, GATA3, !TFAP2B) %>% 
-    resize(width = 500, fix = 'center') %>% 
-    setNames(as.character(.))
-) %>% 
-  writeXStringSet(
-    here::here("output", "ar_foxa1_gata3_no_tfap2b.fa")
-  )
-getSeq(
-  hg19,
-  consenus_hg19 %>% 
-    filter(AR, FOXA1, GATA3, TFAP2B) %>% 
-    resize(width = 500, fix = 'center') %>% 
-    setNames(as.character(.))
-) %>% 
-  writeXStringSet(
-    here::here("output", "ar_foxa1_gata3_tfap2b.fa")
-  )
-getSeq(
-  hg19,
-  consenus_hg19 %>% 
-    filter(AR, FOXA1, GATA3, TFAP2B, H3K27ac) %>% 
-    resize(width = 500, fix = 'center') %>% 
-    setNames(as.character(.))
-) %>% 
-  writeXStringSet(
-    here::here("output", "all4_h3k27ac.fa")
-  )
-getSeq(
-  hg19,
-  consenus_hg19 %>% 
-    filter(AR, FOXA1, GATA3, TFAP2B, !H3K27ac) %>% 
-    resize(width = 500, fix = 'center') %>% 
-    setNames(as.character(.))
-) %>% 
-  writeXStringSet(
-    here::here("output", "all4_no_h3k27ac.fa")
-  )
-```
-
-
 
 ## Visualisations: Luminal Genes {.tabset}
 
@@ -1678,97 +1625,6 @@ Gviz::plotTracks(
 dev.off()
 ```
 
-### GREB1
-
-```{r plot-greb1, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, and which map to *GREB1*. Only the low-resolution 40kb interaction bins are shown."}
-gn <- "GREB1"
-gr <- dht_consensus %>% 
-  filter(!!!syms(targets), mapped, H3K27ac) %>% 
-  filter(
-    vapply(gene_name, function(x) gn %in% x, logical(1))
-  ) %>% 
-  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
-  arrange(d) 
-fs <- 14
-region_plot <- plotHFGC(
-  gr = gr,
-  hic = hic %>%
-    subsetByOverlaps(gr) %>%
-    subsetByOverlaps(
-      subset(all_gr$gene, gene_name == gn)
-    ) %>% 
-    subset(as.integer(bin_size) <= 40e3),
-  hicsize = 3,
-  genes = tm %>%
-    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
-    split(.$detected),
-  genecol = c(
-    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
-  ),
-  coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
-  cytobands = grch37.cytobands,
-  zoom = 1.1,
-  highlight = rgb(0, 0, 1, 0.5), 
-  title.width = 1, 
-  col.title = "black", background.title = "white",
-  showAxis = FALSE,
-  rotation.title = 90, fontsize = fs, 
-  fontface.title = 1,
-  legend = FALSE,
-  fontcolor.legend = "black"
-)
-region_plot[[1]]@dp@pars$fontcolor <- "black"
-region_plot$Axis@dp@pars$fontcolor <- "black"
-region_plot$Axis@dp@pars$col <- "grey30"
-if ("HiC" %in% names(region_plot)) {
-  region_plot$HiC@name <- "HiChIP"
-  region_plot$HiC@dp@pars$fontface.title <- 1
-  region_plot$HiC@dp@pars$rotation.title <- 0
-}
-region_plot$Detected@dp@pars$fontface.title <- 1
-region_plot$Detected@dp@pars$rotation.title <- 0
-region_plot$Detected@dp@pars$fontsize.group <- fs
-region_plot$Detected@dp@pars$cex.group <- 0.8
-region_plot$Detected@dp@pars$fontface.group <- 1
-region_plot$Detected@dp@pars$fontcolor.group <- "black"
-if ("Not-Detected" %in% names(region_plot)) {
-  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
-  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
-  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
-  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
-  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
-  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
-  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
-}
-region_plot$AR@dp@pars$rotation.title <- 0
-region_plot$FOXA1@dp@pars$rotation.title <- 0
-region_plot$GATA3@dp@pars$rotation.title <- 0
-region_plot$TFAP2B@dp@pars$rotation.title <- 0
-region_plot$H3K27ac@dp@pars$rotation.title <- 0
-region_plot$H3K27ac@dp@pars$size <- 5
-ax <- region_plot[1:2]
-top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
-hl <- HighlightTrack(
-  region_plot[c(targets, "H3K27ac")],
-  range = resize(gr, width = 5 * width(gr), fix = 'center')
-)
-hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
-hl@dp@pars$lwd <- 0.8
-pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
-plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
-  range(ignore.strand = TRUE) %>% 
-  resize(width = 1.2*width(.), fix = 'center')
-Gviz::plotTracks(
-  c(ax, top_panels, hl),
-  from = start(plot_range), to = end(plot_range),
-  title.width = 1,
-  margin = 40,
-  fontface.main = 1
-  )
-dev.off()
-```
 
 ### AR
 
@@ -2421,5 +2277,66 @@ Gviz::plotTracks(
   fontface.main = 1
   )
 dev.off()
+```
+
+## Data Export
+
+### Sequence Export
+
+```{r seq-export}
+hg19 <- BSgenome.Hsapiens.UCSC.hg19
+sq19 <- seqinfo(hg19)
+consenus_hg19 <- dht_consensus
+seqinfo(consenus_hg19) <- sq19
+features_hg19 <- features
+seqinfo(features_hg19) <- sq19
+
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, !TFAP2B) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "ar_foxa1_gata3_no_tfap2b.fa")
+  )
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, TFAP2B) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "ar_foxa1_gata3_tfap2b.fa")
+  )
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, TFAP2B, H3K27ac) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "all4_h3k27ac.fa")
+  )
+getSeq(
+  hg19,
+  consenus_hg19 %>% 
+    filter(AR, FOXA1, GATA3, TFAP2B, !H3K27ac) %>% 
+    resize(width = 500, fix = 'center') %>% 
+    setNames(as.character(.))
+) %>% 
+  writeXStringSet(
+    here::here("output", "all4_no_h3k27ac.fa")
+  )
+```
+
+### Peaks
+
+
+```{r}
+write_rds(dht_consensus, here::here("output/dht_consensus.rds"), compress = "gz")
 ```
 
