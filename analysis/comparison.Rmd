@@ -190,8 +190,8 @@ dht_consensus <- dht_peaks %>%
     GATA3 = overlapsAny(., dht_peaks$GATA3),
     TFAP2B = overlapsAny(., dht_peaks$TFAP2B),
     H3K27ac = propOverlap(., features) > 0.5,
-    promoter = bestOverlap(., features, var = "feature", missing = "None", min_prop = 0.5) == "promoter",
-    enhancer = bestOverlap(., features, var = "feature", missing = "None", min_prop = 0.5) == "enhancer",
+    promoter = bestOverlap(., features, var = "feature") == "promoter" & H3K27ac,
+    enhancer = bestOverlap(., features, var = "feature") == "enhancer" & H3K27ac,
     dist_to_tss = mcols(distanceToNearest(., tss, ignore.strand = TRUE))$distance
   )
 ```
