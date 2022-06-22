@@ -1,6 +1,6 @@
 ---
 title: "Comparison of all ChIP Targets"
-author: "Stephen Pederson"
+author: "Stephen Pederson and Richard Iggo"
 date: "`r format(Sys.Date(), '%d %B, %Y')`"
 output: workflowr::wflow_html
 editor_options:
@@ -1176,17 +1176,20 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
+  showAxis = TRUE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
-  fontcolor.legend = "black"
+  fontcolor.legend = "black",
+  ylim = c(0,150),
+  yTicksAt = c(0,150),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"),
+  type = "h"
 )
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
@@ -1217,6 +1220,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1224,8 +1237,9 @@ hl <- HighlightTrack(
   range = resize(gr, width = 3*width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$col <- "grey50"
 hl@dp@pars$lwd <- 0.8
+hl@dp@pars$inBackground <- FALSE
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
   range(ignore.strand = TRUE) %>% 
@@ -1275,17 +1289,20 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
+  showAxis = TRUE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
-  fontcolor.legend = "black"
+  fontcolor.legend = "black",
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150) #to avoid the labels clashing
 )
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
@@ -1317,6 +1334,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1324,8 +1351,9 @@ hl <- HighlightTrack(
   range = resize(gr, width = 3*width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$col <- "grey50"
 hl@dp@pars$lwd <- 0.8
+hl@dp@pars$inBackground <- FALSE #puts the blue box in front of the other dat
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
   range(ignore.strand = TRUE) %>% 
@@ -1376,21 +1404,23 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
   cytobands = grch37.cytobands,
   zoom = 1.2,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
-  fontcolor.legend = "black"
+  fontcolor.legend = "black",
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
 )
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
-region_plot$Axis@dp@pars$col <- "grey30"
 if ("HiC" %in% names(region_plot)) {
   region_plot$HiC@name <- "HiChIP"
   region_plot$HiC@dp@pars$fontface.title <- 1
@@ -1417,6 +1447,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1424,7 +1464,8 @@ hl <- HighlightTrack(
   range = resize(gr, width = 1.5 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -1469,13 +1510,16 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -1510,6 +1554,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1517,7 +1571,8 @@ hl <- HighlightTrack(
   range = resize(gr, width = 1.5 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -1561,13 +1616,16 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -1602,6 +1660,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1609,7 +1677,8 @@ hl <- HighlightTrack(
   range = resize(gr, width = 1.5 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -1629,7 +1698,7 @@ dev.off()
 ### AR
 
 ```{r plot-ar, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *AR* and are within 100kb of the gene. Only the low-resolution 20kb HiC interaction bins are shown."}
-gn <- "AR"
+ogn <- "AR"
 gr <- dht_consensus %>% 
   filter(!!!syms(targets), mapped, H3K27ac) %>% 
   filter(
@@ -1655,14 +1724,17 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 6,
   shift = -6e4,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -1697,6 +1769,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1705,7 +1787,8 @@ hl <- HighlightTrack(
     range()
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -1747,14 +1830,17 @@ region_plot <- plotHFGC(
   ),
   collapseTranscripts = "meta",
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 4,
   shift = 1e4,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -1789,6 +1875,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1796,7 +1892,8 @@ hl <- HighlightTrack(
   range = resize(gr, width = 1.2 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -1840,13 +1937,16 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -1881,6 +1981,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1889,7 +1999,8 @@ hl <- HighlightTrack(
     reduce()
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -1932,14 +2043,17 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 5,
   shift = 3e4,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -1974,6 +2088,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -1981,108 +2105,14 @@ hl <- HighlightTrack(
   range = resize(gr, width = 1.5 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
   range(ignore.strand = TRUE) %>% 
   resize(width = 1.1*width(.), fix = 'center') %>% 
   resize(width = 0.4 * width(.), fix = 'start')
-Gviz::plotTracks(
-  c(ax, top_panels, hl),
-  from = start(plot_range), to = end(plot_range),
-  title.width = 1,
-  margin = 40,
-  fontface.main = 1
-  )
-dev.off()
-```
-
-### DUSP6
-
-```{r plot-dusp6, fig.height=10, fig.width=10, results='hide', fig.cap = "All H3K27ac-associated peaks where all four targets were detected, which map to *DUSP6* and are within 100kb of the gene. Only the high-resolution 5kb HiC interaction bins are shown."}
-gn <- "DUSP6"
-gr <- dht_consensus %>% 
-  filter(!!!syms(targets), mapped, H3K27ac) %>% 
-  filter(
-    vapply(gene_name, function(x) gn %in% x, logical(1))
-  ) %>% 
-  mutate(d = distance(., subset(all_gr$gene, gene_name == gn))) %>% 
-  filter(d < 1e5)
-fs <- 14
-region_plot <- plotHFGC(
-  gr = gr,
-  hic = hic %>%
-    subsetByOverlaps(gr) %>%
-    subsetByOverlaps(
-      subset(all_gr$gene, gene_name == gn)
-    ) %>% 
-    subset(as.integer(bin_size) <= 5e3),
-  hicsize = 3,
-  genes = tm %>%
-    mutate(detected = ifelse(gene %in% detected, "Detected", "Not-Detected")) %>%
-    split(.$detected),
-  genecol = c(
-    Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
-  ),
-  coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
-  cytobands = grch37.cytobands,
-  zoom = 1.1,
-  shift = 3e4,
-  highlight = rgb(0, 0, 1, 0.5), 
-  title.width = 1, 
-  col.title = "black", background.title = "white",
-  showAxis = FALSE,
-  rotation.title = 90, fontsize = fs, 
-  fontface.title = 1,
-  legend = FALSE,
-  fontcolor.legend = "black"
-)
-region_plot[[1]]@dp@pars$fontcolor <- "black"
-region_plot$Axis@dp@pars$fontcolor <- "black"
-region_plot$Axis@dp@pars$col <- "grey30"
-if ("HiC" %in% names(region_plot)) {
-  region_plot$HiC@name <- "HiChIP"
-  region_plot$HiC@dp@pars$fontface.title <- 1
-  region_plot$HiC@dp@pars$rotation.title <- 0
-}
-region_plot$Detected@dp@pars$fontface.title <- 1
-region_plot$Detected@dp@pars$rotation.title <- 0
-region_plot$Detected@dp@pars$fontsize.group <- fs
-region_plot$Detected@dp@pars$cex.group <- 0.8
-region_plot$Detected@dp@pars$fontface.group <- 1
-region_plot$Detected@dp@pars$fontcolor.group <- "black"
-if ("Not-Detected" %in% names(region_plot)) {
-  region_plot$`Not-Detected`@dp@pars$fontcolor.group <- "black"
-  region_plot$`Not-Detected`@dp@pars$fontface.title <- 1
-  region_plot$`Not-Detected`@dp@pars$rotation.title <- 0
-  region_plot$`Not-Detected`@dp@pars$fontsize.group <- fs
-  region_plot$`Not-Detected`@dp@pars$cex.group <- 0.8
-  region_plot$`Not-Detected`@dp@pars$fontface.group <- 1
-  region_plot$`Not-Detected`@dp@pars$just.group <- "right"
-}
-region_plot$AR@dp@pars$rotation.title <- 0
-region_plot$FOXA1@dp@pars$rotation.title <- 0
-region_plot$GATA3@dp@pars$rotation.title <- 0
-region_plot$TFAP2B@dp@pars$rotation.title <- 0
-region_plot$H3K27ac@dp@pars$rotation.title <- 0
-region_plot$H3K27ac@dp@pars$size <- 5
-ax <- region_plot[1:2]
-top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
-hl <- HighlightTrack(
-  region_plot[c(targets, "H3K27ac")],
-  range = resize(gr, width = 3 * width(gr), fix = 'center') %>% 
-    reduce()
-)
-hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
-hl@dp@pars$lwd <- 0.8
-pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
-plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
-  range(ignore.strand = TRUE) %>% 
-  resize(width = 0.8 * width(.), fix = 'center') %>% 
-  shift(1e4)
 Gviz::plotTracks(
   c(ax, top_panels, hl),
   from = start(plot_range), to = end(plot_range),
@@ -2121,13 +2151,16 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -2162,6 +2195,16 @@ region_plot$GATA3@dp@pars$rotation.title <- 0
 region_plot$TFAP2B@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$rotation.title <- 0
 region_plot$H3K27ac@dp@pars$size <- 5
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 ax <- region_plot[1:2]
 top_panels <- region_plot[names(region_plot) %in% c("HiC", "Detected", "Not-Detected")]
 hl <- HighlightTrack(
@@ -2169,7 +2212,8 @@ hl <- HighlightTrack(
   range = resize(gr, width = 2 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
@@ -2215,13 +2259,16 @@ region_plot <- plotHFGC(
     Detected = "forestgreen", "Not-Detected" = rgb(0.2, 0.2, 0.7, 0.5)
   ),
   coverage = bwfl, 
-  linecol = rep("grey30", length(bwfl)),
+  linecol = c("deeppink", "blue", "darkgreen", "orange", "red"), #can choose any colours
+  type = "h", #plot histograms
+  ylim = c(0,150), #compromise
+  yTicksAt = c(0,150), #to avoid the labels clashing
+  showAxis = TRUE, #to plot read number
   cytobands = grch37.cytobands,
   zoom = 1.1,
   highlight = rgb(0, 0, 1, 0.5), 
   title.width = 1, 
   col.title = "black", background.title = "white",
-  showAxis = FALSE,
   rotation.title = 90, fontsize = fs, 
   fontface.title = 1,
   legend = FALSE,
@@ -2230,6 +2277,16 @@ region_plot <- plotHFGC(
 region_plot[[1]]@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$fontcolor <- "black"
 region_plot$Axis@dp@pars$col <- "grey30"
+region_plot$AR@dp@pars$ylim <- c(0,max(region_plot$AR@data + 1))
+region_plot$AR@dp@pars$yTicksAt = c(0,round(max(region_plot$AR@data),0))
+region_plot$TFAP2B@dp@pars$ylim <- c(0,max(region_plot$TFAP2B@data + 1))
+region_plot$TFAP2B@dp@pars$yTicksAt = c(0,round(max(region_plot$TFAP2B@data),0))
+region_plot$GATA3@dp@pars$ylim <- c(0,max(region_plot$GATA3@data + 1))
+region_plot$GATA3@dp@pars$yTicksAt = c(0,round(max(region_plot$GATA3@data),0))
+region_plot$FOXA1@dp@pars$ylim <- c(0,max(region_plot$FOXA1@data + 1))
+region_plot$FOXA1@dp@pars$yTicksAt = c(0,round(max(region_plot$FOXA1@data),0))
+region_plot$H3K27ac@dp@pars$ylim <- c(0,max(region_plot$H3K27ac@data + 1))
+region_plot$H3K27ac@dp@pars$yTicksAt = c(0,round(max(region_plot$H3K27ac@data),0))
 if ("HiC" %in% names(region_plot)) {
   region_plot$HiC@name <- "HiChIP"
   region_plot$HiC@dp@pars$fontface.title <- 1
@@ -2263,7 +2320,8 @@ hl <- HighlightTrack(
   range = resize(gr, width = 1.5 * width(gr), fix = 'center')
 )
 hl@dp@pars$fill <- rgb(1, 1, 1, 0)
-hl@dp@pars$col <- "blue"
+hl@dp@pars$inBackground <- FALSE #puts the grey box in front of the other dat
+hl@dp@pars$col <- "grey50" #blue clashes with the FOXA1 track
 hl@dp@pars$lwd <- 0.8
 pdf(here::here("output", glue("{gn}.pdf")), width = 10, height = 10)
 plot_range <- c(gr, subset(all_gr$gene, gene_name == gn)) %>% 
