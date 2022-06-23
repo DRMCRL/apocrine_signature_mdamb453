@@ -10,7 +10,8 @@ editor_options:
 ```{r setup, echo=FALSE}
 knitr::opts_chunk$set(
   message = FALSE, warning = FALSE,
-  fig.width = 10, fig.height = 8
+  fig.width = 10, fig.height = 8,
+  dev = c("png", "pdf")
 )
 ```
 
@@ -1166,3 +1167,42 @@ all4_motifs %>%
   facet_grid(fct_rev(n_same) ~ ., scales = "free_y", space = "free_y")
 ```
 
+# Alignment Of Key Motifs
+
+Showing all motifs in Richard's manually curated list
+
+```{r plot-motifs-elf3}
+ids <- c("MA0640.2", "MA0136.2", "MA0760.1", "MA0686.1")
+meme_db %>% 
+  dplyr::filter(name %in% ids) %>% 
+  mutate(name = factor(name, levels = ids)) %>% 
+  arrange(name) %>% 
+  mutate(name = as.character(name)) %>% 
+  to_list() %>% 
+  lapply(
+    function(x) {
+      x@name <- paste0(str_pad(x@altname, 16, side = "both"), "\n(", x@name, ")")
+      x
+    }
+  ) %>% 
+  view_motifs(names.pos = "right")
+```
+
+Showing only the motifs associated with detected genes, noting that *ELF5* expression was not detected in the RNA-seq dataset
+
+
+```{r plot-motifs-elf-detected}
+meme_db_detected %>% 
+  dplyr::filter(name %in% ids) %>% 
+  mutate(name = factor(name, levels = ids)) %>% 
+  arrange(name) %>% 
+  mutate(name = as.character(name)) %>% 
+  to_list() %>% 
+  lapply(
+    function(x) {
+      x@name <- paste0(str_pad(x@altname, 16, side = "both"), "\n(", x@name, ")")
+      x
+    }
+  ) %>% 
+  view_motifs(names.pos = "right")
+```
