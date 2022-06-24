@@ -373,7 +373,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Motif Analysis</h1>
 <h4 class="author">Steve Pederson</h4>
-<h4 class="date">23 June, 2022</h4>
+<h4 class="date">24 June, 2022</h4>
 
 </div>
 
@@ -402,7 +402,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-23
+<strong>Last updated:</strong> 2022-06-24
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -537,15 +537,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee7f4eded530569ef88b0e9a75af9f09d536b101etargetblanke7f4edea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treeee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0targetblankee8cf46a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e7f4eded530569ef88b0e9a75af9f09d536b101e" target="_blank">e7f4ede</a>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0" target="_blank">ee8cf46</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treee7f4eded530569ef88b0e9a75af9f09d536b101etargetblanke7f4edea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDRMCRLapocrinesignaturemdamb453treeee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0targetblankee8cf46a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -555,7 +555,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/e7f4eded530569ef88b0e9a75af9f09d536b101e" target="_blank">e7f4ede</a>.
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/tree/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0" target="_blank">ee8cf46</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -621,6 +621,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/analysis/motif_analysis.Rmd" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+<td>
+Added Richard’s curated motifs
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DRMCRL/apocrine_signature_mdamb453/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/motif_analysis.html" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+<td>
+Added Richard’s curated motifs
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1477,7 +1511,19 @@ if (!file.exists(rds_ame_inactive_vs_active)) {
   write_rds(ame_inactive_vs_active, rds_ame_inactive_vs_active, compress = &quot;gz&quot;)
 } else {
   ame_inactive_vs_active &lt;- read_rds(rds_ame_inactive_vs_active)
-}</code></pre>
+}
+
+## Compare promoters to shuffled sequences
+seq_all4_prom &lt;- dht_consensus %&gt;%
+  filter(!!!syms(targets), promoter) %&gt;% 
+  get_sequence(genome = hg19)
+ame_all4_promoters &lt;- runAme(seq_all4_prom, database = to_list(meme_db_detected))
+
+## Compare enhancers to shuffled sequences
+seq_all4_enh &lt;- dht_consensus %&gt;%
+  filter(!!!syms(targets), enhancer) %&gt;% 
+  get_sequence(genome = hg19)
+ame_all4_enh &lt;- runAme(seq_all4_enh, database = to_list(meme_db_detected))</code></pre>
 <p><a href="https://meme-suite.org/meme/doc/ame.html?man_type=web">AME
 from the meme-suite</a> was then run on each sequence to detect the
 presence of motifs associated with each target within each set of
@@ -1679,6 +1725,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/ame-heatmap-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/ame-heatmap-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -1804,6 +1861,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/ame-heatmap-active-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/ame-heatmap-active-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -1890,6 +1958,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/motif-gata3-trps1-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/b882cb8ccca0c67325724df3bf74f151f8b8c2f1/docs/figure/motif_analysis.Rmd/motif-gata3-trps1-1.png" target="_blank">b882cb8</a>
@@ -2006,6 +2085,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-ame-other-all-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/plot-ame-other-all-1.png" target="_blank">1f959c3</a>
@@ -2143,6 +2233,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-ame-active-all-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/plot-ame-active-all-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -2269,6 +2370,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-motifs-active-vs-inactive-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/plot-motifs-active-vs-inactive-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -2388,6 +2500,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-motifs-inactive-vs-active-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/plot-motifs-inactive-vs-active-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -2422,6 +2545,127 @@ Steve Pederson
 </tbody>
 </table>
 </div>
+</div>
+</div>
+<div id="promoters" class="section level3">
+<h3>Promoters</h3>
+<p>For the 652 sequences marked by H3K27ac which overlapped a promoter,
+and where all four targets were bound, sequences were compared to a
+random shuffled set of sequences.</p>
+<pre class="r"><code>x &lt;- ame_all4_promoters %&gt;%
+  dplyr::filter(evalue &lt; 0.01, tp_percent &gt; 10) %&gt;%
+  distinct(motif_id) %&gt;% 
+  pull(&quot;motif_id&quot;)
+cormat &lt;- meme_db %&gt;% 
+  dplyr::filter(name %in% x) %&gt;% 
+  to_list() %&gt;% 
+  compare_motifs()
+cormat[cormat &lt; 0.8] &lt;- 0
+cormat[is.na(cormat)] &lt;- 0
+cl_promoters &lt;- as.dist(1 - cormat) %&gt;% 
+  hclust() %&gt;% 
+  cutree(h= 0.9)
+ame_all4_promoters %&gt;% 
+  dplyr::filter(motif_id %in% names(cl_promoters)) %&gt;% 
+  mutate(
+    cluster = cl_promoters[motif_id], 
+    in_rime = motif_alt_id %in% rime_detected$gene_name,
+    motif_alt_id = ifelse(in_rime, paste0(motif_alt_id, &quot;*&quot;), motif_alt_id)
+  ) %&gt;% 
+  group_by(cluster) %&gt;% 
+  summarise(
+    tp_percent = max(tp_percent),
+    p = min(evalue),
+    id = motif_alt_id %&gt;% 
+      unique %&gt;% 
+      sort() %&gt;% 
+      paste(collapse = &quot;/&quot;)
+  ) %&gt;% 
+  arrange(p) %&gt;% 
+  mutate(
+    id = str_trunc(id, width = 40) %&gt;% fct_inorder()
+  ) %&gt;% 
+  ggplot(
+    aes(tp_percent, fct_rev(id), fill = -log10(p))
+  ) +
+  geom_col() +
+  scale_x_continuous(expand = expansion(c(0, 0.05))) +
+  scale_fill_viridis_c() +
+  labs(
+    x = &quot;True Positive Matches (%)&quot;,
+    y = &quot;Motif Cluster&quot;
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-motifs-promoters-1.png" alt="Motifs found enriched when comparing sequences from peaks overlapping an active H3K27ac regulatory region which itself overlapped a TSS, as a putative promoter, to a set of shuffled sequences. Motifs were clustered as described in the text, with any TFs detected as bound to AR in the RIME dataset indicated with an asterisk. Both FOXA1 and TFAP2B motifs appeared to be enriched in this set of sequences." width="960" />
+<p class="caption">
+Motifs found enriched when comparing sequences from peaks overlapping an
+active H3K27ac regulatory region which itself overlapped a TSS, as a
+putative promoter, to a set of shuffled sequences. Motifs were clustered
+as described in the text, with any TFs detected as bound to AR in the
+RIME dataset indicated with an asterisk. Both FOXA1 and TFAP2B motifs
+appeared to be enriched in this set of sequences.
+</p>
+</div>
+</div>
+<div id="enhancers" class="section level3">
+<h3>Enhancers</h3>
+<p>For the 2022 sequences marked by an H3K27ac peak which overlapped a
+putative enhancer, and where all four targets were bound, sequences were
+compared to a random shuffled set of sequences.</p>
+<pre class="r"><code>x &lt;- ame_all4_enh %&gt;%
+  dplyr::filter(evalue &lt; 0.01, tp_percent &gt; 10) %&gt;%
+  distinct(motif_id) %&gt;% 
+  pull(&quot;motif_id&quot;)
+cormat &lt;- meme_db %&gt;% 
+  dplyr::filter(name %in% x) %&gt;% 
+  to_list() %&gt;% 
+  compare_motifs()
+cormat[cormat &lt; 0.8] &lt;- 0
+cormat[is.na(cormat)] &lt;- 0
+cl_enh &lt;- as.dist(1 - cormat) %&gt;% 
+  hclust() %&gt;% 
+  cutree(h= 0.9)
+ame_all4_enh %&gt;% 
+  dplyr::filter(motif_id %in% names(cl_enh)) %&gt;% 
+  mutate(
+    cluster = cl_enh[motif_id], 
+    in_rime = motif_alt_id %in% rime_detected$gene_name,
+    motif_alt_id = ifelse(in_rime, paste0(motif_alt_id, &quot;*&quot;), motif_alt_id)
+  ) %&gt;% 
+  group_by(cluster) %&gt;% 
+  summarise(
+    tp_percent = max(tp_percent),
+    p = min(evalue),
+    id = motif_alt_id %&gt;% 
+      unique %&gt;% 
+      sort() %&gt;% 
+      paste(collapse = &quot;/&quot;)
+  ) %&gt;% 
+  arrange(p) %&gt;% 
+  mutate(
+    id = str_trunc(id, width = 40) %&gt;% fct_inorder()
+  ) %&gt;% 
+  # dplyr::slice(1:20) %&gt;% 
+  ggplot(
+    aes(tp_percent, fct_rev(id), fill = -log10(p))
+  ) +
+  geom_col() +
+  scale_x_continuous(expand = expansion(c(0, 0.05))) +
+  scale_fill_viridis_c() +
+  labs(
+    x = &quot;True Positive Matches (%)&quot;,
+    y = &quot;Motif Cluster&quot;
+  )</code></pre>
+<div class="figure" style="text-align: center">
+<img src="figure/motif_analysis.Rmd/plot-motifs-enhancers-1.png" alt="Motifs found enriched when comparing sequences from peaks overlapping an active H3K27ac regulatory region which did not overlap a TSS, as a putative enhancer, to a set of shuffled sequences. Motifs were clustered as described in the text, with any TFs detected as bound to AR in the RIME dataset indicated with an asterisk. Both FOXA1 and TFAP2B motifs appeared to be enriched in this set of sequences." width="960" />
+<p class="caption">
+Motifs found enriched when comparing sequences from peaks overlapping an
+active H3K27ac regulatory region which did not overlap a TSS, as a
+putative enhancer, to a set of shuffled sequences. Motifs were clustered
+as described in the text, with any TFs detected as bound to AR in the
+RIME dataset indicated with an asterisk. Both FOXA1 and TFAP2B motifs
+appeared to be enriched in this set of sequences.
+</p>
 </div>
 </div>
 </div>
@@ -2559,6 +2803,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-all4-scores-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/plot-all4-scores-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -2673,8 +2928,8 @@ Conversely, the stronger matches to the core FOXA1 and GATA3 motifs
 indicated a decreased association with H3K27ac marks, as predicted by the 
 sequence enrichment analysis.</caption>
 </div>
-<div id="htmlwidget-9929d7c7769fe1c64f8c" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-9929d7c7769fe1c64f8c">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["(Intercept)","Peak Width","TFAP2B (PC1)","FOXA1","GATA3"],"estimate":[-2.05560320217623,0.0021141284570377,0.279677145224525,-0.269696957190027,-0.222170612642584],"std.error":[0.0881680195131966,0.000103232982071587,0.0237604626827377,0.0298273969275014,0.028086800238523],"statistic":[-23.3146124130479,20.4791958404501,11.7706944077194,-9.04192068270501,-7.91014322585105],"p.value":[3.15166919251173e-120,3.30062320916958e-93,5.52676945188586e-32,1.53942773045154e-19,2.57092940115215e-15],"fdr":[1.57583459625586e-119,8.25155802292394e-93,9.21128241980977e-32,1.92428466306442e-19,2.57092940115215e-15]," ":["***","***","***","***","***"]},"columns":[{"accessor":"term","name":"Model Term","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"cell":["(Intercept)","Peak Width","TFAP2B (PC1)","FOXA1","GATA3"],"minWidth":150},{"accessor":"estimate","name":"Estimate","type":"numeric","format":{"cell":{"digits":3},"aggregated":{"digits":3}}},{"accessor":"std.error","name":"std.error","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"show":false},{"accessor":"statistic","name":"Test Statistic","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}}},{"accessor":"p.value","name":"p.value","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"show":false,"cell":["3.15e-120","3.30e-93","5.53e-32","1.54e-19","2.57e-15"]},{"accessor":"fdr","name":"P<sub>FDR<\/sub>","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"cell":["1.58e-119","8.25e-93","9.21e-32","1.92e-19","2.57e-15"],"html":true},{"accessor":" ","name":" ","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}}}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"e4245c498c84d5e89c78fcfd4a6b62b2"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6b9a2fa1d48ee93215e7" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6b9a2fa1d48ee93215e7">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"term":["(Intercept)","Peak Width","TFAP2B (PC1)","FOXA1","GATA3"],"estimate":[-2.05560320217623,0.0021141284570377,0.279677145224525,-0.269696957190027,-0.222170612642584],"std.error":[0.0881680195131966,0.000103232982071587,0.0237604626827377,0.0298273969275014,0.028086800238523],"statistic":[-23.3146124130479,20.4791958404501,11.7706944077194,-9.04192068270501,-7.91014322585105],"p.value":[3.15166919251173e-120,3.30062320916958e-93,5.52676945188586e-32,1.53942773045154e-19,2.57092940115215e-15],"fdr":[1.57583459625586e-119,8.25155802292394e-93,9.21128241980977e-32,1.92428466306442e-19,2.57092940115215e-15]," ":["***","***","***","***","***"]},"columns":[{"accessor":"term","name":"Model Term","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"cell":["(Intercept)","Peak Width","TFAP2B (PC1)","FOXA1","GATA3"],"minWidth":150},{"accessor":"estimate","name":"Estimate","type":"numeric","format":{"cell":{"digits":3},"aggregated":{"digits":3}}},{"accessor":"std.error","name":"std.error","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"show":false},{"accessor":"statistic","name":"Test Statistic","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}}},{"accessor":"p.value","name":"p.value","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"show":false,"cell":["3.15e-120","3.30e-93","5.53e-32","1.54e-19","2.57e-15"]},{"accessor":"fdr","name":"P<sub>FDR<\/sub>","type":"numeric","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"cell":["1.58e-119","8.25e-93","9.21e-32","1.92e-19","2.57e-15"],"html":true},{"accessor":" ","name":" ","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}}}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"e4245c498c84d5e89c78fcfd4a6b62b2"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
@@ -2777,6 +3032,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/fig-compare-distance-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/1f959c32bb2c748b3bb8b8748bbc6b305c418348/docs/figure/motif_analysis.Rmd/fig-compare-distance-1.png" target="_blank">1f959c3</a>
 </td>
 <td>
@@ -2809,6 +3075,43 @@ meme_db %&gt;%
   ) %&gt;% 
   view_motifs(names.pos = &quot;right&quot;)</code></pre>
 <p><img src="figure/motif_analysis.Rmd/plot-motifs-elf3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-motifs-elf3-1">
+Past versions of plot-motifs-elf3-1.png
+</button>
+</p>
+<div id="fig-plot-motifs-elf3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-motifs-elf3-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Showing only the motifs associated with detected genes, noting that
 <em>ELF5</em> expression was not detected in the RNA-seq dataset</p>
 <pre class="r"><code>meme_db_detected %&gt;% 
@@ -2825,6 +3128,43 @@ meme_db %&gt;%
   ) %&gt;% 
   view_motifs(names.pos = &quot;right&quot;)</code></pre>
 <p><img src="figure/motif_analysis.Rmd/plot-motifs-elf-detected-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-motifs-elf-detected-1">
+Past versions of plot-motifs-elf-detected-1.png
+</button>
+</p>
+<div id="fig-plot-motifs-elf-detected-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DRMCRL/apocrine_signature_mdamb453/blob/ee8cf460f975a4a952ef4e82df6a0eb5fd7d1bb0/docs/figure/motif_analysis.Rmd/plot-motifs-elf-detected-1.png" target="_blank">ee8cf46</a>
+</td>
+<td>
+Steve Pederson
+</td>
+<td>
+2022-06-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

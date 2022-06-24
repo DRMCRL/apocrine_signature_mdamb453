@@ -463,6 +463,18 @@ if (!file.exists(rds_ame_inactive_vs_active)) {
 } else {
   ame_inactive_vs_active <- read_rds(rds_ame_inactive_vs_active)
 }
+
+## Compare promoters to shuffled sequences
+seq_all4_prom <- dht_consensus %>%
+  filter(!!!syms(targets), promoter) %>% 
+  get_sequence(genome = hg19)
+ame_all4_promoters <- runAme(seq_all4_prom, database = to_list(meme_db_detected))
+
+## Compare enhancers to shuffled sequences
+seq_all4_enh <- dht_consensus %>%
+  filter(!!!syms(targets), enhancer) %>% 
+  get_sequence(genome = hg19)
+ame_all4_enh <- runAme(seq_all4_enh, database = to_list(meme_db_detected))
 ```
 
 
@@ -893,6 +905,109 @@ ame_inactive_vs_active$`AR FOXA1 GATA3 TFAP2B` %>%
     y = "Motif Cluster"
   )
 ```
+
+### Promoters
+
+For the `r length(seq_all4_prom)` sequences marked by H3K27ac which overlapped a promoter, and where all four targets were bound, sequences were compared to a random shuffled set of sequences.
+
+```{r plot-motifs-promoters, fig.height = 8, fig.cap = "Motifs found enriched when comparing sequences from peaks overlapping an active H3K27ac regulatory region which itself overlapped a TSS, as a putative promoter, to a set of shuffled sequences. Motifs were clustered as described in the text, with any TFs detected as bound to AR in the RIME dataset indicated with an asterisk. Both FOXA1 and TFAP2B motifs appeared to be enriched in this set of sequences."}
+x <- ame_all4_promoters %>%
+  dplyr::filter(evalue < 0.01, tp_percent > 10) %>%
+  distinct(motif_id) %>% 
+  pull("motif_id")
+cormat <- meme_db %>% 
+  dplyr::filter(name %in% x) %>% 
+  to_list() %>% 
+  compare_motifs()
+cormat[cormat < 0.8] <- 0
+cormat[is.na(cormat)] <- 0
+cl_promoters <- as.dist(1 - cormat) %>% 
+  hclust() %>% 
+  cutree(h= 0.9)
+ame_all4_promoters %>% 
+  dplyr::filter(motif_id %in% names(cl_promoters)) %>% 
+  mutate(
+    cluster = cl_promoters[motif_id], 
+    in_rime = motif_alt_id %in% rime_detected$gene_name,
+    motif_alt_id = ifelse(in_rime, paste0(motif_alt_id, "*"), motif_alt_id)
+  ) %>% 
+  group_by(cluster) %>% 
+  summarise(
+    tp_percent = max(tp_percent),
+    p = min(evalue),
+    id = motif_alt_id %>% 
+      unique %>% 
+      sort() %>% 
+      paste(collapse = "/")
+  ) %>% 
+  arrange(p) %>% 
+  mutate(
+    id = str_trunc(id, width = 40) %>% fct_inorder()
+  ) %>% 
+  ggplot(
+    aes(tp_percent, fct_rev(id), fill = -log10(p))
+  ) +
+  geom_col() +
+  scale_x_continuous(expand = expansion(c(0, 0.05))) +
+  scale_fill_viridis_c() +
+  labs(
+    x = "True Positive Matches (%)",
+    y = "Motif Cluster"
+  )
+```
+
+
+### Enhancers
+
+For the `r length(seq_all4_enh)` sequences marked by an H3K27ac peak which overlapped a putative enhancer, and where all four targets were bound, sequences were compared to a random shuffled set of sequences.
+
+```{r plot-motifs-enhancers, fig.height = 8, fig.cap = "Motifs found enriched when comparing sequences from peaks overlapping an active H3K27ac regulatory region which did not overlap a TSS, as a putative enhancer, to a set of shuffled sequences. Motifs were clustered as described in the text, with any TFs detected as bound to AR in the RIME dataset indicated with an asterisk. Both FOXA1 and TFAP2B motifs appeared to be enriched in this set of sequences."}
+x <- ame_all4_enh %>%
+  dplyr::filter(evalue < 0.01, tp_percent > 10) %>%
+  distinct(motif_id) %>% 
+  pull("motif_id")
+cormat <- meme_db %>% 
+  dplyr::filter(name %in% x) %>% 
+  to_list() %>% 
+  compare_motifs()
+cormat[cormat < 0.8] <- 0
+cormat[is.na(cormat)] <- 0
+cl_enh <- as.dist(1 - cormat) %>% 
+  hclust() %>% 
+  cutree(h= 0.9)
+ame_all4_enh %>% 
+  dplyr::filter(motif_id %in% names(cl_enh)) %>% 
+  mutate(
+    cluster = cl_enh[motif_id], 
+    in_rime = motif_alt_id %in% rime_detected$gene_name,
+    motif_alt_id = ifelse(in_rime, paste0(motif_alt_id, "*"), motif_alt_id)
+  ) %>% 
+  group_by(cluster) %>% 
+  summarise(
+    tp_percent = max(tp_percent),
+    p = min(evalue),
+    id = motif_alt_id %>% 
+      unique %>% 
+      sort() %>% 
+      paste(collapse = "/")
+  ) %>% 
+  arrange(p) %>% 
+  mutate(
+    id = str_trunc(id, width = 40) %>% fct_inorder()
+  ) %>% 
+  # dplyr::slice(1:20) %>% 
+  ggplot(
+    aes(tp_percent, fct_rev(id), fill = -log10(p))
+  ) +
+  geom_col() +
+  scale_x_continuous(expand = expansion(c(0, 0.05))) +
+  scale_fill_viridis_c() +
+  labs(
+    x = "True Positive Matches (%)",
+    y = "Motif Cluster"
+  )
+```
+
 
 ## Further Investigations
 
